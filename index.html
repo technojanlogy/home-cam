@@ -719,6 +719,9 @@
         <div style="position: absolute; top: 10px; left: 10px;" class="chip">
           STATUS: <b id="phoneStatusBadge">STANDBY</b>
         </div>
+        <div style="position: absolute; top: 10px; right: 10px;" class="chip" id="phoneTelemetryChip">
+          <span id="phoneBatText">🔋 100%</span> • <span id="phoneNetText">📶 4G</span>
+        </div>
         <div style="position: absolute; bottom: 10px; right: 10px;" class="chip">
           QUALITY: <b id="phoneActiveRes">1080p FHD</b>
         </div>
@@ -763,10 +766,13 @@
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
           <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">ROLLING CLIP LENGTH:</span>
           <select class="dock-select" id="phoneSegmentSelect" onchange="onSegmentDurationChange(this.value)">
-            <option value="1">1 Minute (Rapid Clips)</option>
-            <option value="2" selected>2 Minutes (Recommended)</option>
-            <option value="5">5 Minutes</option>
+            <option value="5" selected>5 Minutes (Standard NVR)</option>
+            <option value="10">10 Minutes</option>
             <option value="15">15 Minutes</option>
+            <option value="30">30 Minutes</option>
+            <option value="60">60 Minutes (1 Hour)</option>
+            <option value="2">2 Minutes (Quick Testing)</option>
+            <option value="1">1 Minute (Rapid)</option>
           </select>
         </div>
 
@@ -813,11 +819,17 @@
     <div id="phonePlaybackSubView" class="hidden" style="display: flex; flex-direction: column; gap: 10px;">
       
       <!-- IN-MOBILE VIDEO PLAYER -->
-      <div style="background:#000; border:1px solid var(--card-border); border-radius:14px; overflow:hidden; position:relative; min-height:210px;">
+      <div style="background:#000; border:1px solid var(--card-border); border-radius:14px; overflow:hidden; position:relative;">
         <video id="phoneStandalonePlayer" controls playsinline style="width:100%; height:210px; background:#000; object-fit:contain;"></video>
-        <div id="phoneStandalonePlayerTitle" style="padding:6px 10px; font-size:0.75rem; color:#ffe600; background:rgba(0,0,0,0.8); font-weight:700;">
-          Select a clip below to play
+        <div style="padding:6px 10px; font-size:0.75rem; background:rgba(0,0,0,0.85); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <span id="phoneStandalonePlayerTitle" style="color:#ffe600; font-weight:700;">Select a clip below to play</span>
+          <button class="btn-act active-toggle" id="phoneAutoPlayNextBtn" style="padding:3px 8px; font-size:0.7rem;" onclick="togglePhoneAutoPlayNext()">🔁 Auto-Next: ON</button>
         </div>
+      </div>
+
+      <!-- STORAGE LOCATION INFO -->
+      <div style="font-size:0.73rem; color:var(--text-dim); padding:7px 10px; background:rgba(0,245,255,0.06); border:1px solid rgba(0,245,255,0.18); border-radius:10px;">
+        📁 <b>Save Location:</b> Recorded clips aapke browser vault (IndexedDB) me safely saved rehti hain. Phone ki gallery / files me download karne ke liye clip ke <b>⬇ Save</b> button par tap karein.
       </div>
 
       <!-- DATE FILTER TOOLBAR -->
@@ -858,6 +870,10 @@
 
         <span class="chip" id="feedChipWrapper">FEED: <b id="statRes">STANDBY</b></span>
 
+        <!-- PHONE TELEMETRY BADGES IN OFFICE VIEWER TOP BAR -->
+        <span class="chip hidden" id="officePhoneBatChip">🔋 <b id="officeBatVal">--%</b></span>
+        <span class="chip hidden" id="officePhoneNetChip">📶 <b id="officeNetVal">NET OK</b></span>
+
         <!-- PROMINENT RECORDING TIMER IN TOP BAR (SYNCED WITH PHONE!) -->
         <span class="chip hidden rec-flag" id="topRecBadge">
           <span class="rec-dot"></span>
@@ -879,7 +895,11 @@
     <!-- VIEW 1: LIVE CCTV FEED STAGE -->
     <div class="cctv-stage" id="stageViewport" ondblclick="toggleFullscreen()">
       <div class="osd-hud">
-        <span class="chip" id="hudOfficeStatus">STANDBY</span>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <span class="chip" id="hudOfficeStatus">STANDBY</span>
+          <span class="chip hidden" id="osdPhoneBatChip">🔋 <span id="osdBatVal">--%</span></span>
+          <span class="chip hidden" id="osdPhoneNetChip">📶 <span id="osdNetVal">4G</span></span>
+        </div>
         <!-- PROMINENT OSD RECORDING TIMER OVERLAY -->
         <span class="chip hidden rec-flag" id="recBadge">
           <span class="rec-dot"></span>
@@ -917,6 +937,11 @@
         </div>
       </div>
 
+      <!-- STORAGE LOCATION INFO BANNER -->
+      <div style="font-size:0.73rem; color:var(--text-dim); padding:6px 12px; background:rgba(0,245,255,0.06); border:1px solid rgba(0,245,255,0.18); border-radius:10px; margin-bottom:8px;">
+        📁 <b>Save Location:</b> Recorded clips browser ke persistent vault me locally saved hain. Computer ke <b>Downloads folder</b> me MP4 file export karne ke liye kisi bhi clip ke <b>⬇ Save</b> button par click karein.
+      </div>
+
       <!-- MAIN PLAYBACK SPLIT: VIDEO PLAYER & CARDS LIST -->
       <div class="nvr-main-layout">
         
@@ -924,7 +949,10 @@
         <div class="nvr-player-box" id="nvrPlayerBox">
           <div style="position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none;">
             <span class="chip" id="nvrPlayerTitle">Select a clip to play</span>
-            <button class="zoom-chip" style="pointer-events: auto;" onclick="togglePlayerFullscreen()">⛶ Fullscreen</button>
+            <div style="display:flex; gap:6px; pointer-events: auto;">
+              <button class="btn-act active-toggle" id="nvrAutoPlayNextBtn" style="padding:3px 8px; font-size:0.72rem;" onclick="toggleNVRAutoPlayNext()">🔁 Auto-Next: ON</button>
+              <button class="zoom-chip" onclick="togglePlayerFullscreen()">⛶ Fullscreen</button>
+            </div>
           </div>
 
           <!-- STREAMING FROM PHONE PROGRESS OVERLAY -->
@@ -1074,8 +1102,18 @@
     // Auto-Recording & Retention Policy
     let autoRecordEnabled = localStorage.getItem('prscam_auto_record') !== 'false';
     let autoDeleteDays = parseFloat(localStorage.getItem('prscam_auto_delete_days') || '2');
-    let autoRecordSegmentMins = parseInt(localStorage.getItem('prscam_segment_mins') || '2');
+    let autoRecordSegmentMins = parseInt(localStorage.getItem('prscam_segment_mins') || '5');
     let phoneAutoRecordEnabled = localStorage.getItem('prscam_phone_auto_rec') !== 'false';
+
+    // Auto-Play Next / Loop Settings
+    let isPhoneAutoPlayNext = true;
+    let isNVRAutoPlayNext = true;
+    let currentPlayingMobileClipId = null;
+
+    // Mobile Telemetry State
+    let mobileBatteryInfo = { level: 100, charging: false, supported: false };
+    let mobileNetworkInfo = { type: '4G/WIFI', speed: '', rtt: 0, quality: 'Good' };
+    let phoneTelemetryInterval = null;
 
     // Phone Recorder
     let phoneMediaRecorder = null;
@@ -1115,6 +1153,12 @@
     // Initial Setup
     window.addEventListener('DOMContentLoaded', () => {
       initVaultStorage();
+      initTelemetryMonitor();
+
+      const selSegment = document.getElementById('phoneSegmentSelect');
+      if (selSegment) {
+        selSegment.value = String(autoRecordSegmentMins);
+      }
 
       const autoRecBtn = document.getElementById('autoRecToggleBtn');
       if (autoRecBtn) {
@@ -1221,6 +1265,83 @@
       } catch (e) {}
       document.getElementById('phonePreviewVideo').style.visibility = 'visible';
       document.getElementById('stealthCover').classList.add('hidden');
+    }
+
+    // ==========================================
+    // MOBILE TELEMETRY ENGINE (BATTERY & NETWORK)
+    // ==========================================
+    async function initTelemetryMonitor() {
+      // 1. Mobile Battery Monitoring (Web Battery API)
+      if ('getBattery' in navigator) {
+        try {
+          const battery = await navigator.getBattery();
+          mobileBatteryInfo.supported = true;
+          const updateBat = () => {
+            mobileBatteryInfo.level = Math.round(battery.level * 100);
+            mobileBatteryInfo.charging = battery.charging;
+            updatePhoneTelemetryUI();
+          };
+          updateBat();
+          battery.addEventListener('levelchange', updateBat);
+          battery.addEventListener('chargingchange', updateBat);
+        } catch(e){}
+      }
+
+      // 2. Mobile Network Monitoring (Network Information API)
+      const netConn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (netConn) {
+        const updateNet = () => {
+          const type = netConn.effectiveType ? netConn.effectiveType.toUpperCase() : '4G/WIFI';
+          const rtt = netConn.rtt || 0;
+          let quality = 'Good';
+          if (netConn.effectiveType === '2g' || netConn.effectiveType === 'slow-2g' || rtt > 500) {
+            quality = 'Poor';
+          } else if (netConn.effectiveType === '3g' || rtt > 250) {
+            quality = 'Fair';
+          } else {
+            quality = 'Strong';
+          }
+          mobileNetworkInfo = { type, speed: netConn.downlink ? `${netConn.downlink}M` : '', rtt, quality };
+          updatePhoneTelemetryUI();
+        };
+        updateNet();
+        netConn.addEventListener('change', updateNet);
+      }
+
+      updatePhoneTelemetryUI();
+
+      if (!phoneTelemetryInterval) {
+        phoneTelemetryInterval = setInterval(sendPhoneTelemetryOverDataChannel, 1500);
+      }
+    }
+
+    function updatePhoneTelemetryUI() {
+      const batText = document.getElementById('phoneBatText');
+      const netText = document.getElementById('phoneNetText');
+      if (batText) {
+        const icon = mobileBatteryInfo.charging ? '⚡' : '🔋';
+        batText.textContent = `${icon} ${mobileBatteryInfo.level}%`;
+        batText.style.color = mobileBatteryInfo.level <= 20 ? 'var(--danger)' : (mobileBatteryInfo.level <= 40 ? 'var(--amber)' : 'var(--emerald)');
+      }
+      if (netText) {
+        netText.textContent = `📶 ${mobileNetworkInfo.type}`;
+        netText.style.color = mobileNetworkInfo.quality === 'Poor' ? 'var(--danger)' : (mobileNetworkInfo.quality === 'Fair' ? 'var(--amber)' : 'var(--cyan)');
+      }
+    }
+
+    function sendPhoneTelemetryOverDataChannel() {
+      if (dataChannel && dataChannel.open) {
+        try {
+          dataChannel.send({
+            type: 'phone_telemetry',
+            battery: mobileBatteryInfo,
+            network: mobileNetworkInfo,
+            isRecording: (phoneMediaRecorder && phoneMediaRecorder.state === 'recording'),
+            seconds: phoneRecSeconds,
+            timeStr: formatSeconds(phoneRecSeconds)
+          });
+        } catch(e){}
+      }
     }
 
     function onPhoneQualitySelect(val) {
@@ -1389,6 +1510,9 @@
               actH: ts.height || q.height,
               name: q.name
             });
+
+            // Send initial battery & network telemetry immediately
+            sendPhoneTelemetryOverDataChannel();
 
             // Automatically send latest clips catalog to viewer
             sendPhoneClipsCatalog(conn);
@@ -1743,13 +1867,15 @@
             startBtn.innerHTML = `🛑 Stop Camera (REC ${timeStr})`;
           }
 
-          // SYNC LIVE RECORDING SECONDS TO VIEWER!
+          // SYNC LIVE RECORDING SECONDS & TELEMETRY TO VIEWER!
           if (dataChannel && dataChannel.open) {
             dataChannel.send({
               type: 'phone_rec_heartbeat',
               isRecording: true,
               seconds: phoneRecSeconds,
-              timeStr: timeStr
+              timeStr: timeStr,
+              battery: mobileBatteryInfo,
+              network: mobileNetworkInfo
             });
           }
         }, 1000);
@@ -1759,7 +1885,14 @@
           startBtn.innerHTML = "🛑 Stop Camera";
         }
         if (dataChannel && dataChannel.open) {
-          dataChannel.send({ type: 'phone_rec_heartbeat', isRecording: false, seconds: 0, timeStr: '00:00' });
+          dataChannel.send({
+            type: 'phone_rec_heartbeat',
+            isRecording: false,
+            seconds: 0,
+            timeStr: '00:00',
+            battery: mobileBatteryInfo,
+            network: mobileNetworkInfo
+          });
         }
       }
     }
@@ -1828,9 +1961,9 @@
                 remotePhoneClips = msg.clips || [];
                 updateAllCounters();
                 renderNVRPlaybackList();
-              } else if (msg.type === 'phone_rec_heartbeat') {
-                // SYNC LIVE PHONE TIMER IN OFFICE DISPLAY!
-                handleRemotePhoneTimer(msg);
+              } else if (msg.type === 'phone_rec_heartbeat' || msg.type === 'phone_telemetry') {
+                // SYNC LIVE PHONE TIMER, BATTERY & NETWORK TELEMETRY IN OFFICE DISPLAY!
+                handleRemotePhoneTelemetry(msg);
               } else if (msg.type === 'clip_transfer_meta') {
                 p2pTransferMeta = msg;
                 p2pTransferChunks = new Array(msg.totalChunks);
@@ -1946,14 +2079,23 @@
       connBtn.className = "btn-act cyan";
       connBtn.textContent = "⚡ Connect Live";
 
-      // Hide timer badges
+      // Hide timer & telemetry badges
       const topBadge = document.getElementById('topRecBadge');
       const osdBadge = document.getElementById('recBadge');
+      const batChip = document.getElementById('officePhoneBatChip');
+      const netChip = document.getElementById('officePhoneNetChip');
+      const osdBatChip = document.getElementById('osdPhoneBatChip');
+      const osdNetChip = document.getElementById('osdPhoneNetChip');
+
       if (topBadge) topBadge.classList.add('hidden');
       if (osdBadge) osdBadge.classList.add('hidden');
+      if (batChip) batChip.classList.add('hidden');
+      if (netChip) netChip.classList.add('hidden');
+      if (osdBatChip) osdBatChip.classList.add('hidden');
+      if (osdNetChip) osdNetChip.classList.add('hidden');
     }
 
-    function handleRemotePhoneTimer(msg) {
+    function handleRemotePhoneTelemetry(msg) {
       const topBadge = document.getElementById('topRecBadge');
       const topLabel = document.getElementById('topRecLabel');
       const osdBadge = document.getElementById('recBadge');
@@ -1969,6 +2111,41 @@
       } else if (!msg.isRecording && !isManualRecording && !isViewerAutoLoop) {
         if (topBadge) topBadge.classList.add('hidden');
         if (osdBadge) osdBadge.classList.add('hidden');
+      }
+
+      // Battery Telemetry from Phone
+      if (msg.battery) {
+        const batEl = document.getElementById('officeBatVal');
+        const batChip = document.getElementById('officePhoneBatChip');
+        const osdBatEl = document.getElementById('osdBatVal');
+        const osdBatChip = document.getElementById('osdPhoneBatChip');
+
+        if (batChip) batChip.classList.remove('hidden');
+        if (osdBatChip) osdBatChip.classList.remove('hidden');
+
+        const icon = msg.battery.charging ? '⚡' : '🔋';
+        const color = msg.battery.level <= 20 ? 'var(--danger)' : (msg.battery.level <= 40 ? 'var(--amber)' : 'var(--emerald)');
+        const text = `${icon} ${msg.battery.level}%${msg.battery.charging ? ' [Chg]' : ''}`;
+
+        if (batEl) batEl.innerHTML = `<span style="color:${color}; font-weight:800;">${text}</span>`;
+        if (osdBatEl) osdBatEl.innerHTML = `<span style="color:${color}; font-weight:800;">${text}</span>`;
+      }
+
+      // Network Telemetry from Phone
+      if (msg.network) {
+        const netEl = document.getElementById('officeNetVal');
+        const netChip = document.getElementById('officePhoneNetChip');
+        const osdNetEl = document.getElementById('osdNetVal');
+        const osdNetChip = document.getElementById('osdPhoneNetChip');
+
+        if (netChip) netChip.classList.remove('hidden');
+        if (osdNetChip) osdNetChip.classList.remove('hidden');
+
+        const qColor = msg.network.quality === 'Poor' ? 'var(--danger)' : (msg.network.quality === 'Fair' ? 'var(--amber)' : 'var(--cyan)');
+        const netText = `📶 ${msg.network.type} (${msg.network.quality})`;
+
+        if (netEl) netEl.innerHTML = `<span style="color:${qColor}; font-weight:800;">${netText}</span>`;
+        if (osdNetEl) osdNetEl.innerHTML = `<span style="color:${qColor}; font-weight:800;">${netText}</span>`;
       }
     }
 
@@ -2454,7 +2631,51 @@
           player.play().catch(()=>{});
         });
       }
+
+      // Auto-play next clip on video ended!
+      player.onended = () => {
+        if (isNVRAutoPlayNext) {
+          playNextNVRClip();
+        }
+      };
+
       document.getElementById('nvrPlayerBox').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function playNextNVRClip() {
+      const activeClips = await getCurrentlyActiveNVRClips();
+      if (!activeClips || activeClips.length === 0) return;
+      const currentIdx = activeClips.findIndex(c => c.id === currentlyPlayingClipId);
+      let nextIdx = currentIdx + 1;
+      if (nextIdx >= activeClips.length) {
+        nextIdx = 0; // Loop back to top
+      }
+      const nextRec = activeClips[nextIdx];
+      if (nextRec) {
+        playSelectedClip(nextRec.id);
+      }
+    }
+
+    async function getCurrentlyActiveNVRClips() {
+      const localClips = await getAllRecordingsFromVault();
+      let activeClips = (playbackSource === 'phone' && remotePhoneClips.length > 0) ? remotePhoneClips : localClips;
+      activeClips.sort((a, b) => b.timestamp - a.timestamp);
+      if (selectedPlaybackDate && selectedPlaybackDate !== 'all') {
+        activeClips = activeClips.filter(c => {
+          const k = c.dateKey || getDateKey(new Date(c.timestamp));
+          return k === selectedPlaybackDate;
+        });
+      }
+      return activeClips;
+    }
+
+    function toggleNVRAutoPlayNext() {
+      isNVRAutoPlayNext = !isNVRAutoPlayNext;
+      const btn = document.getElementById('nvrAutoPlayNextBtn');
+      if (btn) {
+        btn.textContent = isNVRAutoPlayNext ? "🔁 Auto-Next: ON" : "⏸️ Auto-Next: OFF";
+        btn.classList.toggle('active-toggle', isNVRAutoPlayNext);
+      }
     }
 
     // ========================================================
@@ -2545,8 +2766,19 @@
 
     function playMobileClip(id) {
       getAllRecordingsFromVault().then(clips => {
-        const rec = clips.find(c => c.id === id);
+        clips.sort((a, b) => b.timestamp - a.timestamp);
+        let filtered = clips;
+        if (mobileFilterMode === 'today') {
+          filtered = clips.filter(c => c.dateKey === getTodayDateKey());
+        } else if (mobileFilterMode === 'yesterday') {
+          filtered = clips.filter(c => c.dateKey === getYesterdayDateKey());
+        }
+
+        const recIdx = filtered.findIndex(c => c.id === id);
+        const rec = recIdx !== -1 ? filtered[recIdx] : clips.find(c => c.id === id);
         if (!rec || !rec.blob) return alert("Clip not found!");
+
+        currentPlayingMobileClipId = id;
 
         const player = document.getElementById('phoneStandalonePlayer');
         const title = document.getElementById('phoneStandalonePlayerTitle');
@@ -2568,6 +2800,13 @@
           });
         }
 
+        // Auto-play next clip when current video finishes!
+        player.onended = () => {
+          if (isPhoneAutoPlayNext) {
+            playNextMobileClip(filtered);
+          }
+        };
+
         // Highlight active card
         document.querySelectorAll('.clip-card').forEach(el => el.classList.remove('active-playing'));
         const card = document.getElementById(`mcard_${id}`);
@@ -2575,6 +2814,28 @@
 
         player.scrollIntoView({ behavior: 'smooth' });
       });
+    }
+
+    function playNextMobileClip(currentList) {
+      if (!currentList || currentList.length === 0) return;
+      const currentIdx = currentList.findIndex(c => c.id === currentPlayingMobileClipId);
+      let nextIdx = currentIdx + 1;
+      if (nextIdx >= currentList.length) {
+        nextIdx = 0; // Loop back
+      }
+      const nextRec = currentList[nextIdx];
+      if (nextRec) {
+        playMobileClip(nextRec.id);
+      }
+    }
+
+    function togglePhoneAutoPlayNext() {
+      isPhoneAutoPlayNext = !isPhoneAutoPlayNext;
+      const btn = document.getElementById('phoneAutoPlayNextBtn');
+      if (btn) {
+        btn.textContent = isPhoneAutoPlayNext ? "🔁 Auto-Next: ON" : "⏸️ Auto-Next: OFF";
+        btn.classList.toggle('active-toggle', isPhoneAutoPlayNext);
+      }
     }
 
     // ========================================================
