@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#070a10" />
   <title>PRScam • Pro CCTV & NVR Cockpit</title>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -30,7 +32,8 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       background: var(--bg);
@@ -51,6 +54,7 @@
       letter-spacing: 0.5px;
       white-space: nowrap;
     }
+
     .pulse-dot {
       width: 8px;
       height: 8px;
@@ -60,19 +64,30 @@
       animation: pulse 2s infinite;
       display: inline-block;
     }
+
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.85); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.3;
+        transform: scale(0.85);
+      }
     }
 
     .mode-switch {
       display: flex;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 2px;
       white-space: nowrap;
     }
+
     .mode-btn {
       padding: 4px 10px;
       border: none;
@@ -84,6 +99,7 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .mode-btn.active {
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #fff;
@@ -92,12 +108,13 @@
     /* TAB NAVIGATION BARS */
     .tabs-bar {
       display: flex;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0, 0, 0, 0.45);
       border: 1px solid var(--card-border);
       border-radius: 9px;
       padding: 3px;
       gap: 3px;
     }
+
     .tab-btn {
       flex: 1;
       padding: 6px 12px;
@@ -115,6 +132,7 @@
       transition: all 0.2s;
       white-space: nowrap;
     }
+
     .tab-btn.active {
       background: rgba(0, 245, 255, 0.16);
       color: var(--cyan);
@@ -123,7 +141,7 @@
     }
 
     .chip {
-      background: rgba(0,0,0,0.65);
+      background: rgba(0, 0, 0, 0.65);
       border: 1px solid var(--card-border);
       padding: 4px 8px;
       border-radius: 7px;
@@ -136,7 +154,10 @@
       backdrop-filter: blur(4px);
       white-space: nowrap;
     }
-    .chip b { color: var(--cyan); }
+
+    .chip b {
+      color: var(--cyan);
+    }
 
     .rec-flag {
       color: var(--danger);
@@ -145,6 +166,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .rec-dot {
       width: 7px;
       height: 7px;
@@ -152,7 +174,12 @@
       border-radius: 50%;
       animation: blink 1s infinite;
     }
-    @keyframes blink { 50% { opacity: 0; } }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
 
     /* ========================================================
        1. PHONE APP VIEW (MOBILE BROADCASTER & MOBILE PLAYBACK)
@@ -187,7 +214,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     }
 
     .phone-preview-video {
@@ -211,12 +238,15 @@
       padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid var(--card-border);
-      background: rgba(0,0,0,0.4);
+      background: rgba(0, 0, 0, 0.4);
       color: #fff;
       font-size: 0.9rem;
       outline: none;
     }
-    .phone-input:focus { border-color: var(--cyan); }
+
+    .phone-input:focus {
+      border-color: var(--cyan);
+    }
 
     .btn-large {
       width: 100%;
@@ -232,25 +262,37 @@
       gap: 8px;
       transition: all 0.2s;
     }
-    .btn-large:active { transform: scale(0.98); }
-    .btn-large:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-large:active {
+      transform: scale(0.98);
+    }
+
+    .btn-large:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .btn-large.emerald {
       background: linear-gradient(135deg, #00e676, #00b34d);
       color: #000;
       box-shadow: var(--emerald-glow);
     }
+
     .btn-large.danger {
       background: linear-gradient(135deg, #ff1744, #c50028);
       color: #fff;
       box-shadow: var(--danger-glow);
     }
+
     .btn-large.stealth {
       background: #000;
       border: 1px solid #333;
       color: #aaa;
     }
+
     .btn-large.muted-btn {
-      background: rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
       color: #fff;
     }
@@ -258,7 +300,10 @@
     /* PITCH BLACK FULLSCREEN (PHONE STEALTH) */
     #stealthCover {
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       background: #000000 !important;
       z-index: 2147483647;
       display: flex;
@@ -268,7 +313,12 @@
       padding-bottom: 30px;
       cursor: pointer;
     }
-    #stealthCover p { color: #222; font-size: 0.8rem; user-select: none; }
+
+    #stealthCover p {
+      color: #222;
+      font-size: 0.8rem;
+      user-select: none;
+    }
 
     /* ========================================================
        2. VIEWER CONSOLE (LAPTOP & MOBILE OPTIMIZED)
@@ -300,7 +350,8 @@
       flex-shrink: 0;
     }
 
-    .top-bar-left, .top-bar-right {
+    .top-bar-left,
+    .top-bar-right {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
@@ -330,7 +381,10 @@
       cursor: grab;
       transition: transform 0.05s ease-out;
     }
-    .cctv-video:active { cursor: grabbing; }
+
+    .cctv-video:active {
+      cursor: grabbing;
+    }
 
     .osd-hud {
       position: absolute;
@@ -361,18 +415,20 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0, 0, 0, 0.45);
       padding: 4px 8px;
       border-radius: 8px;
       border: 1px solid var(--card-border);
       flex-wrap: wrap;
     }
+
     .zoom-chips-wrap {
       display: flex;
       align-items: center;
       gap: 4px;
       flex-wrap: nowrap;
     }
+
     .zoom-deck input[type=range] {
       flex: 1;
       min-width: 80px;
@@ -380,8 +436,9 @@
       cursor: pointer;
       height: 5px;
     }
+
     .zoom-chip {
-      background: rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
       color: #fff;
       padding: 3px 6px;
@@ -392,7 +449,11 @@
       transition: all 0.15s;
       flex-shrink: 0;
     }
-    .zoom-chip:hover { color: var(--cyan); border-color: var(--cyan); }
+
+    .zoom-chip:hover {
+      color: var(--cyan);
+      border-color: var(--cyan);
+    }
 
     .office-actions {
       display: flex;
@@ -401,6 +462,7 @@
       justify-content: space-between;
       flex-wrap: wrap;
     }
+
     .action-group {
       display: flex;
       gap: 5px;
@@ -415,7 +477,7 @@
       padding: 6px 10px;
       border-radius: 7px;
       border: 1px solid var(--card-border);
-      background: rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.07);
       color: #fff;
       font-size: 0.75rem;
       font-weight: 700;
@@ -423,8 +485,15 @@
       transition: all 0.15s;
       white-space: nowrap;
     }
-    .btn-act:hover { background: rgba(255,255,255,0.13); }
-    .btn-act:active { transform: scale(0.97); }
+
+    .btn-act:hover {
+      background: rgba(255, 255, 255, 0.13);
+    }
+
+    .btn-act:active {
+      transform: scale(0.97);
+    }
+
     .btn-act.cyan {
       background: linear-gradient(135deg, #00f5ff, #0099ff);
       color: #000;
@@ -432,16 +501,19 @@
       border: none;
       box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
     }
+
     .btn-act.danger {
       background: linear-gradient(135deg, #ff1744, #c50028);
       border: none;
       color: #fff;
     }
+
     .btn-act.active-toggle {
       border-color: var(--cyan);
       color: var(--cyan);
       background: rgba(0, 245, 255, 0.12);
     }
+
     .btn-act.active-rec {
       border-color: var(--danger);
       color: #fff;
@@ -461,6 +533,7 @@
       cursor: pointer;
       max-width: 200px;
     }
+
     select.dock-select option {
       background: #0e1420;
       color: #fff;
@@ -504,6 +577,7 @@
       .nvr-main-layout {
         flex-direction: column;
       }
+
       .nvr-player-box {
         min-height: 200px !important;
         max-height: 230px !important;
@@ -549,7 +623,7 @@
       font-size: 0.76rem;
       font-weight: 800;
       color: var(--cyan);
-      background: rgba(0,0,0,0.3);
+      background: rgba(0, 0, 0, 0.3);
     }
 
     .nvr-clips-list {
@@ -572,10 +646,12 @@
       gap: 8px;
       transition: all 0.2s;
     }
+
     .clip-card:hover {
       background: rgba(18, 25, 40, 0.95);
       border-color: rgba(0, 245, 255, 0.35);
     }
+
     .clip-card.active-playing {
       border-color: var(--cyan);
       background: rgba(0, 245, 255, 0.1);
@@ -589,6 +665,7 @@
       flex-wrap: wrap;
       gap: 4px;
     }
+
     .card-title {
       font-weight: 800;
       font-size: 0.84rem;
@@ -597,6 +674,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .card-meta-row {
       display: flex;
       align-items: center;
@@ -613,6 +691,7 @@
       gap: 6px;
       margin-top: 2px;
     }
+
     .btn-play-hero {
       flex: 1;
       padding: 8px 12px;
@@ -629,10 +708,13 @@
       gap: 6px;
       transition: all 0.15s;
     }
-    .btn-play-hero:active { transform: scale(0.98); }
+
+    .btn-play-hero:active {
+      transform: scale(0.98);
+    }
 
     .nvr-date-input {
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       border: 1px solid var(--cyan);
       color: #fff;
       padding: 4px 8px;
@@ -658,6 +740,7 @@
       flex-direction: column;
       gap: 4px;
     }
+
     .progress-bar {
       width: 100%;
       height: 6px;
@@ -665,6 +748,7 @@
       border-radius: 3px;
       overflow: hidden;
     }
+
     .progress-fill {
       height: 100%;
       width: 0%;
@@ -672,8 +756,12 @@
       transition: width 0.1s linear;
     }
 
-    .hidden { display: none !important; }
-    .cctv-stage:fullscreen, .nvr-player-box:fullscreen {
+    .hidden {
+      display: none !important;
+    }
+
+    .cctv-stage:fullscreen,
+    .nvr-player-box:fullscreen {
       width: 100vw;
       height: 100vh;
       border-radius: 0;
@@ -721,12 +809,15 @@
     .custom-toast.toast-info {
       border-left: 4px solid var(--cyan);
     }
+
     .custom-toast.toast-success {
       border-left: 4px solid var(--emerald);
     }
+
     .custom-toast.toast-warning {
       border-left: 4px solid var(--amber);
     }
+
     .custom-toast.toast-error {
       border-left: 4px solid var(--danger);
     }
@@ -749,6 +840,7 @@
       padding: 0 4px;
       transition: color 0.15s ease;
     }
+
     .toast-close-btn:hover {
       color: #fff;
     }
@@ -758,6 +850,7 @@
         opacity: 0;
         transform: translateX(30px) scale(0.95);
       }
+
       to {
         opacity: 1;
         transform: translateX(0) scale(1);
@@ -769,6 +862,7 @@
         opacity: 1;
         transform: translateX(0) scale(1);
       }
+
       to {
         opacity: 0;
         transform: translateX(30px) scale(0.95);
@@ -830,13 +924,25 @@
     }
 
     @keyframes fadeInModal {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes scaleUpModal {
-      from { opacity: 0; transform: scale(0.92); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     /* ========================================================
@@ -854,6 +960,11 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
+
+    .auth-overlay.hidden {
+      display: none !important;
+    }
+
     .auth-card {
       background: rgba(13, 22, 38, 0.95);
       border: 1px solid rgba(0, 245, 255, 0.25);
@@ -867,6 +978,7 @@
       gap: 16px;
       animation: scaleUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
     .auth-brand {
       display: flex;
       flex-direction: column;
@@ -874,6 +986,7 @@
       gap: 6px;
       text-align: center;
     }
+
     .auth-brand-logo {
       font-size: 1.35rem;
       font-weight: 900;
@@ -883,36 +996,50 @@
       align-items: center;
       gap: 8px;
     }
+
     .auth-tabs {
       display: flex;
-      background: rgba(0, 0, 0, 0.45);
-      padding: 4px;
-      border-radius: 10px;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 6px;
+      border-radius: 12px;
       border: 1px solid var(--card-border);
     }
+
     .auth-tab {
       flex: 1;
-      padding: 8px 12px;
+      padding: 10px 14px;
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.84rem;
       font-weight: 700;
       color: var(--text-dim);
-      background: none;
-      border: none;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid transparent;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
+    .auth-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
     .auth-tab.active {
-      background: var(--cyan);
-      color: #000;
-      box-shadow: 0 2px 10px rgba(0, 245, 255, 0.3);
+      background: var(--cyan) !important;
+      color: #030a16 !important;
+      font-weight: 800 !important;
+      border-color: var(--cyan) !important;
+      box-shadow: 0 4px 18px rgba(0, 245, 255, 0.45) !important;
+      transform: translateY(-1px);
     }
+
     .auth-input-group {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
+
     .auth-label {
       font-size: 0.72rem;
       font-weight: 700;
@@ -920,6 +1047,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
+
     .auth-input {
       background: rgba(0, 0, 0, 0.5);
       border: 1px solid var(--card-border);
@@ -930,10 +1058,12 @@
       outline: none;
       transition: border-color 0.2s;
     }
+
     .auth-input:focus {
       border-color: var(--cyan);
       box-shadow: 0 0 10px rgba(0, 245, 255, 0.2);
     }
+
     .auth-btn-submit {
       padding: 12px;
       border-radius: 10px;
@@ -950,9 +1080,11 @@
       justify-content: center;
       gap: 6px;
     }
+
     .auth-btn-submit:active {
       transform: scale(0.98);
     }
+
     .auth-hint {
       font-size: 0.73rem;
       color: var(--text-dim);
@@ -977,12 +1109,13 @@
       border: 2px solid var(--cyan);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.85), 0 0 15px rgba(0, 245, 255, 0.35);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85), 0 0 15px rgba(0, 245, 255, 0.35);
       z-index: 100;
       display: flex;
       flex-direction: column;
       animation: toastSlideIn 0.25s ease;
     }
+
     .intercom-pip-header {
       background: rgba(0, 0, 0, 0.85);
       padding: 4px 8px;
@@ -993,12 +1126,14 @@
       font-weight: 800;
       color: var(--cyan);
     }
+
     .intercom-pip-phone video {
       width: 100%;
       height: 100%;
       object-fit: cover;
       background: #111;
     }
+
     /* PiP on Viewer Console showing Own Webcam Preview */
     .intercom-pip-viewer {
       position: absolute;
@@ -1011,10 +1146,11 @@
       border-radius: 10px;
       overflow: hidden;
       z-index: 100;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
     }
+
     .intercom-pip-viewer video {
       width: 100%;
       height: 100%;
@@ -1035,13 +1171,18 @@
       overflow-x: auto;
       scrollbar-width: none;
     }
-    .nvr-channels-bar::-webkit-scrollbar { display: none; }
+
+    .nvr-channels-bar::-webkit-scrollbar {
+      display: none;
+    }
+
     .channel-chips-list {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-shrink: 0;
     }
+
     .channel-chip {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
@@ -1057,24 +1198,29 @@
       transition: all 0.15s;
       white-space: nowrap;
     }
+
     .channel-chip:hover {
       background: rgba(255, 255, 255, 0.1);
       border-color: rgba(0, 245, 255, 0.3);
       color: #fff;
     }
+
     .channel-chip.active {
       background: rgba(0, 245, 255, 0.15);
       border-color: var(--cyan);
       color: var(--cyan);
       box-shadow: 0 0 10px rgba(0, 245, 255, 0.2);
     }
+
     .channel-chip .dot-indicator {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: #777;
     }
-    .channel-chip.active .dot-indicator, .channel-chip.live .dot-indicator {
+
+    .channel-chip.active .dot-indicator,
+    .channel-chip.live .dot-indicator {
       background: var(--emerald);
       box-shadow: 0 0 6px var(--emerald);
     }
@@ -1092,12 +1238,14 @@
       background: #040810;
       overflow-y: auto;
     }
+
     @media (max-width: 768px) {
       .cctv-multi-grid {
         grid-template-columns: 1fr;
         grid-template-rows: auto;
       }
     }
+
     .cam-grid-tile {
       background: #000;
       border: 1px solid var(--card-border);
@@ -1109,13 +1257,16 @@
       min-height: 220px;
       transition: border-color 0.2s;
     }
+
     .cam-grid-tile:hover {
       border-color: rgba(0, 245, 255, 0.4);
     }
+
     .cam-grid-tile.active-focus {
       border: 2px solid var(--cyan);
       box-shadow: 0 0 15px rgba(0, 245, 255, 0.25);
     }
+
     .cam-tile-header {
       position: absolute;
       top: 8px;
@@ -1127,13 +1278,18 @@
       z-index: 10;
       pointer-events: none;
     }
-    .cam-tile-header > * { pointer-events: auto; }
+
+    .cam-tile-header>* {
+      pointer-events: auto;
+    }
+
     .cam-tile-video {
       width: 100%;
       height: 100%;
       object-fit: contain;
       background: #050810;
     }
+
     .cam-tile-controls {
       position: absolute;
       bottom: 8px;
@@ -1145,9 +1301,13 @@
       z-index: 10;
       pointer-events: none;
     }
-    .cam-tile-controls > * { pointer-events: auto; }
+
+    .cam-tile-controls>* {
+      pointer-events: auto;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- AUTH PORTAL (FULLSCREEN ACCESS CONTROL GATEWAY) -->
@@ -1155,25 +1315,32 @@
     <div class="auth-card">
       <div class="auth-brand">
         <div class="auth-brand-logo"><span class="pulse-dot"></span> PRScam Portal</div>
-        <span style="font-size:0.75rem; color:var(--text-dim);">Secure CCTV & Multi-Camera NVR Intelligence Cockpit</span>
+        <span style="font-size:0.75rem; color:var(--text-dim);">Secure CCTV & Multi-Camera NVR Intelligence
+          Cockpit</span>
       </div>
 
       <div class="auth-tabs">
-        <button class="auth-tab active" id="authTabLoginBtn" type="button" onclick="switchAuthTab('login')">🔑 Sign In</button>
-        <button class="auth-tab" id="authTabRegisterBtn" type="button" onclick="switchAuthTab('register')">📝 Register</button>
+        <button class="auth-tab active" id="authTabLoginBtn" type="button" onclick="switchAuthTab('login')">🔑 Sign
+          In</button>
+        <button class="auth-tab" id="authTabRegisterBtn" type="button" onclick="switchAuthTab('register')">📝
+          Register</button>
       </div>
 
       <!-- LOGIN FORM -->
-      <form id="authLoginForm" onsubmit="handleAuthLogin(event)" style="display:flex; flex-direction:column; gap:12px;">
+      <form id="authLoginForm" onsubmit="return handleAuthLogin(event)"
+        style="display:flex; flex-direction:column; gap:12px;">
         <div class="auth-input-group">
           <label class="auth-label">Operator ID / Username</label>
-          <input type="text" id="authLoginUser" class="auth-input" placeholder="e.g. admin" required autocomplete="username" />
+          <input type="text" id="authLoginUser" class="auth-input" placeholder="e.g. admin" required
+            autocomplete="username" />
         </div>
         <div class="auth-input-group">
           <label class="auth-label">Password</label>
-          <input type="password" id="authLoginPass" class="auth-input" placeholder="••••••••" required autocomplete="current-password" />
+          <input type="password" id="authLoginPass" class="auth-input" placeholder="••••••••" required
+            autocomplete="current-password" />
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-dim);">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-dim);">
           <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
             <input type="checkbox" id="authRememberMe" checked /> Remember session
           </label>
@@ -1185,10 +1352,16 @@
       </form>
 
       <!-- REGISTER FORM -->
-      <form id="authRegisterForm" class="hidden" onsubmit="handleAuthRegister(event)" style="display:flex; flex-direction:column; gap:12px;">
+      <form id="authRegisterForm" class="hidden" onsubmit="return handleAuthRegister(event)"
+        style="display:flex; flex-direction:column; gap:12px;">
         <div class="auth-input-group">
-          <label class="auth-label">New Username</label>
-          <input type="text" id="authRegUser" class="auth-input" placeholder="e.g. operator1" required />
+          <label class="auth-label">Operator Full Name</label>
+          <input type="text" id="authRegName" class="auth-input" placeholder="e.g. Security Admin (Optional)" />
+        </div>
+        <div class="auth-input-group">
+          <label class="auth-label">New Username / ID</label>
+          <input type="text" id="authRegUser" class="auth-input" placeholder="e.g. operator1" required
+            autocomplete="username" />
         </div>
         <div class="auth-input-group">
           <label class="auth-label">Security Role</label>
@@ -1200,11 +1373,13 @@
         </div>
         <div class="auth-input-group">
           <label class="auth-label">Password</label>
-          <input type="password" id="authRegPass" class="auth-input" placeholder="••••••••" required />
+          <input type="password" id="authRegPass" class="auth-input" placeholder="••••••••" required
+            autocomplete="new-password" />
         </div>
         <div class="auth-input-group">
           <label class="auth-label">Confirm Password</label>
-          <input type="password" id="authRegConfirm" class="auth-input" placeholder="••••••••" required />
+          <input type="password" id="authRegConfirm" class="auth-input" placeholder="••••••••" required
+            autocomplete="new-password" />
         </div>
         <button type="submit" class="auth-btn-submit">✨ Create Account & Login</button>
       </form>
@@ -1220,12 +1395,14 @@
        SECTION 1: PHONE APP VIEW (MOBILE BROADCASTER & CCTV)
        ======================================================== -->
   <div class="phone-app-container" id="phoneAppSection">
-    
+
     <div class="phone-header">
       <div class="brand-logo"><span class="pulse-dot"></span> PRScam Phone</div>
       <div style="display:flex; align-items:center; gap:6px;">
-        <span class="chip" id="phoneUserBadge" style="font-size:0.68rem; padding:3px 7px;">👤 <b id="phoneUserName">admin</b></span>
-        <button class="btn-act danger" style="padding:3px 7px; font-size:0.68rem;" onclick="handleAuthLogout()" title="Logout">🚪</button>
+        <span class="chip" id="phoneUserBadge" style="font-size:0.68rem; padding:3px 7px;">👤 <b
+            id="phoneUserName">admin</b></span>
+        <button class="btn-act danger" style="padding:3px 7px; font-size:0.68rem;" onclick="handleAuthLogout()"
+          title="Logout">🚪</button>
         <div class="mode-switch">
           <button class="mode-btn active" onclick="showPhoneMode()">📱 Phone</button>
           <button class="mode-btn" onclick="showViewerMode()">💻 Viewer</button>
@@ -1253,7 +1430,8 @@
         <div id="phoneIncomingIntercomContainer" class="hidden intercom-pip-phone">
           <div class="intercom-pip-header">
             <span>👤 Operator Live</span>
-            <button onclick="togglePhoneIntercomAudio()" id="phoneIntercomAudioToggleBtn" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.75rem;">🔊</button>
+            <button onclick="togglePhoneIntercomAudio()" id="phoneIntercomAudioToggleBtn"
+              style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.75rem;">🔊</button>
           </div>
           <video id="phoneIncomingIntercomVideo" autoplay playsinline></video>
         </div>
@@ -1276,19 +1454,25 @@
       <!-- Phone Controls Card -->
       <div class="phone-card">
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Camera Name / Channel Label</label>
-          <input type="text" class="phone-input" id="phoneCameraName" value="CAM 1 (Living Room)" placeholder="e.g. CAM 1 (Living Room)" />
+          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Camera
+            Name / Channel Label</label>
+          <input type="text" class="phone-input" id="phoneCameraName" value="CAM 1 (Living Room)"
+            placeholder="e.g. CAM 1 (Living Room)" />
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top:4px;">
-          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Secret Camera Key / ID</label>
-          <button class="mode-btn" style="padding: 2px 6px; font-size: 0.7rem;" onclick="copySecretKey()">📋 Copy Key</button>
+          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Secret
+            Camera Key / ID</label>
+          <button class="mode-btn" style="padding: 2px 6px; font-size: 0.7rem;" onclick="copySecretKey()">📋 Copy
+            Key</button>
         </div>
         <input type="text" class="phone-input" id="phoneSecretKey" value="prs-secure-cam-782" />
 
         <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
-          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Camera Access PIN / Password (Optional)</label>
-          <input type="password" class="phone-input" id="phoneCameraPin" placeholder="Optional PIN (e.g. 1234) for NVR authorization" />
+          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Camera
+            Access PIN / Password (Optional)</label>
+          <input type="password" class="phone-input" id="phoneCameraPin"
+            placeholder="Optional PIN (e.g. 1234) for NVR authorization" />
         </div>
 
         <!-- QUALITY SELECTOR -->
@@ -1369,14 +1553,20 @@
 
     <!-- SUB-VIEW 1B: DEDICATED MOBILE PLAYBACK VIEW -->
     <div id="phonePlaybackSubView" class="hidden" style="display: flex; flex-direction: column; gap: 10px;">
-      
+
       <!-- IN-MOBILE VIDEO PLAYER -->
-      <div style="background:#000; border:1px solid var(--card-border); border-radius:14px; overflow:hidden; position:relative;">
-        <video id="phoneStandalonePlayer" controls playsinline style="width:100%; height:210px; background:#000; object-fit:contain;"></video>
-        <div style="padding:6px 10px; font-size:0.75rem; background:rgba(0,0,0,0.85); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-          <span id="phoneStandalonePlayerTitle" style="color:#ffe600; font-weight:700;">Select a clip below to play</span>
+      <div
+        style="background:#000; border:1px solid var(--card-border); border-radius:14px; overflow:hidden; position:relative;">
+        <video id="phoneStandalonePlayer" controls playsinline
+          style="width:100%; height:210px; background:#000; object-fit:contain;"></video>
+        <div
+          style="padding:6px 10px; font-size:0.75rem; background:rgba(0,0,0,0.85); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <span id="phoneStandalonePlayerTitle" style="color:#ffe600; font-weight:700;">Select a clip below to
+            play</span>
           <div style="display:flex; gap:6px; align-items:center;">
-            <select id="phonePlaybackSpeedSelect" class="dock-select" style="padding:2px 6px; font-size:0.7rem; height:26px;" onchange="setPhonePlaybackSpeed(this.value)" title="Playback Speed">
+            <select id="phonePlaybackSpeedSelect" class="dock-select"
+              style="padding:2px 6px; font-size:0.7rem; height:26px;" onchange="setPhonePlaybackSpeed(this.value)"
+              title="Playback Speed">
               <option value="0.5">0.5x</option>
               <option value="1" selected>1.0x (Normal)</option>
               <option value="1.5">1.5x</option>
@@ -1385,27 +1575,36 @@
               <option value="8">8.0x Hyper</option>
               <option value="16">16.0x Max</option>
             </select>
-            <button class="btn-act active-toggle" id="phoneAutoPlayNextBtn" style="padding:3px 8px; font-size:0.7rem;" onclick="togglePhoneAutoPlayNext()">🔁 Auto-Next: ON</button>
+            <button class="btn-act active-toggle" id="phoneAutoPlayNextBtn" style="padding:3px 8px; font-size:0.7rem;"
+              onclick="togglePhoneAutoPlayNext()">🔁 Auto-Next: ON</button>
           </div>
         </div>
       </div>
 
       <!-- STORAGE LOCATION INFO -->
-      <div style="font-size:0.73rem; color:var(--text-dim); padding:7px 10px; background:rgba(0,245,255,0.06); border:1px solid rgba(0,245,255,0.18); border-radius:10px;">
-        📁 <b>Save Location:</b> Recorded clips aapke browser vault (IndexedDB) me safely saved rehti hain. Phone ki gallery / files me download karne ke liye clip ke <b>⬇ Save</b> button par tap karein.
+      <div
+        style="font-size:0.73rem; color:var(--text-dim); padding:7px 10px; background:rgba(0,245,255,0.06); border:1px solid rgba(0,245,255,0.18); border-radius:10px;">
+        📁 <b>Save Location:</b> Recorded clips aapke browser vault (IndexedDB) me safely saved rehti hain. Phone ki
+        gallery / files me download karne ke liye clip ke <b>⬇ Save</b> button par tap karein.
       </div>
 
       <!-- DATE & CAMERA FILTER TOOLBAR -->
-      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+      <div
+        style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
         <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
-          <select id="phoneCameraFilterSelect" class="dock-select" style="padding:4px 6px; font-size:0.72rem;" onchange="onPhoneCameraFilterChange(this.value)">
+          <select id="phoneCameraFilterSelect" class="dock-select" style="padding:4px 6px; font-size:0.72rem;"
+            onchange="onPhoneCameraFilterChange(this.value)">
             <option value="all">📹 All Cameras</option>
           </select>
-          <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="filterMobileClips('all')">All</button>
-          <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" onclick="filterMobileClips('today')">Today</button>
-          <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" onclick="filterMobileClips('yesterday')">Yesterday</button>
+          <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;"
+            onclick="filterMobileClips('all')">All</button>
+          <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;"
+            onclick="filterMobileClips('today')">Today</button>
+          <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;"
+            onclick="filterMobileClips('yesterday')">Yesterday</button>
         </div>
-        <button class="btn-act danger" style="padding:4px 8px; font-size:0.72rem;" onclick="confirmClearAllRecordings()">🗑️ Delete All</button>
+        <button class="btn-act danger" style="padding:4px 8px; font-size:0.72rem;"
+          onclick="confirmClearAllRecordings()">🗑️ Delete All</button>
       </div>
 
       <!-- SCROLLABLE MOBILE CLIPS LIST -->
@@ -1418,12 +1617,12 @@
        SECTION 2: VIEWER CONSOLE (MOBILE & LAPTOP RESPONSIVE)
        ======================================================== -->
   <div class="laptop-console hidden" id="officeConsoleSection">
-    
+
     <!-- TOP BAR -->
     <div class="top-bar">
       <div class="top-bar-left">
         <div class="brand-logo"><span class="pulse-dot"></span> PRScam Monitor</div>
-        
+
         <!-- LIVE VIEW vs PLAYBACK TABS -->
         <div class="tabs-bar">
           <button class="tab-btn active" id="tabLiveBtn" onclick="switchViewerTab('live')">
@@ -1450,8 +1649,10 @@
       </div>
 
       <div class="top-bar-right">
-        <span class="chip" id="topUserBadge" style="font-size:0.72rem; padding:4px 8px;">👤 <b id="topUserName">admin</b></span>
-        <button class="btn-act danger" style="padding:4px 7px; font-size:0.7rem;" onclick="handleAuthLogout()" title="Logout">🚪</button>
+        <span class="chip" id="topUserBadge" style="font-size:0.72rem; padding:4px 8px;">👤 <b
+            id="topUserName">admin</b></span>
+        <button class="btn-act danger" style="padding:4px 7px; font-size:0.7rem;" onclick="handleAuthLogout()"
+          title="Logout">🚪</button>
         <div class="mode-switch">
           <button class="mode-btn" onclick="showPhoneMode()">📱 Phone</button>
           <button class="mode-btn active" onclick="showViewerMode()">💻 Viewer</button>
@@ -1465,8 +1666,10 @@
         <!-- Dynamically populated: CAM 1, CAM 2, etc. -->
       </div>
       <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-        <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="openAddCameraModal()">➕ Add Camera</button>
-        <button class="btn-act" id="gridToggleBtn" style="padding:4px 8px; font-size:0.72rem;" onclick="toggleNVRViewMode()">⊞ Multi-Grid</button>
+        <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="openAddCameraModal()">➕ Add
+          Camera</button>
+        <button class="btn-act" id="gridToggleBtn" style="padding:4px 8px; font-size:0.72rem;"
+          onclick="toggleNVRViewMode()">⊞ Multi-Grid</button>
       </div>
     </div>
 
@@ -1479,7 +1682,8 @@
 
       <!-- VIEWER OWN INTERCOM WEBCAM PREVIEW PiP -->
       <div id="viewerIntercomPiP" class="hidden intercom-pip-viewer">
-        <div style="background:rgba(0,0,0,0.85); padding:3px 6px; font-size:0.65rem; font-weight:800; color:var(--emerald); display:flex; justify-content:space-between;">
+        <div
+          style="background:rgba(0,0,0,0.85); padding:3px 6px; font-size:0.65rem; font-weight:800; color:var(--emerald); display:flex; justify-content:space-between;">
           <span>📹 You (Live Intercom)</span>
           <span style="color:var(--emerald);">● LIVE</span>
         </div>
@@ -1496,7 +1700,7 @@
 
     <!-- VIEW 2: NVR DATE-WISE PLAYBACK CONSOLE -->
     <div class="nvr-playback-console hidden" id="nvrPlaybackConsole">
-      
+
       <!-- TOOLBAR: SOURCE TOGGLE & DATE SELECTOR -->
       <div class="nvr-toolbar">
         <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
@@ -1512,7 +1716,8 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-          <select id="nvrCameraFilterSelect" class="dock-select" style="padding:4px 8px; font-size:0.74rem;" onchange="onNVRCameraFilterChange(this.value)">
+          <select id="nvrCameraFilterSelect" class="dock-select" style="padding:4px 8px; font-size:0.74rem;"
+            onchange="onNVRCameraFilterChange(this.value)">
             <option value="all">📹 All Cameras</option>
           </select>
           <input type="date" class="nvr-date-input" id="nvrDateInput" onchange="onNVRDateChange(this.value)" />
@@ -1524,19 +1729,24 @@
       </div>
 
       <!-- STORAGE LOCATION INFO BANNER -->
-      <div style="font-size:0.73rem; color:var(--text-dim); padding:6px 12px; background:rgba(0,245,255,0.06); border:1px solid rgba(0,245,255,0.18); border-radius:10px; margin-bottom:8px;">
-        📁 <b>Save Location:</b> Recorded clips browser ke persistent vault me locally saved hain. Computer ke <b>Downloads folder</b> me MP4 file export karne ke liye kisi bhi clip ke <b>⬇ Save</b> button par click karein.
+      <div
+        style="font-size:0.73rem; color:var(--text-dim); padding:6px 12px; background:rgba(0,245,255,0.06); border:1px solid rgba(0,245,255,0.18); border-radius:10px; margin-bottom:8px;">
+        📁 <b>Save Location:</b> Recorded clips browser ke persistent vault me locally saved hain. Computer ke
+        <b>Downloads folder</b> me MP4 file export karne ke liye kisi bhi clip ke <b>⬇ Save</b> button par click karein.
       </div>
 
       <!-- MAIN PLAYBACK SPLIT: VIDEO PLAYER & CARDS LIST -->
       <div class="nvr-main-layout">
-        
+
         <!-- NVR PLAYER SCREEN -->
         <div class="nvr-player-box" id="nvrPlayerBox">
-          <div style="position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none;">
+          <div
+            style="position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none;">
             <span class="chip" id="nvrPlayerTitle">Select a clip to play</span>
             <div style="display:flex; gap:6px; align-items:center; pointer-events: auto;">
-              <select id="nvrPlaybackSpeedSelect" class="dock-select" style="padding:2px 8px; font-size:0.72rem; height:28px;" onchange="setNVRPlaybackSpeed(this.value)" title="Playback Speed">
+              <select id="nvrPlaybackSpeedSelect" class="dock-select"
+                style="padding:2px 8px; font-size:0.72rem; height:28px;" onchange="setNVRPlaybackSpeed(this.value)"
+                title="Playback Speed">
                 <option value="0.5">0.5x</option>
                 <option value="1" selected>1.0x (Normal)</option>
                 <option value="1.5">1.5x</option>
@@ -1545,14 +1755,16 @@
                 <option value="8">8.0x Hyper</option>
                 <option value="16">16.0x Max</option>
               </select>
-              <button class="btn-act active-toggle" id="nvrAutoPlayNextBtn" style="padding:3px 8px; font-size:0.72rem;" onclick="toggleNVRAutoPlayNext()">🔁 Auto-Next: ON</button>
+              <button class="btn-act active-toggle" id="nvrAutoPlayNextBtn" style="padding:3px 8px; font-size:0.72rem;"
+                onclick="toggleNVRAutoPlayNext()">🔁 Auto-Next: ON</button>
               <button class="zoom-chip" onclick="togglePlayerFullscreen()">⛶ Fullscreen</button>
             </div>
           </div>
 
           <!-- STREAMING FROM PHONE PROGRESS OVERLAY -->
           <div class="stream-progress-box hidden" id="streamProgressBox">
-            <div style="display: flex; justify-content: space-between; font-size: 0.74rem; font-weight: 700; color: #fff;">
+            <div
+              style="display: flex; justify-content: space-between; font-size: 0.74rem; font-weight: 700; color: #fff;">
               <span id="streamProgressLabel">Streaming clip from phone...</span>
               <span id="streamProgressPct">0%</span>
             </div>
@@ -1568,7 +1780,8 @@
         <div class="nvr-timeline-box">
           <div class="nvr-timeline-header">
             <span id="timelineTitleLabel">📹 Recordings</span>
-            <span style="font-size: 0.72rem; color: var(--amber);" id="autoDeletePolicyBadge">Auto-deletes after 2 days</span>
+            <span style="font-size: 0.72rem; color: var(--amber);" id="autoDeletePolicyBadge">Auto-deletes after 2
+              days</span>
           </div>
           <div class="nvr-clips-list" id="nvrClipsList">
             <div style="text-align: center; color: var(--text-dim); padding: 30px; font-size: 0.82rem;">
@@ -1583,10 +1796,11 @@
 
     <!-- MASTER CONTROLS DOCK (LOWER BAR FOR LIVE VIEW) -->
     <div class="office-dock" id="officeDockControls">
-      
+
       <!-- ROW 1: 100x ZOOM SLIDER -->
       <div class="zoom-deck" id="liveZoomDeck">
-        <span style="font-size: 0.72rem; font-weight: 800; min-width: 58px; color:var(--cyan);">🔍 <span id="zoomReadout">1.0x</span></span>
+        <span style="font-size: 0.72rem; font-weight: 800; min-width: 58px; color:var(--cyan);">🔍 <span
+            id="zoomReadout">1.0x</span></span>
         <div class="zoom-chips-wrap">
           <button class="zoom-chip" onclick="setZoom(1)">1x</button>
           <button class="zoom-chip" onclick="setZoom(2)">2x</button>
@@ -1601,14 +1815,15 @@
 
       <!-- ROW 2: ACTION BUTTONS (CLEAN WRAPPING) -->
       <div class="office-actions" id="liveActionButtons">
-        
+
         <!-- GROUP 1: CONNECTION & RECORDING -->
         <div class="action-group">
           <button class="btn-act cyan" id="officeConnectBtn" onclick="toggleOfficeConnection()">⚡ Connect Live</button>
           <!-- PROMINENT RECORD BUTTON WITH LIVE TIMER TEXT -->
           <button class="btn-act danger" id="recBtn" onclick="toggleManualRecording()">🔴 Record</button>
           <button class="btn-act" id="autoRecToggleBtn" onclick="toggleAutoRecord()">🔄 Auto-Rec: ON</button>
-          <button class="btn-act" onclick="switchViewerTab('playback')">📼 Playback (<span id="dockVaultCount">0</span>)</button>
+          <button class="btn-act" onclick="switchViewerTab('playback')">📼 Playback (<span
+              id="dockVaultCount">0</span>)</button>
         </div>
 
         <!-- GROUP 2: AUDIO & CAMERA CONTROLS -->
@@ -1619,7 +1834,7 @@
           <button class="btn-act" onclick="remoteFlipCamera()">🔄 Flip</button>
           <button class="btn-act" onclick="captureZoomedSnapshot()">📸 Snap</button>
         </div>
-        
+
         <!-- GROUP 3: QUALITY & FULLSCREEN -->
         <div class="action-group">
           <span style="font-size: 0.72rem; color: var(--text-dim); font-weight: 700;">QUALITY:</span>
@@ -1657,15 +1872,18 @@
       <div class="custom-modal-body" style="display:flex; flex-direction:column; gap:12px;">
         <div>
           <label class="auth-label">Camera Name / Channel Label</label>
-          <input type="text" id="addCamNameInput" class="auth-input" style="width:100%;" placeholder="e.g. CAM 2 - Front Gate" value="CAM 2 - Front Gate" />
+          <input type="text" id="addCamNameInput" class="auth-input" style="width:100%;"
+            placeholder="e.g. CAM 2 - Front Gate" value="CAM 2 - Front Gate" />
         </div>
         <div>
           <label class="auth-label">Secret Camera Key / ID</label>
-          <input type="text" id="addCamKeyInput" class="auth-input" style="width:100%;" placeholder="e.g. prs-cam-gate-45" />
+          <input type="text" id="addCamKeyInput" class="auth-input" style="width:100%;"
+            placeholder="e.g. prs-cam-gate-45" />
         </div>
         <div>
           <label class="auth-label">Camera Password / PIN (if camera has PIN set)</label>
-          <input type="password" id="addCamPinInput" class="auth-input" style="width:100%;" placeholder="Enter PIN if camera is protected" />
+          <input type="password" id="addCamPinInput" class="auth-input" style="width:100%;"
+            placeholder="Enter PIN if camera is protected" />
         </div>
       </div>
       <div class="custom-modal-actions">
@@ -1680,13 +1898,13 @@
     // HARDWARE QUALITY PROFILES & PARAMETERS
     // ==========================================
     const QUALITY_PROFILES = {
-      '240':  { name: '240p ECO',          width: 426,  height: 240,  fps: 15, bitrate: 250000 },
-      '360':  { name: '360p Balanced',     width: 640,  height: 360,  fps: 20, bitrate: 500000 },
-      '480':  { name: '480p SD',           width: 854,  height: 480,  fps: 24, bitrate: 900000 },
-      '720':  { name: '720p HD',           width: 1280, height: 720,  fps: 30, bitrate: 2000000 },
-      '1080': { name: '1080p FHD',         width: 1920, height: 1080, fps: 30, bitrate: 4000000 },
-      '4k':   { name: '4K UHD',            width: 3840, height: 2160, fps: 30, bitrate: 6000000 },
-      '8k':   { name: '8K Ultra Max',      width: 3840, height: 2160, fps: 30, bitrate: 8000000 }
+      '240': { name: '240p ECO', width: 426, height: 240, fps: 15, bitrate: 250000 },
+      '360': { name: '360p Balanced', width: 640, height: 360, fps: 20, bitrate: 500000 },
+      '480': { name: '480p SD', width: 854, height: 480, fps: 24, bitrate: 900000 },
+      '720': { name: '720p HD', width: 1280, height: 720, fps: 30, bitrate: 2000000 },
+      '1080': { name: '1080p FHD', width: 1920, height: 1080, fps: 30, bitrate: 4000000 },
+      '4k': { name: '4K UHD', width: 3840, height: 2160, fps: 30, bitrate: 6000000 },
+      '8k': { name: '8K Ultra Max', width: 3840, height: 2160, fps: 30, bitrate: 8000000 }
     };
 
     const peerConfig = {
@@ -1880,7 +2098,7 @@
         }
         const parsed = JSON.parse(raw);
         return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_AUTH_USERS;
-      } catch(e) {
+      } catch (e) {
         return DEFAULT_AUTH_USERS;
       }
     }
@@ -1888,7 +2106,7 @@
     function saveRegisteredUsers(users) {
       try {
         localStorage.setItem('prscam_users', JSON.stringify(users));
-      } catch(e) {
+      } catch (e) {
         console.error("Failed to save users", e);
       }
     }
@@ -1899,7 +2117,7 @@
         if (rem) return JSON.parse(rem);
         const ses = sessionStorage.getItem('prscam_session');
         if (ses) return JSON.parse(ses);
-      } catch(e){}
+      } catch (e) { }
       return null;
     }
 
@@ -1915,7 +2133,7 @@
         } else {
           sessionStorage.setItem('prscam_session', JSON.stringify(currentUserSession));
         }
-      } catch(e){}
+      } catch (e) { }
     }
 
     function clearCurrentSession() {
@@ -1923,7 +2141,7 @@
       try {
         localStorage.removeItem('prscam_session');
         sessionStorage.removeItem('prscam_session');
-      } catch(e){}
+      } catch (e) { }
     }
 
     function initAuthGate() {
@@ -1939,12 +2157,18 @@
 
     function showAuthPortal() {
       const overlay = document.getElementById('authPortalOverlay');
-      if (overlay) overlay.classList.remove('hidden');
+      if (overlay) {
+        overlay.classList.remove('hidden');
+        overlay.style.display = 'flex';
+      }
     }
 
     function hideAuthPortal() {
       const overlay = document.getElementById('authPortalOverlay');
-      if (overlay) overlay.classList.add('hidden');
+      if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.style.display = 'none';
+      }
     }
 
     function updateAuthUserUI() {
@@ -1956,28 +2180,44 @@
     }
 
     function switchAuthTab(tab) {
-      const tabLogin = document.getElementById('authTabLogin');
-      const tabReg = document.getElementById('authTabRegister');
+      const tabLogin = document.getElementById('authTabLoginBtn') || document.getElementById('authTabLogin');
+      const tabReg = document.getElementById('authTabRegisterBtn') || document.getElementById('authTabRegister');
       const formLogin = document.getElementById('authLoginForm');
       const formReg = document.getElementById('authRegisterForm');
 
       if (tab === 'login') {
         if (tabLogin) tabLogin.classList.add('active');
         if (tabReg) tabReg.classList.remove('active');
-        if (formLogin) formLogin.classList.remove('hidden');
-        if (formReg) formReg.classList.add('hidden');
+        if (formLogin) {
+          formLogin.classList.remove('hidden');
+          formLogin.style.display = 'flex';
+        }
+        if (formReg) {
+          formReg.classList.add('hidden');
+          formReg.style.display = 'none';
+        }
+        const userInp = document.getElementById('authLoginUser');
+        if (userInp) userInp.focus();
       } else {
         if (tabReg) tabReg.classList.add('active');
         if (tabLogin) tabLogin.classList.remove('active');
-        if (formReg) formReg.classList.remove('hidden');
-        if (formLogin) formLogin.classList.add('hidden');
+        if (formReg) {
+          formReg.classList.remove('hidden');
+          formReg.style.display = 'flex';
+        }
+        if (formLogin) {
+          formLogin.classList.add('hidden');
+          formLogin.style.display = 'none';
+        }
+        const regUserInp = document.getElementById('authRegUser');
+        if (regUserInp) regUserInp.focus();
       }
     }
 
     function handleAuthLogin(e) {
       if (e && e.preventDefault) e.preventDefault();
-      const userInput = document.getElementById('authUsername');
-      const passInput = document.getElementById('authPassword');
+      const userInput = document.getElementById('authLoginUser') || document.getElementById('authUsername');
+      const passInput = document.getElementById('authLoginPass') || document.getElementById('authPassword');
       const remember = document.getElementById('authRememberMe') ? document.getElementById('authRememberMe').checked : true;
 
       const username = (userInput ? userInput.value : '').trim().toLowerCase();
@@ -1985,7 +2225,7 @@
 
       if (!username || !password) {
         showToast("Please enter both ID/Username and Password!", "warning");
-        return;
+        return false;
       }
 
       const users = getRegisteredUsers();
@@ -1995,53 +2235,64 @@
         setCurrentSession(matched, remember);
         updateAuthUserUI();
         hideAuthPortal();
+
+        if (window.innerWidth >= 900) {
+          showViewerMode();
+        } else {
+          showPhoneMode();
+        }
+
         showToast(`Welcome back, ${matched.name || matched.username}! Access granted.`, "success");
         if (userInput) userInput.value = '';
         if (passInput) passInput.value = '';
       } else {
-        showToast("Invalid credentials! Default: admin / admin123", "error");
+        showToast("Invalid credentials! Default: admin / admin123", "error", 4000);
       }
+      return false;
     }
 
     function handleAuthRegister(e) {
       if (e && e.preventDefault) e.preventDefault();
       const nameInput = document.getElementById('authRegName');
-      const userInput = document.getElementById('authRegUsername');
-      const passInput = document.getElementById('authRegPassword');
+      const userInput = document.getElementById('authRegUser') || document.getElementById('authRegUsername');
+      const roleInput = document.getElementById('authRegRole');
+      const passInput = document.getElementById('authRegPass') || document.getElementById('authRegPassword');
       const confInput = document.getElementById('authRegConfirm');
 
       const name = (nameInput ? nameInput.value : '').trim();
       const username = (userInput ? userInput.value : '').trim().toLowerCase();
+      const role = (roleInput ? roleInput.value : 'Administrator');
       const pass = passInput ? passInput.value : '';
       const conf = confInput ? confInput.value : '';
 
       if (!username || !pass) {
         showToast("Username and Password are required!", "warning");
-        return;
+        return false;
       }
       if (username.length < 3) {
         showToast("Username must be at least 3 characters!", "warning");
-        return;
+        return false;
       }
       if (pass.length < 4) {
         showToast("Password must be at least 4 characters!", "warning");
-        return;
+        return false;
       }
       if (pass !== conf) {
-        showToast("Passwords do not match!", "warning");
-        return;
+        showToast("Passwords do not match! Please verify confirm password.", "warning");
+        return false;
       }
 
       const users = getRegisteredUsers();
       if (users.some(u => u.username.toLowerCase() === username)) {
         showToast("Username already registered! Please choose another.", "warning");
-        return;
+        return false;
       }
 
       const newUser = {
         username: username,
         password: pass,
         name: name || username,
+        role: role,
         createdAt: Date.now()
       };
 
@@ -2051,12 +2302,20 @@
       setCurrentSession(newUser, true);
       updateAuthUserUI();
       hideAuthPortal();
+
+      if (window.innerWidth >= 900) {
+        showViewerMode();
+      } else {
+        showPhoneMode();
+      }
+
       showToast(`Account created successfully! Welcome, ${newUser.name}.`, "success");
 
       if (nameInput) nameInput.value = '';
       if (userInput) userInput.value = '';
       if (passInput) passInput.value = '';
       if (confInput) confInput.value = '';
+      return false;
     }
 
     async function handleAuthLogout() {
@@ -2110,7 +2369,7 @@
           const senders = activeViewerCall.peerConnection.getSenders();
           const vSender = senders.find(s => s.track && s.track.kind === 'video');
           if (vSender) {
-            try { await vSender.replaceTrack(null); } catch(e){}
+            try { await vSender.replaceTrack(null); } catch (e) { }
           }
         }
 
@@ -2130,7 +2389,7 @@
 
           if (viewerPreview) {
             viewerPreview.srcObject = viewerIntercomStream;
-            viewerPreview.play().catch(()=>{});
+            viewerPreview.play().catch(() => { });
           }
           if (viewerPiP) viewerPiP.classList.remove('hidden');
 
@@ -2163,7 +2422,7 @@
             btn.classList.add('emerald');
           }
           showToast("📹 Video Intercom Active! Broadcaster can now see and hear you.", "success");
-        } catch(err) {
+        } catch (err) {
           console.error("Video intercom error:", err);
           if (btn) {
             btn.textContent = "📹 Video Intercom: OFF";
@@ -2206,7 +2465,7 @@
         } else {
           nvrChannels = DEFAULT_NVR_CHANNELS;
         }
-      } catch(e) {
+      } catch (e) {
         nvrChannels = DEFAULT_NVR_CHANNELS;
       }
       renderNVRChannelChips();
@@ -2221,7 +2480,7 @@
           pin: c.pin || ''
         }));
         localStorage.setItem('prscam_nvr_channels', JSON.stringify(sanitized));
-      } catch(e){}
+      } catch (e) { }
     }
 
     function getActiveNVRChannel() {
@@ -2443,7 +2702,7 @@
             call.answer();
             call.on('stream', (stream) => {
               video.srcObject = stream;
-              video.play().catch(()=>{});
+              video.play().catch(() => { });
               status.textContent = "LIVE";
               status.style.color = "var(--emerald)";
               ch.isLive = true;
@@ -2459,7 +2718,7 @@
           ch.isLive = false;
           renderNVRChannelChips();
         });
-      } catch(e) {
+      } catch (e) {
         console.error("Grid tile connect error:", e);
         status.textContent = "OFFLINE";
       }
@@ -2481,7 +2740,7 @@
           const obj = multiGridPeers[id];
           if (obj.video) obj.video.srcObject = null;
           if (obj.peer) obj.peer.destroy();
-        } catch(e){}
+        } catch (e) { }
       });
       multiGridPeers = {};
     }
@@ -2685,7 +2944,7 @@
       try {
         if (el.requestFullscreen) await el.requestFullscreen();
         else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
-      } catch (e) {}
+      } catch (e) { }
       document.getElementById('phonePreviewVideo').style.visibility = 'hidden';
       document.getElementById('stealthCover').classList.remove('hidden');
     }
@@ -2694,7 +2953,7 @@
       try {
         if (document.exitFullscreen) await document.exitFullscreen();
         else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
-      } catch (e) {}
+      } catch (e) { }
       document.getElementById('phonePreviewVideo').style.visibility = 'visible';
       document.getElementById('stealthCover').classList.add('hidden');
     }
@@ -2716,7 +2975,7 @@
           updateBat();
           battery.addEventListener('levelchange', updateBat);
           battery.addEventListener('chargingchange', updateBat);
-        } catch(e){}
+        } catch (e) { }
       }
 
       // 2. Mobile Network Monitoring (5G Ultra / 4G+ / Wi-Fi Smart Detection)
@@ -2816,7 +3075,7 @@
             seconds: phoneRecSeconds,
             timeStr: formatSeconds(phoneRecSeconds)
           });
-        } catch(e){}
+        } catch (e) { }
       }
     }
 
@@ -2866,34 +3125,34 @@
           { w: 3840, h: 2160, fps: 30 },
           { w: 2560, h: 1440, fps: 30 },
           { w: 1920, h: 1080, fps: 30 },
-          { w: 1280, h: 720,  fps: 30 }
+          { w: 1280, h: 720, fps: 30 }
         ];
       } else if (profileKey === '1080') {
         candidateResolutions = [
           { w: 1920, h: 1080, fps: 30 },
-          { w: 1280, h: 720,  fps: 30 },
-          { w: 960,  h: 540,  fps: 30 }
+          { w: 1280, h: 720, fps: 30 },
+          { w: 960, h: 540, fps: 30 }
         ];
       } else if (profileKey === '720') {
         candidateResolutions = [
-          { w: 1280, h: 720,  fps: 30 },
-          { w: 960,  h: 540,  fps: 30 },
-          { w: 640,  h: 480,  fps: 25 }
+          { w: 1280, h: 720, fps: 30 },
+          { w: 960, h: 540, fps: 30 },
+          { w: 640, h: 480, fps: 25 }
         ];
       } else if (profileKey === '480') {
         candidateResolutions = [
-          { w: 854,  h: 480,  fps: 24 },
-          { w: 640,  h: 480,  fps: 24 }
+          { w: 854, h: 480, fps: 24 },
+          { w: 640, h: 480, fps: 24 }
         ];
       } else if (profileKey === '360') {
         candidateResolutions = [
-          { w: 640,  h: 360,  fps: 20 },
-          { w: 480,  h: 360,  fps: 20 }
+          { w: 640, h: 360, fps: 20 },
+          { w: 480, h: 360, fps: 20 }
         ];
       } else {
         candidateResolutions = [
-          { w: 426,  h: 240,  fps: 15 },
-          { w: 320,  h: 240,  fps: 15 }
+          { w: 426, h: 240, fps: 15 },
+          { w: 320, h: 240, fps: 15 }
         ];
       }
 
@@ -2999,7 +3258,7 @@
         document.getElementById('phoneActiveRes').textContent = `${q.name} (${actW}x${actH})`;
 
         if ('wakeLock' in navigator) {
-          try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
+          try { wakeLock = await navigator.wakeLock.request('screen'); } catch (e) { }
         }
 
         const camNameInput = document.getElementById('phoneCameraName');
@@ -3061,12 +3320,12 @@
               if (speaker) {
                 speaker.srcObject = incomingStream;
                 speaker.muted = isPhoneIntercomAudioMuted;
-                speaker.play().catch(()=>{});
+                speaker.play().catch(() => { });
               }
               const incVid = document.getElementById('phoneIncomingIntercomVideo');
               if (incVid) {
                 incVid.srcObject = incomingStream;
-                incVid.play().catch(()=>{});
+                incVid.play().catch(() => { });
               }
             });
 
@@ -3086,7 +3345,7 @@
               const incVid = document.getElementById('phoneIncomingIntercomVideo');
               if (cmd.active && cmd.hasVideo) {
                 if (incCont) incCont.classList.remove('hidden');
-                if (incVid) incVid.play().catch(()=>{});
+                if (incVid) incVid.play().catch(() => { });
                 showToast("📞 Operator Video Intercom Live!", "info");
               } else {
                 if (incCont) incCont.classList.add('hidden');
@@ -3167,7 +3426,7 @@
       dataChannel = null;
 
       if (wakeLock) {
-        try { wakeLock.release(); } catch(e){}
+        try { wakeLock.release(); } catch (e) { }
         wakeLock = null;
       }
 
@@ -3195,7 +3454,7 @@
       const msg = document.getElementById('phoneMsg');
       try {
         if (!localStream) return;
-        
+
         // 1. Acquire new adaptive stream before stopping old track
         const newStream = await getAdaptiveCameraStream(currentQuality);
         const newVideoTrack = newStream.getVideoTracks()[0];
@@ -3299,7 +3558,7 @@
       if (!localStream) return;
 
       if (phoneMediaRecorder && phoneMediaRecorder.state !== 'inactive') {
-        try { phoneMediaRecorder.stop(); } catch(e){}
+        try { phoneMediaRecorder.stop(); } catch (e) { }
       }
 
       phoneRecordedBlobs = [];
@@ -3323,7 +3582,7 @@
         if (phoneRecordedBlobs.length > 0) {
           const blob = new Blob(phoneRecordedBlobs, { type: phoneMediaRecorder.mimeType || 'video/mp4' });
           await saveRecordingToVault(blob, durationSec, currentQuality, 'phone');
-          
+
           // Send updated catalog immediately to viewer if connected
           if (dataChannel && dataChannel.open) {
             sendPhoneClipsCatalog(dataChannel);
@@ -3353,7 +3612,7 @@
       clearTimeout(phoneSegmentTimer);
       clearInterval(phoneRecInterval);
       if (phoneMediaRecorder && phoneMediaRecorder.state !== 'inactive') {
-        try { phoneMediaRecorder.stop(); } catch(e){}
+        try { phoneMediaRecorder.stop(); } catch (e) { }
       }
       updatePhoneRecBadge(false);
     }
@@ -3369,7 +3628,7 @@
           phoneMediaRecorder.onstop = async (e) => {
             try {
               if (origOnStop) await origOnStop(e);
-            } catch(err) {
+            } catch (err) {
               console.warn("onstop error:", err);
             }
             resolve();
@@ -3485,7 +3744,7 @@
       try {
         officeMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         officeMicStream.getAudioTracks().forEach(t => t.enabled = false);
-      } catch (e) {}
+      } catch (e) { }
 
       if (peer) peer.destroy();
       peer = new Peer(peerConfig);
@@ -3600,7 +3859,7 @@
           call.answer(viewerIntercomStream || officeMicStream);
           call.on('stream', (stream) => {
             video.srcObject = stream;
-            video.play().catch(()=>{});
+            video.play().catch(() => { });
 
             video.onresize = () => {
               if (video.videoWidth && video.videoHeight) {
@@ -4211,7 +4470,7 @@
       const player = document.getElementById('nvrMainPlayer');
       const title = document.getElementById('nvrPlayerTitle');
       if (title) title.textContent = `▶ ${meta.dateStr} (${formatSeconds(meta.durationSec)}) • ${meta.sizeFormatted} • ${meta.quality}`;
-      
+
       if (player.src) URL.revokeObjectURL(player.src);
       player.src = URL.createObjectURL(blob);
       player.muted = false;
@@ -4229,7 +4488,7 @@
         playPromise.catch(() => {
           player.muted = true; // Fallback to muted autoplay if browser blocks audio
           player.playbackRate = nvrPlaybackSpeed;
-          player.play().catch(()=>{});
+          player.play().catch(() => { });
         });
       }
 
@@ -4410,7 +4669,7 @@
           playPromise.catch(() => {
             player.muted = true; // Fallback to muted autoplay
             player.playbackRate = phonePlaybackSpeed;
-            player.play().catch(()=>{});
+            player.play().catch(() => { });
           });
         }
 
@@ -4693,7 +4952,7 @@
       if (!video || !video.srcObject) return;
 
       if (viewerMediaRecorder && viewerMediaRecorder.state !== 'inactive') {
-        try { viewerMediaRecorder.stop(); } catch(e){}
+        try { viewerMediaRecorder.stop(); } catch (e) { }
       }
 
       viewerRecordedBlobs = [];
@@ -4751,7 +5010,7 @@
         clearTimeout(viewerAutoRecTimer);
         isViewerAutoLoop = false;
         if (viewerMediaRecorder && viewerMediaRecorder.state !== 'inactive') {
-          try { viewerMediaRecorder.stop(); } catch(e){}
+          try { viewerMediaRecorder.stop(); } catch (e) { }
         }
 
         viewerRecordedBlobs = [];
@@ -4798,7 +5057,7 @@
       isViewerAutoLoop = false;
       isManualRecording = false;
       if (viewerMediaRecorder && viewerMediaRecorder.state !== 'inactive') {
-        try { viewerMediaRecorder.stop(); } catch(e){}
+        try { viewerMediaRecorder.stop(); } catch (e) { }
       }
       updateViewerRecBadge(false);
       const btn = document.getElementById('recBtn');
@@ -4852,12 +5111,13 @@
 
     window.addEventListener('beforeunload', () => {
       if (phoneMediaRecorder && phoneMediaRecorder.state === 'recording') {
-        try { phoneMediaRecorder.stop(); } catch(e){}
+        try { phoneMediaRecorder.stop(); } catch (e) { }
       }
       if (viewerMediaRecorder && viewerMediaRecorder.state === 'recording') {
-        try { viewerMediaRecorder.stop(); } catch(e){}
+        try { viewerMediaRecorder.stop(); } catch (e) { }
       }
     });
   </script>
 </body>
+
 </html>
