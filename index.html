@@ -7,6 +7,9 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#070a10" />
   <title>PRScam • Pro CCTV & NVR Cockpit</title>
+  <!-- HIGH-CONTRAST CCTV CAMERA FAVICONS (SVG & PNG FALLBACK) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='cg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f5ff'/%3E%3Cstop offset='100%25' stop-color='%230077ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23070a10'/%3E%3Crect x='3' y='3' width='58' height='58' rx='12' fill='none' stroke='%2300f5ff' stroke-width='2' stroke-opacity='0.5'/%3E%3Cpath d='M14 24h24a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V28a4 4 0 0 1 4-4z' fill='url(%23cg)'/%3E%3Cpath d='M42 31l12-8v22l-12-8v-6z' fill='url(%23cg)'/%3E%3Ccircle cx='26' cy='36' r='6.5' fill='%23070a10'/%3E%3Ccircle cx='26' cy='36' r='3.5' fill='%2300f5ff'/%3E%3Ccircle cx='48' cy='16' r='4' fill='%23ef4444'/%3E%3C/svg%3E" />
+  <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070a10'/%3E%3Cpath d='M14 24h24a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V28a4 4 0 0 1 4-4z' fill='%2300f5ff'/%3E%3Cpath d='M42 31l12-8v22l-12-8v-6z' fill='%2300f5ff'/%3E%3Ccircle cx='26' cy='36' r='6.5' fill='%23070a10'/%3E%3Ccircle cx='26' cy='36' r='3.5' fill='%2300f5ff'/%3E%3Ccircle cx='48' cy='16' r='4' fill='%23ef4444'/%3E%3C/svg%3E" />
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     :root {
@@ -808,44 +811,57 @@
       transform: scale(1.05);
     }
 
-    /* Adaptive Orientation: Portrait vs Landscape */
+    /* Adaptive Orientation: Portrait (9:16) vs Landscape (16:9) Upright Frames */
     .cctv-stage.feed-portrait {
       width: auto !important;
-      max-width: 480px;
+      max-width: 440px;
+      height: 100%;
+      max-height: 85vh;
       aspect-ratio: 9 / 16;
       margin: 0 auto;
-      border: 2px solid rgba(0, 245, 255, 0.45);
-      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 245, 255, 0.2);
+      border: 2px solid rgba(0, 245, 255, 0.5);
+      border-radius: 16px;
+      box-shadow: 0 14px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 245, 255, 0.25);
+      background: #000;
     }
     .cctv-stage.feed-portrait .cctv-video {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border-radius: 12px;
+      object-fit: contain;
+      border-radius: 14px;
+      transform: none !important;
     }
     .cctv-stage.feed-landscape {
       width: 100% !important;
+      height: 100%;
       aspect-ratio: 16 / 9;
+      margin: 0 auto;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      background: #000;
     }
     .cctv-stage.feed-landscape .cctv-video {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      transform: none !important;
     }
     .cam-grid-tile.tile-portrait {
       aspect-ratio: 9 / 16;
       max-width: 320px;
       margin: 0 auto;
-      border: 1.5px solid rgba(0, 245, 255, 0.35);
+      border: 1.5px solid rgba(0, 245, 255, 0.4);
     }
     .cam-grid-tile.tile-portrait .cam-tile-video {
-      object-fit: cover;
+      object-fit: contain;
+      transform: none !important;
     }
     .cam-grid-tile.tile-landscape {
       aspect-ratio: 16 / 9;
     }
     .cam-grid-tile.tile-landscape .cam-tile-video {
       object-fit: contain;
+      transform: none !important;
     }
 
     /* Custom Designed Toast Notifications */
@@ -1306,6 +1322,7 @@
     }
 
     /* Multi-Grid Layout Container */
+    /* Multi-Grid Layout Container & NVR Grid Variations */
     .cctv-multi-grid {
       flex: 1;
       width: 100%;
@@ -1313,17 +1330,128 @@
       padding: 10px;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
       gap: 10px;
       background: #040810;
       overflow-y: auto;
     }
 
+    .cctv-multi-grid.grid-layout-1 {
+      grid-template-columns: 1fr;
+    }
+    .cctv-multi-grid.grid-layout-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .cctv-multi-grid.grid-layout-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .cctv-multi-grid.grid-layout-6 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .cctv-multi-grid.grid-layout-8 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .cctv-multi-grid.grid-layout-9 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .cctv-multi-grid.grid-layout-16 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
     @media (max-width: 768px) {
-      .cctv-multi-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
+      .cctv-multi-grid.grid-layout-1 {
+        grid-template-columns: 1fr !important;
       }
+      .cctv-multi-grid.grid-layout-2,
+      .cctv-multi-grid.grid-layout-4,
+      .cctv-multi-grid.grid-layout-6,
+      .cctv-multi-grid.grid-layout-8,
+      .cctv-multi-grid.grid-layout-9,
+      .cctv-multi-grid.grid-layout-16 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+      }
+    }
+
+    /* Standby Empty Slot Tile */
+    .cam-grid-tile.standby-tile {
+      background: rgba(10, 16, 28, 0.55);
+      border: 1px dashed rgba(255, 255, 255, 0.16);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      transition: all 0.2s ease;
+    }
+    .cam-grid-tile.standby-tile:hover {
+      border-color: var(--cyan);
+      background: rgba(0, 245, 255, 0.06);
+      transform: translateY(-2px);
+    }
+    .standby-tile-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+      padding: 16px;
+    }
+
+    /* Locked Tile (PIN Required) */
+    .cam-grid-tile.locked-tile {
+      border-color: rgba(239, 68, 68, 0.45);
+    }
+    .tile-locked-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(7, 10, 16, 0.93);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      z-index: 5;
+      padding: 16px;
+      text-align: center;
+    }
+
+    /* NVR Layout Selector Bar */
+    .nvr-layout-selector {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 3px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .nvr-layout-selector span {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--text-dim);
+      margin-right: 2px;
+      letter-spacing: 0.5px;
+    }
+    .grid-layout-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-dim);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .grid-layout-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .grid-layout-btn.active {
+      color: #070a10;
+      background: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
     }
 
     .cam-grid-tile {
@@ -1555,6 +1683,16 @@
             placeholder="Optional PIN (e.g. 1234) for NVR authorization" />
         </div>
 
+        <!-- ORIENTATION SELECTOR (PORTRAIT vs LANDSCAPE) -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top:4px;">
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">ORIENTATION MODE:</span>
+          <select class="dock-select" id="phoneOrientationModeSelect" onchange="setPhoneOrientationMode(this.value)">
+            <option value="auto" selected>🔄 Auto (Sensor Rotate)</option>
+            <option value="portrait">📱 Portrait (9:16 Upright)</option>
+            <option value="landscape">🖥️ Landscape (16:9 Widescreen)</option>
+          </select>
+        </div>
+
         <!-- QUALITY SELECTOR -->
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
           <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">CAMERA SENSOR:</span>
@@ -1745,9 +1883,19 @@
       <div class="channel-chips-list" id="channelChipsContainer">
         <!-- Dynamically populated: CAM 1, CAM 2, etc. -->
       </div>
+      <!-- NVR GRID LAYOUT SELECTOR (1, 2, 4, 6, 8, 16 SCREENS) -->
+      <div class="nvr-layout-selector" id="nvrLayoutSelector" title="NVR Multi-Screen Grid Layout">
+        <span>GRID:</span>
+        <button class="grid-layout-btn" id="gridBtn_1" onclick="setNVRGridLayout(1)" title="1 Screen Focus">1</button>
+        <button class="grid-layout-btn" id="gridBtn_2" onclick="setNVRGridLayout(2)" title="2 Screens (1x2)">2</button>
+        <button class="grid-layout-btn active" id="gridBtn_4" onclick="setNVRGridLayout(4)" title="4 Screens Quad (2x2)">4</button>
+        <button class="grid-layout-btn" id="gridBtn_6" onclick="setNVRGridLayout(6)" title="6 Screens (3x2)">6</button>
+        <button class="grid-layout-btn" id="gridBtn_8" onclick="setNVRGridLayout(8)" title="8 Screens (4x2)">8</button>
+        <button class="grid-layout-btn" id="gridBtn_9" onclick="setNVRGridLayout(9)" title="9 Screens (3x3)">9</button>
+        <button class="grid-layout-btn" id="gridBtn_16" onclick="setNVRGridLayout(16)" title="16 Screens (4x4)">16</button>
+      </div>
       <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
         <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="openAddCameraModal()">➕ Add Camera</button>
-        <button class="btn-act" id="nvrMultiGridToggleBtn" style="padding:4px 8px; font-size:0.72rem;" onclick="toggleNVRViewMode()">⊞ Multi-Grid</button>
         <button class="btn-act" id="gridFullscreenAllBtn" style="padding:4px 8px; font-size:0.72rem;" onclick="toggleGridFullscreen()" title="Fullscreen Multi-Grid">⛶ Fullscreen Grid</button>
       </div>
     </div>
@@ -1755,8 +1903,11 @@
     <!-- VIEW 1: LIVE CCTV FEED STAGE (SINGLE FOCUS) -->
     <div class="cctv-stage" id="stageViewport" ondblclick="toggleFullscreen()">
       <div class="osd-hud">
-        <span class="chip" id="hudOfficeStatus">STANDBY</span>
-        <span class="chip" id="hudActiveCamName" style="color:var(--cyan); font-weight:800;">CAM 1</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span class="chip" id="hudOfficeStatus">STANDBY</span>
+          <span class="chip" id="hudActiveCamName" style="color:var(--cyan); font-weight:800;">CAM 1</span>
+          <button class="btn-act" style="padding:2px 8px; font-size:0.68rem; pointer-events:auto;" onclick="openEditCameraModal(activeChannelId)" title="Edit Active Camera">✏️ Edit</button>
+        </div>
       </div>
 
       <!-- FLOATING EXIT FULLSCREEN BUTTON (FOR MOBILE/DESKTOP FULLSCREEN) -->
@@ -1910,10 +2061,12 @@
 
         <!-- GROUP 2: AUDIO & CAMERA CONTROLS -->
         <div class="action-group">
+          <span class="chip" id="dockActiveCamIndicator" style="color:var(--cyan); font-weight:800; font-size:0.68rem; padding:4px 8px;">Target: CAM 1</span>
           <button class="btn-act active-toggle" id="muteHearBtn" onclick="toggleHear()">🔊 Hear: ON</button>
           <button class="btn-act" id="talkBtn" onclick="toggleTalk()">🎙️ Speak: OFF</button>
           <button class="btn-act" id="videoIntercomBtn" onclick="toggleVideoIntercom()">📹 Video Intercom: OFF</button>
           <button class="btn-act" onclick="remoteFlipCamera()">🔄 Flip</button>
+          <button class="btn-act" onclick="rotateFeedSingle()" title="Rotate Video 90°">📐 Rotate 90°</button>
           <button class="btn-act" onclick="captureZoomedSnapshot()">📸 Snap</button>
         </div>
 
@@ -1943,6 +2096,47 @@
 
   <!-- PHONE SPEAKER (RECEIVES LAPTOP TALK AUDIO) -->
   <audio id="phoneSpeaker" autoplay muted></audio>
+
+  <!-- EDIT CAMERA CHANNEL MODAL (NVR) -->
+  <div id="editCameraModal" class="custom-modal-backdrop hidden">
+    <div class="custom-modal-card">
+      <div class="custom-modal-header">
+        <span style="font-size:1.35rem;">✏️</span>
+        <div class="custom-modal-title">Edit Camera Channel</div>
+      </div>
+      <div class="custom-modal-body" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="editCamOriginalId" />
+        <div>
+          <label class="auth-label">Camera Name / Channel Label</label>
+          <input type="text" id="editCamNameInput" class="auth-input" style="width:100%;" placeholder="e.g. CAM 1 - Office Entrance" />
+        </div>
+        <div>
+          <label class="auth-label">Secret Camera Key / ID</label>
+          <input type="text" id="editCamKeyInput" class="auth-input" style="width:100%;" placeholder="e.g. prs-cam-office" />
+        </div>
+        <div>
+          <label class="auth-label">Camera Password / PIN (Leave empty if no PIN)</label>
+          <input type="password" id="editCamPinInput" class="auth-input" style="width:100%;" placeholder="Enter PIN or leave blank for none" />
+        </div>
+        <div>
+          <label class="auth-label">Requested Resolution</label>
+          <select id="editCamQualitySelect" class="auth-input" style="width:100%;">
+            <option value="1080">1080p Full HD</option>
+            <option value="720">720p HD</option>
+            <option value="480">480p SD</option>
+            <option value="4k">4K Ultra HD</option>
+          </select>
+        </div>
+      </div>
+      <div class="custom-modal-actions" style="display:flex; justify-content:space-between; width:100%;">
+        <button class="btn-act danger" type="button" onclick="deleteCameraFromEditModal()">🗑️ Remove Camera</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-act" type="button" onclick="closeEditCameraModal()">Cancel</button>
+          <button class="btn-act cyan" type="button" onclick="saveEditedCameraChannel()">💾 Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ADD CAMERA CHANNEL MODAL (NVR) -->
   <div id="addCameraModal" class="custom-modal-backdrop hidden">
@@ -1976,6 +2170,75 @@
   </div>
 
   <script>
+    // ==========================================
+    // DYNAMIC HIGH-RES CCTV FAVICON GENERATOR
+    // ==========================================
+    (function initDynamicCCTVFavicon() {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Background
+        ctx.fillStyle = '#070a10';
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(0, 0, 64, 64, 14);
+        else ctx.rect(0, 0, 64, 64);
+        ctx.fill();
+
+        // Cyan outer glow border
+        ctx.strokeStyle = '#00f5ff';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Camera Body
+        const grad = ctx.createLinearGradient(0, 0, 64, 64);
+        grad.addColorStop(0, '#00f5ff');
+        grad.addColorStop(1, '#0077ff');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(14, 23, 24, 20, 4);
+        else ctx.rect(14, 23, 24, 20);
+        ctx.fill();
+
+        // Lens Cone
+        ctx.beginPath();
+        ctx.moveTo(38, 29);
+        ctx.lineTo(50, 21);
+        ctx.lineTo(50, 45);
+        ctx.lineTo(38, 37);
+        ctx.closePath();
+        ctx.fill();
+
+        // Center Lens Eye
+        ctx.fillStyle = '#070a10';
+        ctx.beginPath();
+        ctx.arc(26, 33, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#00f5ff';
+        ctx.beginPath();
+        ctx.arc(26, 33, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Red REC Dot (Blinking Status)
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(48, 16, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        const pngUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('link');
+        link.type = 'image/png';
+        link.rel = 'icon';
+        link.href = pngUrl;
+        document.head.appendChild(link);
+      } catch (e) {
+        console.warn("Favicon generator error:", e);
+      }
+    })();
+
     // ==========================================
     // HARDWARE QUALITY PROFILES & PARAMETERS
     // ==========================================
@@ -2175,6 +2438,76 @@
           if (e.target === backdrop) cleanup(false);
         });
       });
+    }
+
+    function showPromptModal({ title = "Prompt", message = "", placeholder = "", defaultValue = "", confirmText = "Confirm", cancelText = "Cancel", inputType = "password" }) {
+      return new Promise((resolve) => {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'custom-modal-backdrop';
+
+        backdrop.innerHTML = `
+          <div class="custom-modal-card">
+            <div class="custom-modal-header">
+              <span style="font-size:1.35rem;">🔒</span>
+              <div class="custom-modal-title">${escapeHTML(title)}</div>
+            </div>
+            <div class="custom-modal-body" style="display:flex; flex-direction:column; gap:12px;">
+              <p style="margin:0; font-size:0.88rem; color:var(--text-dim); line-height:1.4;">${escapeHTML(message)}</p>
+              <input type="${inputType}" id="promptModalInput" class="auth-input" style="width:100%; box-sizing:border-box; font-size:0.95rem; padding:10px 12px;" placeholder="${escapeHTML(placeholder)}" value="${escapeHTML(defaultValue)}" autocomplete="off" />
+            </div>
+            <div class="custom-modal-actions">
+              <button class="btn-act" id="promptCancelBtn" style="padding:8px 16px;">${escapeHTML(cancelText)}</button>
+              <button class="btn-act cyan" id="promptConfirmBtn" style="padding:8px 18px; font-weight:800;">${escapeHTML(confirmText)}</button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(backdrop);
+        const input = backdrop.querySelector('#promptModalInput');
+        if (input) input.focus();
+
+        const cleanup = (result) => {
+          backdrop.remove();
+          resolve(result);
+        };
+
+        backdrop.querySelector('#promptCancelBtn').addEventListener('click', () => cleanup(null));
+        backdrop.querySelector('#promptConfirmBtn').addEventListener('click', () => {
+          cleanup(input.value);
+        });
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') cleanup(input.value);
+          if (e.key === 'Escape') cleanup(null);
+        });
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) cleanup(null);
+        });
+      });
+    }
+
+    async function promptUserForCameraPIN(channelId, camName, isRetry = false) {
+      const targetCam = nvrChannels.find(c => c.id === channelId);
+      const enteredPin = await showPromptModal({
+        title: `🔒 Camera PIN Required`,
+        message: isRetry 
+          ? `Incorrect PIN for "${camName}". Please enter the correct PIN / Password to connect:`
+          : `Camera "${camName}" is password protected. Enter PIN to connect:`,
+        placeholder: "Enter Camera PIN / Password",
+        confirmText: "Unlock & Connect",
+        cancelText: "Cancel"
+      });
+
+      if (enteredPin !== null) {
+        if (targetCam) {
+          targetCam.pin = enteredPin.trim();
+          saveNVRChannels();
+        }
+        if (dataChannel && dataChannel.open) {
+          dataChannel.send({ type: 'auth_pin', pin: enteredPin.trim() });
+        } else {
+          selectNVRChannel(channelId);
+        }
+      }
     }
 
     // ==========================================
@@ -2582,8 +2915,10 @@
         }
 
         isVideoIntercomActive = true;
+        const activeCam = getActiveNVRChannel();
+        const targetLabel = activeCam ? activeCam.name : 'Target';
         if (btn) {
-          btn.textContent = hasVideo ? "📹 Video Intercom: LIVE" : "🎙️ Voice Intercom: LIVE";
+          btn.textContent = hasVideo ? `📹 Intercom: LIVE ➔ ${targetLabel}` : `🎙️ Voice: LIVE ➔ ${targetLabel}`;
           btn.classList.add('emerald');
         }
         showToast(hasVideo ? "📹 Video Intercom Active! Broadcaster can now see and hear you." : "🎙️ Voice Intercom Active (Webcam was busy, mic connected)!", "success", 4000);
@@ -2651,14 +2986,18 @@
       let html = nvrChannels.map(ch => {
         const isActive = ch.id === activeChannelId;
         const isLive = ch.isLive || (isActive && isOfficeConnected);
+        const editBtn = `<span class="channel-chip-edit" onclick="event.stopPropagation(); openEditCameraModal('${escapeHTML(ch.id)}')" title="Edit Camera Settings">✏️</span>`;
         const deleteBtn = nvrChannels.length > 1
-          ? `<span class="channel-chip-delete" onclick="event.stopPropagation(); removeCameraChannel('${escapeHTML(ch.id)}')">&times;</span>`
+          ? `<span class="channel-chip-delete" onclick="event.stopPropagation(); removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera">&times;</span>`
           : '';
 
         return `
           <button class="channel-chip ${isActive ? 'active' : ''} ${isLive ? 'live-dot' : ''}" onclick="selectNVRChannel('${escapeHTML(ch.id)}')">
             <span>📹 ${escapeHTML(ch.name)}</span>
-            ${deleteBtn}
+            <div style="display:inline-flex; align-items:center; gap:4px; margin-left:4px;">
+              ${editBtn}
+              ${deleteBtn}
+            </div>
           </button>
         `;
       }).join('');
@@ -2722,6 +3061,103 @@
       if (pinInput) pinInput.value = '';
 
       if (modal) modal.classList.remove('hidden');
+    }
+
+    // ==========================================
+    // EDIT & REMOVE CAMERA CHANNEL MODAL
+    // ==========================================
+    function openEditCameraModal(id) {
+      const target = nvrChannels.find(c => c.id === id);
+      if (!target) return;
+
+      const modal = document.getElementById('editCameraModal');
+      const origId = document.getElementById('editCamOriginalId');
+      const nameInput = document.getElementById('editCamNameInput');
+      const keyInput = document.getElementById('editCamKeyInput');
+      const pinInput = document.getElementById('editCamPinInput');
+      const qualSelect = document.getElementById('editCamQualitySelect');
+
+      if (origId) origId.value = target.id;
+      if (nameInput) nameInput.value = target.name;
+      if (keyInput) keyInput.value = target.id;
+      if (pinInput) pinInput.value = target.pin || '';
+      if (qualSelect) qualSelect.value = target.quality || '1080';
+
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeEditCameraModal() {
+      const modal = document.getElementById('editCameraModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function saveEditedCameraChannel() {
+      const origId = document.getElementById('editCamOriginalId').value;
+      const nameInput = document.getElementById('editCamNameInput');
+      const keyInput = document.getElementById('editCamKeyInput');
+      const pinInput = document.getElementById('editCamPinInput');
+      const qualSelect = document.getElementById('editCamQualitySelect');
+
+      const newName = (nameInput ? nameInput.value : '').trim();
+      const newKey = (keyInput ? keyInput.value : '').trim();
+      const newPin = (pinInput ? pinInput.value : '').trim();
+      const newQual = (qualSelect ? qualSelect.value : '1080');
+
+      if (!newName || !newKey) {
+        showToast("Please provide both Camera Name and Secret Key!", "warning");
+        return;
+      }
+
+      const idx = nvrChannels.findIndex(c => c.id === origId);
+      if (idx === -1) return;
+
+      if (newKey !== origId && nvrChannels.some(c => c.id === newKey)) {
+        showToast("Another camera with this Secret Key already exists!", "warning");
+        return;
+      }
+
+      const keyChanged = (newKey !== origId);
+      const pinChanged = (newPin !== (nvrChannels[idx].pin || ''));
+
+      nvrChannels[idx].name = newName;
+      nvrChannels[idx].id = newKey;
+      nvrChannels[idx].pin = newPin;
+      nvrChannels[idx].quality = newQual;
+
+      saveNVRChannels();
+      renderNVRChannelChips();
+      updatePlaybackCameraSelectors();
+      closeEditCameraModal();
+
+      if (activeChannelId === origId) {
+        activeChannelId = newKey;
+        const hudCamName = document.getElementById('hudActiveCamName');
+        if (hudCamName) hudCamName.textContent = newName;
+        const secretInput = document.getElementById('officeSecretKey');
+        if (secretInput) secretInput.value = newKey;
+      }
+
+      if (keyChanged || pinChanged) {
+        if (nvrViewMode === 'grid') {
+          cleanupMultiGridPeers(origId);
+          renderMultiCameraGrid();
+        } else {
+          disconnectOfficeViewer();
+          setTimeout(connectOfficeViewer, 400);
+        }
+      } else {
+        if (nvrViewMode === 'grid') renderMultiCameraGrid();
+      }
+
+      showToast(`Settings for "${newName}" updated successfully!`, "success", 2500);
+    }
+
+    function deleteCameraFromEditModal() {
+      const origId = document.getElementById('editCamOriginalId').value;
+      closeEditCameraModal();
+      if (origId) {
+        removeCameraChannel(origId);
+      }
     }
 
     function closeAddCameraModal() {
@@ -2806,28 +3242,26 @@
       showToast(`Camera channel "${name}" removed.`, "info", 2500);
     }
 
-    function toggleNVRViewMode() {
-      const btn = document.getElementById('nvrMultiGridToggleBtn') || document.getElementById('gridToggleBtn');
+    let selectedNVRGridSize = parseInt(localStorage.getItem('prscam_nvr_grid_size') || '4');
+
+    function setNVRGridLayout(size) {
+      selectedNVRGridSize = size;
+      localStorage.setItem('prscam_nvr_grid_size', size);
+
+      [1, 2, 4, 6, 8, 9, 16].forEach(s => {
+        const btn = document.getElementById(`gridBtn_${s}`);
+        if (btn) btn.classList.toggle('active', s === size);
+      });
+
       const stage = document.getElementById('stageViewport');
       const grid = document.getElementById('multiCameraGrid');
 
-      if (nvrViewMode === 'focus') {
-        nvrViewMode = 'grid';
-        if (btn) btn.innerHTML = "🔲 Focus (1x1)";
-        if (stage) stage.classList.add('hidden');
-        if (grid) grid.classList.remove('hidden');
-        renderMultiCameraGrid();
-        showToast("Switched to Multi-Grid NVR View", "info", 1800);
-      } else {
+      if (size === 1) {
         nvrViewMode = 'focus';
-        if (btn) btn.innerHTML = "⊞ Multi-Grid";
         if (stage) stage.classList.remove('hidden');
         if (grid) grid.classList.add('hidden');
 
-        // Keep active channel stream alive!
-        cleanupMultiGridPeers(activeChannelId);
-
-        // Attach active stream to main stage video immediately!
+        // Keep active channel stream alive on main stage!
         if (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].stream) {
           const mainVid = document.getElementById('officeFeedVideo');
           if (mainVid) {
@@ -2844,8 +3278,24 @@
         } else if (!isOfficeConnected) {
           connectOfficeViewer();
         }
+        showToast("Switched to 1 Screen (1x1 Focus View)", "info", 1800);
+      } else {
+        nvrViewMode = 'grid';
+        if (stage) stage.classList.add('hidden');
+        if (grid) {
+          grid.classList.remove('hidden');
+          grid.className = `cctv-multi-grid grid-layout-${size}`;
+        }
+        renderMultiCameraGrid();
+        showToast(`Switched to ${size}-Screen NVR Grid Layout`, "info", 1800);
+      }
+    }
 
-        showToast("Switched to Single Focus View (1x1)", "info", 1800);
+    function toggleNVRViewMode() {
+      if (nvrViewMode === 'focus') {
+        setNVRGridLayout(selectedNVRGridSize > 1 ? selectedNVRGridSize : 4);
+      } else {
+        setNVRGridLayout(1);
       }
     }
 
@@ -2908,7 +3358,7 @@
       const video = document.getElementById(`tileVideo_${id}`);
       if (status) {
         status.textContent = "OFFLINE";
-        status.style.color = "var(--text-dim)";
+        status.style.color = "var(--danger)";
       }
       if (video) video.srcObject = null;
       const target = nvrChannels.find(c => c.id === id);
@@ -2920,35 +3370,78 @@
       }
     }
 
+    function retryConnectTile(id) {
+      const target = nvrChannels.find(c => c.id === id);
+      if (!target) return;
+      if (multiGridPeers[id]) {
+        try {
+          if (multiGridPeers[id].video) multiGridPeers[id].video.srcObject = null;
+          if (multiGridPeers[id].peer) multiGridPeers[id].peer.destroy();
+        } catch(e){}
+        delete multiGridPeers[id];
+      }
+      const status = document.getElementById(`tileStatus_${id}`);
+      if (status) {
+        status.textContent = "RECONNECTING...";
+        status.style.color = "var(--cyan)";
+      }
+      connectSingleGridTile(target);
+      showToast(`Reconnecting to ${target.name}...`, "info", 1800);
+    }
+
     function renderMultiCameraGrid() {
       const grid = document.getElementById('multiCameraGrid');
       if (!grid) return;
 
+      const size = selectedNVRGridSize || 4;
+      grid.className = `cctv-multi-grid grid-layout-${size}`;
+
       // Keep active channel peer if already live to avoid flicker
       cleanupMultiGridPeers(activeChannelId);
 
-      grid.innerHTML = nvrChannels.map(ch => {
+      let tilesHtml = nvrChannels.map(ch => {
         const isFocused = ch.id === activeChannelId;
+        const rot = ch.rotation || 0;
         return `
-          <div class="cam-grid-tile ${isFocused ? 'focused-tile' : ''}" id="tile_${escapeHTML(ch.id)}" ondblclick="fullscreenTile('${escapeHTML(ch.id)}')">
+          <div class="cam-grid-tile ${isFocused ? 'active-focus' : ''}" id="tile_${escapeHTML(ch.id)}" onclick="focusCameraTile('${escapeHTML(ch.id)}')" ondblclick="fullscreenTile('${escapeHTML(ch.id)}')">
             <div class="cam-tile-header">
               <span>📹 ${escapeHTML(ch.name)}</span>
               <div style="display:flex; align-items:center; gap:6px;">
                 <span class="chip" id="tileStatus_${escapeHTML(ch.id)}" style="font-size:0.65rem;">CONNECTING...</span>
-                <button class="btn-act" style="padding:2px 6px; font-size:0.65rem;" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera Tile">⛶</button>
-                <button class="btn-act danger" style="padding:2px 6px; font-size:0.65rem;" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera Channel">✕</button>
+                <button class="btn-act" style="padding:2px 6px; font-size:0.65rem;" onclick="event.stopPropagation(); openEditCameraModal('${escapeHTML(ch.id)}')" title="Edit Camera Channel">✏️</button>
+                <button class="btn-act" style="padding:2px 6px; font-size:0.65rem;" onclick="event.stopPropagation(); fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera Tile">⛶</button>
+                <button class="btn-act danger" style="padding:2px 6px; font-size:0.65rem;" onclick="event.stopPropagation(); removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera Channel">✕</button>
               </div>
             </div>
-            <button class="btn-fullscreen-exit hidden" id="tileExitBtn_${escapeHTML(ch.id)}" onclick="exitFullscreenTile()" title="Exit Fullscreen">✕ Exit Fullscreen</button>
-            <video class="cam-tile-video" id="tileVideo_${escapeHTML(ch.id)}" autoplay playsinline muted></video>
-            <div class="cam-tile-controls">
-              <button class="btn-act cyan" style="font-size:0.7rem; padding:4px 10px;" onclick="focusCameraTile('${escapeHTML(ch.id)}')">🔍 Focus 1x1</button>
+            <button class="btn-fullscreen-exit hidden" id="tileExitBtn_${escapeHTML(ch.id)}" onclick="event.stopPropagation(); exitFullscreenTile()" title="Exit Fullscreen">✕ Exit Fullscreen</button>
+            <video class="cam-tile-video" id="tileVideo_${escapeHTML(ch.id)}" style="transform:rotate(${rot}deg);" autoplay playsinline muted></video>
+            <div class="cam-tile-controls" onclick="event.stopPropagation();">
+              <button class="btn-act cyan" style="font-size:0.7rem; padding:4px 10px;" onclick="focusCameraTile('${escapeHTML(ch.id)}', true)">🔍 Focus 1x1</button>
               <button class="btn-act" style="font-size:0.7rem; padding:4px 10px;" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')">🔊 Hear</button>
+              <button class="btn-act" style="font-size:0.7rem; padding:4px 10px;" onclick="retryConnectTile('${escapeHTML(ch.id)}')" title="Reconnect Camera">🔄 Retry</button>
               <button class="btn-act" style="font-size:0.7rem; padding:4px 10px;" onclick="fullscreenTile('${escapeHTML(ch.id)}')">⛶ Fullscreen</button>
             </div>
           </div>
         `;
       }).join('');
+
+      // Add standby empty slots up to selected grid size
+      const emptySlotsNeeded = Math.max(0, size - nvrChannels.length);
+      for (let i = 1; i <= emptySlotsNeeded; i++) {
+        const slotNumber = nvrChannels.length + i;
+        tilesHtml += `
+          <div class="cam-grid-tile standby-tile" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Click to Connect Camera to Slot ${slotNumber}">
+            <div class="standby-tile-body">
+              <span style="font-size:2.2rem; opacity:0.35;">📹</span>
+              <div style="font-weight:800; font-size:0.85rem; color:var(--text-dim);">Slot ${slotNumber} (Empty)</div>
+              <div style="font-size:0.72rem; color:rgba(255,255,255,0.4);">No camera connected</div>
+              <button class="btn-act cyan" style="font-size:0.72rem; padding:5px 12px; margin-top:8px;">➕ Add CAM ${slotNumber}</button>
+            </div>
+          </div>
+        `;
+      }
+
+      grid.innerHTML = tilesHtml;
 
       nvrChannels.forEach(ch => {
         connectSingleGridTile(ch);
@@ -2992,10 +3485,41 @@
           });
 
           conn.on('data', (cmd) => {
-            if (cmd && cmd.type === 'auth_error') {
+            if (cmd && cmd.type === 'camera_meta' && cmd.pinRequired && !ch.pin) {
+              status.textContent = "PIN REQUIRED";
+              status.style.color = "var(--danger)";
+              const tile = document.getElementById(`tile_${ch.id}`);
+              if (tile && !tile.querySelector('.tile-locked-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'tile-locked-overlay';
+                overlay.innerHTML = `
+                  <span style="font-size:2rem;">🔒</span>
+                  <div style="font-size:0.85rem; font-weight:800; color:#ef4444;">PIN Protected</div>
+                  <button class="btn-act cyan" style="font-size:0.75rem; padding:6px 14px;" onclick="event.stopPropagation(); promptUserForCameraPIN('${escapeHTML(ch.id)}', '${escapeHTML(ch.name)}')">Enter PIN</button>
+                `;
+                tile.appendChild(overlay);
+              }
+            } else if (cmd && cmd.type === 'auth_error') {
               status.textContent = "AUTH FAILED";
               status.style.color = "var(--danger)";
               showToast(`🔒 ${ch.name}: PIN Authentication Failed!`, "error", 4500);
+              const tile = document.getElementById(`tile_${ch.id}`);
+              if (tile && !tile.querySelector('.tile-locked-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'tile-locked-overlay';
+                overlay.innerHTML = `
+                  <span style="font-size:2rem;">🔒</span>
+                  <div style="font-size:0.85rem; font-weight:800; color:#ef4444;">Incorrect PIN</div>
+                  <button class="btn-act cyan" style="font-size:0.75rem; padding:6px 14px;" onclick="event.stopPropagation(); promptUserForCameraPIN('${escapeHTML(ch.id)}', '${escapeHTML(ch.name)}', true)">Re-enter PIN</button>
+                `;
+                tile.appendChild(overlay);
+              }
+            } else if (cmd && cmd.type === 'auth_success') {
+              const tile = document.getElementById(`tile_${ch.id}`);
+              if (tile) {
+                const ov = tile.querySelector('.tile-locked-overlay');
+                if (ov) ov.remove();
+              }
             } else if (cmd && cmd.type === 'camera_disconnected') {
               handleGridTileDisconnect(ch.id, cmd.reason || "Broadcaster disconnected");
             } else if (cmd && cmd.type === 'camera_orientation') {
@@ -3069,9 +3593,69 @@
       const btn = document.getElementById(`tileAudioBtn_${id}`);
       if (!video || !btn) return;
 
-      video.muted = !video.muted;
-      btn.textContent = video.muted ? "🔇 Muted" : "🔊 Hear: ON";
-      btn.classList.toggle('cyan', !video.muted);
+      const willHear = video.muted; // currently muted, so turning sound ON
+
+      // Mute all other camera videos in multiGrid
+      nvrChannels.forEach(c => {
+        const v = document.getElementById(`tileVideo_${c.id}`);
+        const b = document.getElementById(`tileAudioBtn_${c.id}`);
+        if (v) v.muted = true;
+        if (b) {
+          b.textContent = "🔇 Muted";
+          b.classList.remove('cyan');
+        }
+        c.isMuted = true;
+      });
+
+      const mainVid = document.getElementById('officeFeedVideo');
+      if (mainVid && id !== activeChannelId) mainVid.muted = true;
+
+      if (willHear) {
+        video.muted = false;
+        btn.textContent = "🔊 Hear: ON";
+        btn.classList.add('cyan');
+        const target = nvrChannels.find(c => c.id === id);
+        if (target) target.isMuted = false;
+        focusCameraTile(id, false);
+        showToast(`🔊 Listening to ${target ? target.name : id}`, "info", 1800);
+      } else {
+        showToast("Audio muted.", "info", 1400);
+      }
+    }
+
+    function switchIntercomToTarget(newId) {
+      if (!isVideoIntercomActive || !viewerIntercomStream) return;
+      const target = nvrChannels.find(c => c.id === newId);
+      if (!target) return;
+
+      // Close previous intercom call
+      if (activeIntercomCall) {
+        try { activeIntercomCall.close(); } catch(e){}
+        activeIntercomCall = null;
+      }
+
+      // Notify previous connection
+      if (dataChannel && dataChannel.open) {
+        try { dataChannel.send({ type: 'intercom_state', active: false, hasVideo: false }); } catch(e){}
+      }
+
+      // Establish new call to new target
+      const callerPeer = (multiGridPeers[newId] && multiGridPeers[newId].peer) || peer;
+      const targetConn = (multiGridPeers[newId] && multiGridPeers[newId].conn) || dataChannel;
+
+      if (callerPeer) {
+        activeIntercomCall = callerPeer.call(newId, viewerIntercomStream);
+      }
+      if (targetConn && targetConn.open) {
+        targetConn.send({ type: 'intercom_state', active: true, hasVideo: true });
+        targetConn.send({ type: 'laptop_mic_state', active: true });
+      }
+
+      const btn = document.getElementById('videoIntercomBtn');
+      if (btn) {
+        btn.textContent = `📹 Intercom: LIVE ➔ ${target.name}`;
+      }
+      showToast(`📹 Video Intercom switched to ${target.name}!`, "info", 3000);
     }
 
     function fullscreenTile(id) {
@@ -3141,8 +3725,45 @@
       if (!keepChannelId) multiGridPeers = {};
     }
 
-    function focusCameraTile(id) {
-      selectNVRChannel(id);
+    function focusCameraTile(id, switchView = false) {
+      activeChannelId = id;
+      const target = nvrChannels.find(c => c.id === id);
+      if (!target) return;
+
+      const keyInput = document.getElementById('officeSecretKey');
+      if (keyInput) keyInput.value = target.id;
+
+      const hudCamName = document.getElementById('hudActiveCamName');
+      if (hudCamName) hudCamName.textContent = target.name;
+
+      const dockIndicator = document.getElementById('dockActiveCamIndicator');
+      if (dockIndicator) dockIndicator.textContent = `Target: ${target.name}`;
+
+      const resSelect = document.getElementById('remoteResSelect');
+      if (resSelect && target.quality) resSelect.value = target.quality;
+
+      if (target.rotation !== undefined) {
+        currentFeedRotation = target.rotation;
+        applyTransform();
+      }
+
+      renderNVRChannelChips();
+
+      // Highlight active tile in multi-grid
+      document.querySelectorAll('.cam-grid-tile').forEach(t => t.classList.remove('active-focus'));
+      const activeTile = document.getElementById(`tile_${id}`);
+      if (activeTile) activeTile.classList.add('active-focus');
+
+      // If video intercom is live, seamlessly switch intercom to this camera!
+      if (isVideoIntercomActive) {
+        switchIntercomToTarget(id);
+      }
+
+      if (switchView) {
+        setNVRGridLayout(1);
+      } else {
+        showToast(`Target set to ${target.name}`, "info", 1400);
+      }
     }
 
     // ==========================================
@@ -3495,10 +4116,28 @@
       }
     }
 
+    // BROADCASTER ORIENTATION STATE
+    let phoneOrientationMode = 'auto'; // 'auto' | 'portrait' | 'landscape'
+
+    function setPhoneOrientationMode(mode) {
+      phoneOrientationMode = mode || 'auto';
+      if (isPhoneCameraRunning && localStream) {
+        updateCameraStream();
+        showToast(`Orientation Mode: ${phoneOrientationMode.toUpperCase()}`, 'info', 1800);
+      }
+    }
+
     // ADAPTIVE CAMERA RESOLUTION ENGINE (ORIENTATION AWARE & CASCADE FALLBACK)
     async function getAdaptiveCameraStream(profileKey) {
       const q = QUALITY_PROFILES[profileKey] || QUALITY_PROFILES['1080'];
-      const isPortrait = window.innerHeight > window.innerWidth || window.orientation === 0 || window.orientation === 180;
+      let isPortrait = false;
+      if (phoneOrientationMode === 'portrait') {
+        isPortrait = true;
+      } else if (phoneOrientationMode === 'landscape') {
+        isPortrait = false;
+      } else {
+        isPortrait = window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
+      }
 
       // 1. Detect if running on laptop/desktop or if only 1 webcam is available
       let availableVideoDevices = [];
@@ -3717,13 +4356,14 @@
         });
 
         // Broadcast camera orientation telemetry (Portrait vs Landscape)
+        let lastReportedOrientation = null;
         const sendOrientation = () => {
           const preview = document.getElementById('phonePreviewVideo');
+          const isPort = window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
           const vTrack = localStream ? localStream.getVideoTracks()[0] : null;
           const s = vTrack && vTrack.getSettings ? vTrack.getSettings() : {};
-          const w = s.width || (preview ? preview.videoWidth : 0);
-          const h = s.height || (preview ? preview.videoHeight : 0);
-          const isPort = (h > w);
+          const w = s.width || (preview ? preview.videoWidth : (isPort ? 1080 : 1920));
+          const h = s.height || (preview ? preview.videoHeight : (isPort ? 1920 : 1080));
           if (dataChannel && dataChannel.open) {
             dataChannel.send({
               type: 'camera_orientation',
@@ -3734,42 +4374,66 @@
           }
         };
 
-        window.addEventListener('resize', sendOrientation);
-        window.addEventListener('orientationchange', sendOrientation);
+        const handlePhoneOrientationChange = async () => {
+          const isPort = window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
+          if (lastReportedOrientation !== isPort) {
+            lastReportedOrientation = isPort;
+            if (isPhoneCameraRunning && localStream) {
+              await updateCameraStream();
+              sendOrientation();
+            }
+          }
+        };
+
+        window.addEventListener('resize', () => {
+          sendOrientation();
+          handlePhoneOrientationChange();
+        });
+        window.addEventListener('orientationchange', () => {
+          setTimeout(() => {
+            sendOrientation();
+            handlePhoneOrientationChange();
+          }, 350);
+        });
+        if (screen.orientation) {
+          screen.orientation.addEventListener('change', () => {
+            setTimeout(() => {
+              sendOrientation();
+              handlePhoneOrientationChange();
+            }, 350);
+          });
+        }
+
+        const requiresPin = !!camPin;
+        let isViewerAuthed = !requiresPin;
+        let phoneActiveMediaCall = null;
 
         peer.on('connection', (conn) => {
           dataChannel = conn;
-          msg.textContent = "🔵 Viewer Connected! Streaming live...";
+          msg.textContent = requiresPin ? "🔒 Viewer Connected (Waiting for PIN authorization)..." : "🔵 Viewer Connected! Streaming live...";
 
-          conn.on('open', () => {
-            const track = localStream.getVideoTracks()[0];
-            const ts = track.getSettings ? track.getSettings() : {};
-            conn.send({
-              type: 'quality_ack',
-              quality: currentQuality,
-              actW: ts.width || q.width,
-              actH: ts.height || q.height,
-              name: q.name
-            });
+          let authTimeout = null;
+          if (requiresPin) {
+            authTimeout = setTimeout(() => {
+              if (!isViewerAuthed && conn && conn.open) {
+                conn.send({ type: 'auth_error', message: 'PIN authentication timed out. Access denied.' });
+                setTimeout(() => conn.close(), 300);
+                showToast("🔒 Unauthorized connection attempt timed out.", "warning", 3500);
+              }
+            }, 6000);
+          }
 
-            // Send camera metadata (name & whether PIN is required)
-            conn.send({
-              type: 'camera_meta',
-              name: camName,
-              pinRequired: !!camPin
-            });
-
-            // Send initial battery & network telemetry immediately
+          const startBroadcasterStreamingToViewer = () => {
+            if (!conn || !conn.open || !localStream) return;
             sendPhoneTelemetryOverDataChannel();
-
-            // Send orientation metadata immediately
             sendOrientation();
-
-            // Automatically send latest clips catalog to viewer
             sendPhoneClipsCatalog(conn);
 
-            const call = peer.call(conn.peer, localStream);
-            call.on('stream', (incomingStream) => {
+            if (phoneActiveMediaCall) {
+              try { phoneActiveMediaCall.close(); } catch(e){}
+            }
+            phoneActiveMediaCall = peer.call(conn.peer, localStream);
+            phoneActiveMediaCall.on('stream', (incomingStream) => {
               const speaker = document.getElementById('phoneSpeaker');
               if (speaker) {
                 speaker.srcObject = incomingStream;
@@ -3782,18 +4446,53 @@
                 incVid.play().catch(() => { });
               }
             });
-
             setTimeout(() => applySenderParameters(), 500);
+            msg.textContent = "🟢 Viewer Authenticated & Streaming live!";
+          };
+
+          conn.on('open', () => {
+            const track = localStream ? localStream.getVideoTracks()[0] : null;
+            const ts = track && track.getSettings ? track.getSettings() : {};
+            conn.send({
+              type: 'quality_ack',
+              quality: currentQuality,
+              actW: ts.width || q.width,
+              actH: ts.height || q.height,
+              name: q.name
+            });
+
+            // Send camera metadata (name & whether PIN is required)
+            conn.send({
+              type: 'camera_meta',
+              name: camName,
+              pinRequired: requiresPin
+            });
+
+            if (!requiresPin) {
+              startBroadcasterStreamingToViewer();
+            }
           });
 
           conn.on('data', async (cmd) => {
             if (cmd.type === 'auth_pin') {
-              if (camPin && cmd.pin !== camPin) {
+              if (requiresPin && (!cmd.pin || cmd.pin !== camPin)) {
+                if (authTimeout) clearTimeout(authTimeout);
                 conn.send({ type: 'auth_error', message: 'Incorrect Camera PIN/Password! Access Denied.' });
-                setTimeout(() => conn.close(), 1000);
+                setTimeout(() => {
+                  if (phoneActiveMediaCall) {
+                    try { phoneActiveMediaCall.close(); } catch(e){}
+                    phoneActiveMediaCall = null;
+                  }
+                  conn.close();
+                }, 350);
+                showToast("🔒 Unauthorized viewer blocked (Incorrect PIN)", "warning", 3500);
                 return;
               }
+              if (authTimeout) clearTimeout(authTimeout);
+              isViewerAuthed = true;
               conn.send({ type: 'auth_success', message: 'Camera PIN verified.' });
+              showToast("🔓 Viewer authenticated with correct PIN!", "success", 2500);
+              startBroadcasterStreamingToViewer();
             } else if (cmd.type === 'intercom_state') {
               const incCont = document.getElementById('phoneIncomingIntercomContainer');
               const incVid = document.getElementById('phoneIncomingIntercomVideo');
@@ -3912,13 +4611,50 @@
       try {
         if (!localStream) return;
 
-        // 1. Acquire new adaptive stream before stopping old track
-        const newStream = await getAdaptiveCameraStream(currentQuality);
-        const newVideoTrack = newStream.getVideoTracks()[0];
-        const oldTrack = localStream.getVideoTracks()[0];
+        let isPortrait = false;
+        if (phoneOrientationMode === 'portrait') {
+          isPortrait = true;
+        } else if (phoneOrientationMode === 'landscape') {
+          isPortrait = false;
+        } else {
+          isPortrait = window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
+        }
 
-        // 2. Replace track on all active WebRTC senders
-        if (peer && peer.connections) {
+        const targetW = isPortrait ? Math.min(q.width, q.height) : Math.max(q.width, q.height);
+        const targetH = isPortrait ? Math.max(q.width, q.height) : Math.min(q.width, q.height);
+
+        const oldVideoTrack = localStream.getVideoTracks()[0];
+        let newVideoTrack = null;
+
+        // Method A: Fast in-place applyConstraints (no track recreation)
+        let constraintApplied = false;
+        if (oldVideoTrack && oldVideoTrack.applyConstraints) {
+          try {
+            await oldVideoTrack.applyConstraints({
+              width: { ideal: targetW },
+              height: { ideal: targetH },
+              aspectRatio: isPortrait ? (9 / 16) : (16 / 9)
+            });
+            newVideoTrack = oldVideoTrack;
+            constraintApplied = true;
+          } catch (cErr) {
+            console.warn("applyConstraints not supported, acquiring clean stream:", cErr);
+          }
+        }
+
+        // Method B: Re-acquire stream (MUST stop old track first so mobile hardware releases)
+        if (!constraintApplied) {
+          if (oldVideoTrack) {
+            oldVideoTrack.stop();
+            localStream.removeTrack(oldVideoTrack);
+          }
+          const newStream = await getAdaptiveCameraStream(currentQuality);
+          newVideoTrack = newStream.getVideoTracks()[0];
+          localStream.addTrack(newVideoTrack);
+        }
+
+        // Replace track on all active WebRTC senders
+        if (peer && peer.connections && newVideoTrack) {
           for (let callId in peer.connections) {
             peer.connections[callId].forEach(async (c) => {
               if (c.peerConnection) {
@@ -3932,26 +4668,19 @@
           }
         }
 
-        // 3. Stop old track and attach new track
-        if (oldTrack) {
-          oldTrack.stop();
-          localStream.removeTrack(oldTrack);
-        }
-        localStream.addTrack(newVideoTrack);
-
-        // 4. Update preview video
+        // Update preview video
         const preview = document.getElementById('phonePreviewVideo');
         if (preview) {
           preview.muted = true;
           preview.srcObject = localStream;
         }
 
-        const s = newVideoTrack.getSettings ? newVideoTrack.getSettings() : {};
-        const actW = s.width || q.width;
-        const actH = s.height || q.height;
+        const s = newVideoTrack && newVideoTrack.getSettings ? newVideoTrack.getSettings() : {};
+        const actW = s.width || targetW;
+        const actH = s.height || targetH;
         document.getElementById('phoneActiveRes').textContent = `${q.name} (${actW}x${actH})`;
 
-        // 5. Send ACK to office viewer
+        // Broadcast updated orientation & resolution to viewer
         if (dataChannel && dataChannel.open) {
           dataChannel.send({
             type: 'quality_ack',
@@ -3960,11 +4689,18 @@
             actH: actH,
             name: q.name
           });
+          dataChannel.send({
+            type: 'camera_orientation',
+            isPortrait: isPortrait,
+            width: actW,
+            height: actH
+          });
         }
 
-        msg.textContent = `🟢 Active: ${q.name} (${actW}x${actH})`;
+        msg.textContent = `🟢 Active: ${q.name} (${actW}x${actH}) [${isPortrait ? 'Portrait 📱' : 'Landscape 🖥️'}]`;
       } catch (e) {
         msg.textContent = "Switch error: " + e.message;
+        console.error("updateCameraStream error:", e);
       }
     }
 
@@ -4215,15 +4951,12 @@
         dataChannel = peer.connect(key);
 
         dataChannel.on('open', () => {
-          updateConnectButtonState(true);
+          hud.textContent = "VERIFYING ACCESS...";
+          hud.style.color = "var(--cyan)";
 
           const activeCam = getActiveNVRChannel();
-          if (activeCam) {
-            activeCam.isLive = true;
-            renderNVRChannelChips();
-            if (activeCam.pin) {
-              dataChannel.send({ type: 'auth_pin', pin: activeCam.pin });
-            }
+          if (activeCam && activeCam.pin) {
+            dataChannel.send({ type: 'auth_pin', pin: activeCam.pin });
           }
 
           dataChannel.send({ type: 'laptop_mic_state', active: false });
@@ -4251,14 +4984,52 @@
                   if (hudCamName) hudCamName.textContent = msg.name;
                   renderNVRChannelChips();
                 }
+              } else if (msg.type === 'camera_meta') {
+                const curCam = getActiveNVRChannel();
+                if (curCam && msg.name) {
+                  curCam.name = msg.name;
+                  const hudCamName = document.getElementById('hudActiveCamName');
+                  if (hudCamName) hudCamName.textContent = msg.name;
+                  renderNVRChannelChips();
+                }
+                if (msg.pinRequired) {
+                  if (curCam && curCam.pin) {
+                    dataChannel.send({ type: 'auth_pin', pin: curCam.pin });
+                  } else {
+                    // CAMERA HAS PASSWORD SET BUT VIEWER HAS NO PIN OR WRONG PIN!
+                    video.srcObject = null;
+                    hud.textContent = "🔒 PIN REQUIRED";
+                    hud.style.color = "var(--danger)";
+                    showToast(`🔒 "${msg.name || 'Camera'}" is password protected. Enter PIN to view.`, "warning", 5000);
+                    promptUserForCameraPIN(activeChannelId, msg.name || 'Camera');
+                  }
+                } else {
+                  // No PIN required, safe to mark live!
+                  if (curCam) {
+                    curCam.isLive = true;
+                    renderNVRChannelChips();
+                  }
+                  hud.textContent = "LIVE";
+                  hud.style.color = "var(--emerald)";
+                  updateConnectButtonState(true);
+                }
               } else if (msg.type === 'auth_error') {
                 showToast("🔒 Access Denied: " + (msg.message || "Incorrect Camera PIN!"), "error", 5000);
                 hud.textContent = "AUTH FAILED";
                 hud.style.color = "var(--danger)";
-                disconnectOfficeViewer();
+                const curCam = getActiveNVRChannel();
+                promptUserForCameraPIN(activeChannelId, curCam ? curCam.name : 'Camera', true);
                 return;
               } else if (msg.type === 'auth_success') {
                 showToast("🔓 Camera Authenticated Successfully!", "success", 2000);
+                hud.textContent = "LIVE";
+                hud.style.color = "var(--emerald)";
+                const activeCam = getActiveNVRChannel();
+                if (activeCam) {
+                  activeCam.isLive = true;
+                  renderNVRChannelChips();
+                }
+                updateConnectButtonState(true);
               } else if (msg.type === 'quality_ack') {
                 officeRequestedQuality = msg.quality;
                 const sel = document.getElementById('remoteResSelect');
@@ -4517,9 +5288,36 @@
     // ==========================================
     // 100x SMOOTH ZOOM & PAN ENGINE
     // ==========================================
+    let currentFeedRotation = 0;
+
     function applyTransform() {
       const video = document.getElementById('officeFeedVideo');
-      video.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
+      if (video) {
+        video.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px) rotate(${currentFeedRotation}deg)`;
+      }
+    }
+
+    function rotateFeedSingle() {
+      currentFeedRotation = (currentFeedRotation + 90) % 360;
+      applyTransform();
+      const target = getActiveNVRChannel();
+      if (target) {
+        target.rotation = currentFeedRotation;
+        saveNVRChannels();
+      }
+      showToast(`📐 Video rotated to ${currentFeedRotation}°`, "info", 1800);
+    }
+
+    function rotateTile(id) {
+      const target = nvrChannels.find(c => c.id === id);
+      if (!target) return;
+      target.rotation = ((target.rotation || 0) + 90) % 360;
+      const vid = document.getElementById(`tileVideo_${id}`);
+      if (vid) {
+        vid.style.transform = `rotate(${target.rotation}deg)`;
+      }
+      saveNVRChannels();
+      showToast(`📐 ${target.name} rotated to ${target.rotation}°`, "info", 1800);
     }
 
     function setZoom(val) {
