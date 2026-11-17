@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HomeCam P2P (Private & Free)</title>
-  <!-- PeerJS: Free WebRTC P2P Library -->
+  <title>HomeCam P2P (Live Stream)</title>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #121212; color: #e0e0e0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 1.5rem; }
-    .card { background: #1e1e1e; border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 520px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .card { background: #1e1e1e; border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 540px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
     h1 { font-size: 1.4rem; margin-bottom: 1rem; text-align: center; color: #fff; }
     .tabs { display: flex; gap: 8px; margin-bottom: 1.2rem; }
     button.tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; background: #2c2c2c; color: #aaa; cursor: pointer; font-weight: 600; }
@@ -19,53 +18,62 @@
     input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #262626; color: #fff; font-size: 1rem; }
     .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem; }
     .btn:hover { background: #059669; }
-    .status { margin-top: 10px; font-size: 0.9rem; text-align: center; color: #fbbf24; }
-    video { width: 100%; border-radius: 8px; background: #000; margin-top: 1rem; max-height: 380px; object-fit: cover; }
+    .status { margin-top: 10px; font-size: 0.9rem; text-align: center; color: #fbbf24; font-weight: 500; }
+    video { width: 100%; border-radius: 8px; background: #000; margin-top: 1rem; max-height: 400px; object-fit: contain; }
     .hidden { display: none; }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h1>🏠 HomeCam P2P</h1>
+    <h1>🏠 HomeCam (Direct Push)</h1>
 
     <div class="tabs">
       <button class="tab-btn active" id="tabCamera" onclick="switchMode('camera')">📱 Home Phone (Camera)</button>
       <button class="tab-btn" id="tabViewer" onclick="switchMode('viewer')">💻 Office (Viewer)</button>
     </div>
 
-    <!-- Common Secret ID -->
     <div class="field">
-      <label>Secret Camera Key (Choose any unique private text):</label>
-      <input type="text" id="secretKey" placeholder="e.g. my-home-secret-994" value="my-home-camera-782" />
+      <label>Secret Camera Key:</label>
+      <input type="text" id="secretKey" value="my-home-camera-782" />
     </div>
 
-    <!-- CAMERA MODE SECTION -->
+    <!-- CAMERA SECTION (HOME) -->
     <div id="cameraSection">
       <div class="field">
         <label>Select Camera:</label>
         <select id="cameraFacing">
-          <option value="environment">Back Camera (Recommended)</option>
+          <option value="environment">Back Camera</option>
           <option value="user">Front Camera</option>
         </select>
       </div>
-      <button class="btn" onclick="startBroadcasting()">Start Camera & Broadcast</button>
-      <div class="status" id="cameraStatus">Camera ready to start.</div>
+      <button class="btn" onclick="startCamera()">1. Start Camera & Wait</button>
+      <div class="status" id="cameraStatus">Camera is off.</div>
       <video id="localPreview" autoplay muted playsinline class="hidden"></video>
     </div>
 
-    <!-- VIEWER MODE SECTION -->
+    <!-- VIEWER SECTION (OFFICE) -->
     <div id="viewerSection" class="hidden">
-      <button class="btn" onclick="connectToCamera()">Connect to Home Camera</button>
-      <div class="status" id="viewerStatus">Enter your Secret Key and click Connect.</div>
-      <video id="remoteFeed" autoplay playsinline controls></video>
+      <button class="btn" onclick="connectFromOffice()">Connect to Home Camera</button>
+      <div class="status" id="viewerStatus">Click Connect to receive live feed.</div>
+      <video id="remoteFeed" autoplay muted playsinline controls></video>
     </div>
   </div>
 
   <script>
+    const peerConfig = {
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+          { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' }
+        ]
+      }
+    };
+
     let peer = null;
     let localStream = null;
-    let wakeLock = null;
 
     function switchMode(mode) {
       const isCamera = mode === 'camera';
@@ -75,30 +83,16 @@
       document.getElementById('viewerSection').classList.toggle('hidden', isCamera);
     }
 
-    // Keep the screen awake so the phone doesn't sleep
-    async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-        }
-      } catch (err) {
-        console.warn("WakeLock error:", err);
-      }
-    }
-
-    // --- HOME PHONE: BROADCASTER ---
-    async function startBroadcasting() {
+    // --- HOME PHONE CODE ---
+    async function startCamera() {
       const key = document.getElementById('secretKey').value.trim();
       const statusEl = document.getElementById('cameraStatus');
       const facing = document.getElementById('cameraFacing').value;
 
-      if (!key) return alert("Please enter a Secret Key!");
-
       statusEl.textContent = "Starting camera...";
       try {
-        // Request video with 720p resolution for smooth streaming on Wi-Fi
         localStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+          video: { facingMode: facing, width: { ideal: 640 }, height: { ideal: 480 } },
           audio: false
         });
 
@@ -106,34 +100,28 @@
         preview.srcObject = localStream;
         preview.classList.remove('hidden');
 
-        await requestWakeLock();
+        if ('wakeLock' in navigator) {
+          try { await navigator.wakeLock.request('screen'); } catch(e){}
+        }
 
-        // Connect to PeerJS with the secret key as our unique Peer ID
-        peer = new Peer(key, {
-          config: {
-            iceServers: [
-              { urls: 'stun:stun.l.google.com:19302' },
-              { urls: 'stun:stun1.l.google.com:19302' }
-            ]
-          }
+        if (peer) peer.destroy();
+        peer = new Peer(key, peerConfig);
+
+        peer.on('open', () => {
+          statusEl.textContent = "🟢 Ready! Waiting for Office to connect...";
         });
 
-        peer.on('open', (id) => {
-          statusEl.textContent = `🟢 Broadcasting live! (ID: ${id})`;
-        });
-
-        // When office calls, answer with the video stream
-        peer.on('call', (call) => {
-          statusEl.textContent = "🔵 Viewer connected! Streaming live feed...";
-          call.answer(localStream);
+        // Jab office data connect kare, Phone direct video stream call karega
+        peer.on('connection', (conn) => {
+          statusEl.textContent = "🔵 Office detected! Pushing video stream...";
+          conn.on('open', () => {
+            // Push real camera stream to office
+            peer.call(conn.peer, localStream);
+          });
         });
 
         peer.on('error', (err) => {
-          if (err.type === 'unavailable-id') {
-            statusEl.textContent = "❌ That Key is already in use. Pick a more unique Secret Key.";
-          } else {
-            statusEl.textContent = `Error: ${err.message}`;
-          }
+          statusEl.textContent = `Error: ${err.type || err}`;
         });
 
       } catch (err) {
@@ -141,43 +129,41 @@
       }
     }
 
-    // --- OFFICE: VIEWER ---
-    function connectToCamera() {
+    // --- OFFICE LAPTOP CODE ---
+    function connectFromOffice() {
       const key = document.getElementById('secretKey').value.trim();
       const statusEl = document.getElementById('viewerStatus');
-      if (!key) return alert("Please enter the Secret Key you used on your phone!");
+      const video = document.getElementById('remoteFeed');
 
-      statusEl.textContent = "Connecting to Peer network...";
+      statusEl.textContent = "Connecting to network...";
+      if (peer) peer.destroy();
+      peer = new Peer(peerConfig);
 
-      // Viewer gets a random client ID
-      peer = new Peer({
-        config: {
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' }
-          ]
-        }
-      });
-
-      peer.on('open', () => {
-        statusEl.textContent = `Dialing home camera (${key})...`;
-        // Make call to home phone
-        const call = peer.call(key, new MediaStream());
-
-        call.on('stream', (remoteStream) => {
-          statusEl.textContent = "🟢 Connected! Live feed streaming.";
-          const video = document.getElementById('remoteFeed');
-          video.srcObject = remoteStream;
-          video.play();
+      peer.on('open', (officeId) => {
+        statusEl.textContent = "Handshaking with home phone...";
+        
+        // Step 1: Send ping to phone
+        const conn = peer.connect(key);
+        
+        conn.on('open', () => {
+          statusEl.textContent = "Handshake success! Receiving video...";
         });
 
-        call.on('close', () => {
-          statusEl.textContent = "Feed closed by camera.";
+        // Step 2: Receive the incoming video stream from phone
+        peer.on('call', (call) => {
+          call.answer(); // Answer without sending any camera
+          call.on('stream', (stream) => {
+            statusEl.textContent = "🟢 Live Video Feed Connected!";
+            video.srcObject = stream;
+            video.play().catch(() => {
+              statusEl.textContent = "Click play on video";
+            });
+          });
         });
       });
 
       peer.on('error', (err) => {
-        statusEl.textContent = `Connection failed: Make sure your home phone is broadcasting with key: ${key}`;
+        statusEl.textContent = `Error: ${err.type || err}`;
       });
     }
   </script>
