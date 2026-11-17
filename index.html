@@ -2,98 +2,220 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HomeCam (Mute Controls & Battery Saver)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>HomeCam Pro • Private Surveillance</title>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #121212; color: #e0e0e0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 1.5rem; }
-    .card { background: #1e1e1e; border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 540px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-    h1 { font-size: 1.3rem; margin-bottom: 1rem; text-align: center; color: #fff; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 1.2rem; }
-    button.tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; background: #2c2c2c; color: #aaa; cursor: pointer; font-weight: 600; }
-    button.tab-btn.active { background: #3b82f6; color: #fff; }
-    .field { margin-bottom: 1rem; }
-    label { display: block; font-size: 0.85rem; margin-bottom: 4px; color: #bbb; }
-    input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #262626; color: #fff; font-size: 1rem; }
-    .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem; margin-bottom: 8px; }
-    .btn:hover { opacity: 0.9; }
-    .btn-secondary { background: #374151; }
-    .btn-danger { background: #ef4444; }
-    .btn-dark { background: #111827; border: 1px solid #374151; }
-    .status { margin-top: 10px; font-size: 0.9rem; text-align: center; color: #fbbf24; font-weight: 500; }
-    video { width: 100%; border-radius: 8px; background: #000; margin-top: 1rem; max-height: 380px; object-fit: contain; }
+    :root {
+      --bg: #0b0f17;
+      --card-bg: rgba(22, 28, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; }
+
+    .dashboard {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .header h1 { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
+    .live-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; display: inline-block; box-shadow: 0 0 10px var(--accent); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
+
+    .nav-tabs { display: flex; background: rgba(0, 0, 0, 0.4); padding: 4px; border-radius: 12px; margin-bottom: 1.25rem; }
+    .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; background: transparent; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .tab-btn.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
+
+    .input-group { margin-bottom: 1rem; }
+    .input-group label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+    .input-control { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); color: #fff; font-size: 0.95rem; outline: none; }
+    .input-control:focus { border-color: var(--primary); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-block { width: 100%; margin-bottom: 8px; }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3); }
+    .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
+    .btn-danger { background: var(--danger); color: #fff; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3); }
+    .btn-muted { background: rgba(255,255,255,0.08); color: #e5e7eb; border: 1px solid var(--card-border); }
+    .btn-stealth { background: #000; border: 1px solid #333; color: #aaa; }
+
+    /* VIDEO VIEWER WRAPPER (CCTV HUD) */
+    .video-viewport {
+      position: relative;
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      margin-top: 1rem;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--card-border);
+    }
+    .video-feed {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.15s ease-out;
+      transform-origin: center center;
+    }
+
+    /* HUD OVERLAYS */
+    .hud-overlay { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
+    .hud-badge { background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-family: monospace; border: 1px solid rgba(255,255,255,0.1); }
+    .rec-indicator { display: inline-flex; align-items: center; gap: 6px; color: var(--danger); font-weight: bold; }
+    .rec-dot { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* CONTROLS TOOLBAR */
+    .toolbar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 12px; }
+    
+    .zoom-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.3);
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-top: 10px;
+      border: 1px solid var(--card-border);
+    }
+    .zoom-bar span { font-size: 0.85rem; font-weight: 600; min-width: 55px; }
+    .zoom-bar input[type=range] { flex: 1; accent-color: var(--primary); cursor: pointer; }
+
+    .status-msg { margin-top: 12px; font-size: 0.85rem; text-align: center; color: var(--warning); }
     .hidden { display: none !important; }
 
-    /* AMOLED PURE BLACK OVERLAY (BATTERY SAVER) */
-    #blackScreenOverlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #000000; z-index: 999999; display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-end; padding-bottom: 40px; cursor: pointer;
+    /* COMPLETE PITCH-BLACK FULLSCREEN BATTERY SAVER */
+    #trueBlackOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000000 !important;
+      z-index: 2147483647;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 30px;
+      cursor: pointer;
     }
-    #blackScreenOverlay p { color: #222222; font-size: 0.85rem; user-select: none; }
+    #trueBlackOverlay p { color: #1f1f1f; font-size: 0.8rem; user-select: none; }
   </style>
 </head>
 <body>
 
-  <!-- Fullscreen Battery Saver Overlay -->
-  <div id="blackScreenOverlay" class="hidden" onclick="exitBlackScreen()">
-    <p>⚡ Battery Saver Active • Tap screen to wake</p>
+  <!-- TRUE FULLSCREEN BLACK SCREEN -->
+  <div id="trueBlackOverlay" class="hidden" onclick="exitTrueBlackScreen()">
+    <p>⚡ Battery Saver Active • Tap anywhere to wake</p>
   </div>
 
-  <div class="card">
-    <h1>🏠 HomeCam 2-Way</h1>
+  <div class="dashboard">
+    <div class="header">
+      <h1><span class="live-dot"></span> HomeCam Pro</h1>
+      <span class="hud-badge" id="hudClock">00:00:00</span>
+    </div>
 
-    <div class="tabs">
+    <div class="nav-tabs">
       <button class="tab-btn active" id="tabCamera" onclick="switchMode('camera')">📱 Home Phone (Camera)</button>
       <button class="tab-btn" id="tabViewer" onclick="switchMode('viewer')">💻 Office (Viewer)</button>
     </div>
 
-    <div class="field">
-      <label>Secret Camera Key:</label>
-      <input type="text" id="secretKey" value="my-home-camera-782" />
+    <div class="input-group">
+      <label>Secret Camera Key</label>
+      <input type="text" class="input-control" id="secretKey" value="my-home-camera-782" />
     </div>
 
-    <!-- ================= HOME PHONE SECTION ================= -->
+    <!-- ================= CAMERA SECTION (HOME) ================= -->
     <div id="cameraSection">
-      <div class="field">
-        <label>Select Camera:</label>
-        <select id="cameraFacing">
-          <option value="environment">Back Camera</option>
+      <div class="input-group">
+        <label>Select Lens</label>
+        <select class="input-control" id="cameraFacing">
+          <option value="environment">Back Camera (Main)</option>
           <option value="user">Front Camera</option>
         </select>
       </div>
 
-      <button class="btn" id="startCamBtn" onclick="startCamera()">1. Start Camera + Mic</button>
+      <button class="btn btn-primary btn-block" id="startCamBtn" onclick="startCamera()">🚀 1. Start Camera + Mic</button>
       
-      <!-- Phone Mute Button -->
-      <button class="btn btn-secondary hidden" id="phoneMicBtn" onclick="togglePhoneMic()">🎙️ Phone Mic: ON</button>
-      
-      <!-- Battery Saver Black Screen Button -->
-      <button class="btn btn-dark hidden" id="saverBtn" onclick="enterBlackScreen()">🔋 Black Screen (Battery Saver)</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-muted btn-block hidden" id="phoneMicBtn" onclick="togglePhoneMic()">🎙️ Mic: ON</button>
+        <button class="btn btn-stealth btn-block hidden" id="stealthBtn" onclick="enterTrueBlackScreen()">🔋 100% Black Screen</button>
+      </div>
 
-      <div class="status" id="cameraStatus">Camera is off.</div>
-      <video id="localPreview" autoplay muted playsinline class="hidden"></video>
+      <div class="status-msg" id="cameraStatus">Camera is idle.</div>
+
+      <div class="video-viewport hidden" id="previewContainer">
+        <video class="video-feed" id="localPreview" autoplay muted playsinline></video>
+      </div>
       <audio id="incomingOfficeAudio" autoplay></audio>
     </div>
 
-    <!-- ================= OFFICE LAPTOP SECTION ================= -->
+    <!-- ================= VIEWER SECTION (OFFICE) ================= -->
     <div id="viewerSection" class="hidden">
-      <button class="btn" onclick="connectFromOffice()">Connect to Home Camera</button>
+      <button class="btn btn-accent btn-block" onclick="connectFromOffice()">⚡ Connect Live Feed</button>
 
-      <div style="display: flex; gap: 8px;">
-        <!-- Office Speaker Mute -->
-        <button class="btn btn-secondary hidden" id="speakerBtn" onclick="toggleHomeAudio()">🔊 Home Sound: ON</button>
-        <!-- Office Mic to Home -->
-        <button class="btn btn-danger hidden" id="officeMicBtn" onclick="toggleOfficeMic()">🎙️ Mic to Home: OFF</button>
+      <!-- Video Feed & HUD -->
+      <div class="video-viewport">
+        <div class="hud-overlay">
+          <span class="hud-badge" id="cctvStatusBadge">STATUS: STANDBY</span>
+          <span class="hud-badge hidden rec-indicator" id="recBadge"><span class="rec-dot"></span> REC <span id="recTimer">00:00</span></span>
+        </div>
+        <video class="video-feed" id="remoteFeed" autoplay playsinline></video>
       </div>
 
-      <div class="status" id="viewerStatus">Click Connect to start video & sound.</div>
-      <video id="remoteFeed" autoplay playsinline controls></video>
+      <!-- Zoom Bar -->
+      <div class="zoom-bar">
+        <span>🔍 Zoom: <b id="zoomLabel">1.0x</b></span>
+        <button class="btn btn-muted" style="padding: 4px 10px;" onclick="adjustZoom(-0.25)">-</button>
+        <input type="range" id="zoomSlider" min="1" max="4" step="0.1" value="1" oninput="setZoom(this.value)" />
+        <button class="btn btn-muted" style="padding: 4px 10px;" onclick="adjustZoom(0.25)">+</button>
+        <button class="btn btn-muted" style="padding: 4px 8px; font-size: 0.75rem;" onclick="setZoom(1)">Reset</button>
+      </div>
+
+      <!-- Controls Toolbar -->
+      <div class="toolbar-grid">
+        <button class="btn btn-danger" id="recBtn" onclick="toggleRecording()">🔴 Start Record</button>
+        <button class="btn btn-muted" onclick="takeSnapshot()">📸 Snapshot</button>
+        <button class="btn btn-muted" id="speakerBtn" onclick="toggleHomeAudio()">🔊 Hear: ON</button>
+        <button class="btn btn-muted" id="officeMicBtn" onclick="toggleOfficeMic()">🎙️ Talk: OFF</button>
+      </div>
+
+      <div class="status-msg" id="viewerStatus">Click 'Connect Live Feed' to view.</div>
     </div>
   </div>
 
   <script>
+    // Live Clock HUD
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('hudClock').textContent = now.toLocaleTimeString();
+    }, 1000);
+
     const peerConfig = {
       config: {
         iceServers: [
@@ -112,6 +234,16 @@
     let officeMicActive = false;
     let homeAudioActive = true;
 
+    // Zoom state
+    let currentZoom = 1.0;
+
+    // Recorder state
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let isRecording = false;
+    let recordTimerInterval = null;
+    let recordSeconds = 0;
+
     function switchMode(mode) {
       const isCamera = mode === 'camera';
       document.getElementById('tabCamera').classList.toggle('active', isCamera);
@@ -120,33 +252,47 @@
       document.getElementById('viewerSection').classList.toggle('hidden', isCamera);
     }
 
-    // --- BATTERY SAVER (BLACK SCREEN) ---
-    function enterBlackScreen() {
-      document.getElementById('blackScreenOverlay').classList.remove('hidden');
+    // ==========================================
+    // TRUE FULLSCREEN PITCH BLACK (STATUS BAR HIDER)
+    // ==========================================
+    async function enterTrueBlackScreen() {
+      const el = document.documentElement;
+      try {
+        if (el.requestFullscreen) await el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
+      } catch (err) {
+        console.warn("Fullscreen request error:", err);
+      }
+      document.getElementById('trueBlackOverlay').classList.remove('hidden');
     }
-    function exitBlackScreen() {
-      document.getElementById('blackScreenOverlay').classList.add('hidden');
+
+    async function exitTrueBlackScreen() {
+      try {
+        if (document.exitFullscreen) await document.exitFullscreen();
+        else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+      } catch (err) {}
+      document.getElementById('trueBlackOverlay').classList.add('hidden');
     }
 
     // ==========================================
-    // 1. HOME PHONE CONTROLS
+    // 1. HOME PHONE LOGIC
     // ==========================================
     async function startCamera() {
       const key = document.getElementById('secretKey').value.trim();
       const statusEl = document.getElementById('cameraStatus');
       const facing = document.getElementById('cameraFacing').value;
 
-      statusEl.textContent = "Starting camera & mic...";
+      statusEl.textContent = "Starting camera & sensors...";
       try {
         localStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facing, width: { ideal: 640 }, height: { ideal: 480 } },
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+          video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: { echoCancellation: true, noiseSuppression: true }
         });
 
         document.getElementById('localPreview').srcObject = localStream;
-        document.getElementById('localPreview').classList.remove('hidden');
+        document.getElementById('previewContainer').classList.remove('hidden');
         document.getElementById('phoneMicBtn').classList.remove('hidden');
-        document.getElementById('saverBtn').classList.remove('hidden');
+        document.getElementById('stealthBtn').classList.remove('hidden');
 
         if ('wakeLock' in navigator) {
           try { await navigator.wakeLock.request('screen'); } catch(e){}
@@ -156,11 +302,11 @@
         peer = new Peer(key, peerConfig);
 
         peer.on('open', () => {
-          statusEl.textContent = "🟢 Ready! Turn on 'Battery Saver' & leave phone.";
+          statusEl.textContent = "🟢 Broadcaster Ready! Tap '100% Black Screen' & place phone.";
         });
 
         peer.on('connection', (conn) => {
-          statusEl.textContent = "🔵 Office connected! Streaming...";
+          statusEl.textContent = "🔵 Office Connected! Broadcasting live feed...";
           conn.on('open', () => {
             const call = peer.call(conn.peer, localStream);
             call.on('stream', (officeAudio) => {
@@ -177,82 +323,186 @@
       }
     }
 
-    // Toggle Phone's Mic
     function togglePhoneMic() {
       if (!localStream) return;
       phoneMicActive = !phoneMicActive;
-      localStream.getAudioTracks().forEach(track => track.enabled = phoneMicActive);
+      localStream.getAudioTracks().forEach(t => t.enabled = phoneMicActive);
       const btn = document.getElementById('phoneMicBtn');
-      btn.textContent = phoneMicActive ? "🎙️ Phone Mic: ON" : "🔇 Phone Mic: MUTED";
-      btn.style.background = phoneMicActive ? "#374151" : "#ef4444";
+      btn.textContent = phoneMicActive ? "🎙️ Mic: ON" : "🔇 Mic: OFF";
+      btn.classList.toggle('btn-danger', !phoneMicActive);
     }
 
     // ==========================================
-    // 2. OFFICE LAPTOP CONTROLS
+    // 2. OFFICE VIEWER LOGIC
     // ==========================================
     async function connectFromOffice() {
       const key = document.getElementById('secretKey').value.trim();
       const statusEl = document.getElementById('viewerStatus');
       const video = document.getElementById('remoteFeed');
+      const badge = document.getElementById('cctvStatusBadge');
 
-      statusEl.textContent = "Preparing mic & connection...";
-
+      statusEl.textContent = "Accessing audio & connecting...";
       try {
-        officeMicStream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true }
-        });
-        officeMicStream.getAudioTracks()[0].enabled = false; // default mute
-        document.getElementById('officeMicBtn').classList.remove('hidden');
+        officeMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        officeMicStream.getAudioTracks()[0].enabled = false;
       } catch (e) {
-        console.warn("No office mic found", e);
+        console.warn("Office mic optional");
       }
 
       if (peer) peer.destroy();
       peer = new Peer(peerConfig);
 
       peer.on('open', () => {
-        statusEl.textContent = "Connecting to phone...";
+        statusEl.textContent = "Dialing Home Camera...";
+        badge.textContent = "STATUS: DIALING";
         peer.connect(key);
 
         peer.on('call', (call) => {
           call.answer(officeMicStream);
           call.on('stream', (homeStream) => {
-            statusEl.textContent = "🟢 Live Video & Sound Connected!";
+            statusEl.textContent = "🟢 Live Feed Connected";
+            badge.textContent = "STATUS: LIVE (720P)";
+            badge.style.color = "var(--accent)";
             video.srcObject = homeStream;
             video.play();
-            document.getElementById('speakerBtn').classList.remove('hidden');
           });
         });
       });
 
-      peer.on('error', (err) => { statusEl.textContent = `Error: ${err.type || err}`; });
+      peer.on('error', (err) => {
+        statusEl.textContent = `Error: ${err.type || err}`;
+        badge.textContent = "STATUS: ERROR";
+      });
     }
 
-    // Mute/Unmute Home Sound at Office
+    // ==========================================
+    // ZOOM CONTROLS
+    // ==========================================
+    function setZoom(val) {
+      currentZoom = Math.max(1, Math.min(4, parseFloat(val)));
+      document.getElementById('remoteFeed').style.transform = `scale(${currentZoom})`;
+      document.getElementById('zoomSlider').value = currentZoom;
+      document.getElementById('zoomLabel').textContent = currentZoom.toFixed(1) + 'x';
+    }
+
+    function adjustZoom(delta) {
+      setZoom(currentZoom + delta);
+    }
+
+    // ==========================================
+    // VIDEO RECORDING (FROM OFFICE)
+    // ==========================================
+    function toggleRecording() {
+      const video = document.getElementById('remoteFeed');
+      const recBtn = document.getElementById('recBtn');
+      const recBadge = document.getElementById('recBadge');
+
+      if (!video.srcObject) return alert("Please connect live feed before recording!");
+
+      if (!isRecording) {
+        // START RECORDING
+        recordedChunks = [];
+        const stream = video.srcObject;
+        
+        let options = { mimeType: 'video/webm;codecs=vp8,opus' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+          options = { mimeType: 'video/mp4' };
+          if (!MediaRecorder.isTypeSupported(options.mimeType)) options = {};
+        }
+
+        try {
+          mediaRecorder = new MediaRecorder(stream, options);
+        } catch (e) {
+          return alert("Recording not supported on this browser: " + e.message);
+        }
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) recordedChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = saveRecordingFile;
+
+        mediaRecorder.start(1000); // 1-second chunks
+        isRecording = true;
+        recBtn.textContent = "⏹️ Stop & Save";
+        recBtn.classList.remove('btn-danger');
+        recBtn.classList.add('btn-primary');
+        recBadge.classList.remove('hidden');
+
+        // Timer
+        recordSeconds = 0;
+        recordTimerInterval = setInterval(() => {
+          recordSeconds++;
+          const mins = String(Math.floor(recordSeconds / 60)).padStart(2, '0');
+          const secs = String(recordSeconds % 60).padStart(2, '0');
+          document.getElementById('recTimer').textContent = `${mins}:${secs}`;
+        }, 1000);
+
+      } else {
+        // STOP RECORDING
+        mediaRecorder.stop();
+        isRecording = false;
+        clearInterval(recordTimerInterval);
+        recBtn.textContent = "🔴 Start Record";
+        recBtn.classList.remove('btn-primary');
+        recBtn.classList.add('btn-danger');
+        recBadge.classList.add('hidden');
+      }
+    }
+
+    function saveRecordingFile() {
+      const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/mp4' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      a.download = `HomeCam_Recording_${timestamp}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+    }
+
+    // ==========================================
+    // SNAPSHOT / PHOTO
+    // ==========================================
+    function takeSnapshot() {
+      const video = document.getElementById('remoteFeed');
+      if (!video.videoWidth) return alert("Video feed not available!");
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const link = document.createElement('a');
+      link.download = `HomeCam_Snapshot_${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // ==========================================
+    // AUDIO CONTROLS
+    // ==========================================
     function toggleHomeAudio() {
       const video = document.getElementById('remoteFeed');
       const btn = document.getElementById('speakerBtn');
       homeAudioActive = !homeAudioActive;
       video.muted = !homeAudioActive;
-      btn.textContent = homeAudioActive ? "🔊 Home Sound: ON" : "🔇 Home Sound: MUTED";
-      btn.style.background = homeAudioActive ? "#374151" : "#ef4444";
+      btn.textContent = homeAudioActive ? "🔊 Hear: ON" : "🔇 Hear: OFF";
     }
 
-    // Speak to Home from Office
     function toggleOfficeMic() {
       const btn = document.getElementById('officeMicBtn');
-      if (!officeMicStream) return alert("Office microphone not found.");
-
+      if (!officeMicStream) return alert("Office microphone not detected.");
       officeMicActive = !officeMicActive;
       officeMicStream.getAudioTracks()[0].enabled = officeMicActive;
-
-      if (officeMicActive) {
-        btn.textContent = "📢 Mic to Home: LIVE";
-        btn.style.background = "#10b981";
-      } else {
-        btn.textContent = "🎙️ Mic to Home: OFF";
-        btn.style.background = "#ef4444";
-      }
+      btn.textContent = officeMicActive ? "📢 Talk: LIVE" : "🎙️ Talk: OFF";
+      btn.classList.toggle('btn-accent', officeMicActive);
     }
   </script>
 </body>
