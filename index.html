@@ -761,11 +761,23 @@
     }
 
     .cctv-stage:fullscreen,
-    .nvr-player-box:fullscreen {
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0;
-      border: none;
+    .cctv-stage:-webkit-full-screen,
+    .nvr-player-box:fullscreen,
+    .nvr-player-box:-webkit-full-screen,
+    .cam-grid-tile:fullscreen,
+    .cam-grid-tile:-webkit-full-screen,
+    .cctv-multi-grid:fullscreen,
+    .cctv-multi-grid:-webkit-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+      border-radius: 0 !important;
+      border: none !important;
+      background: #000 !important;
+    }
+    .cam-grid-tile:fullscreen .cam-tile-video,
+    .cam-grid-tile:-webkit-full-screen .cam-tile-video {
+      height: calc(100vh - 45px) !important;
+      object-fit: contain !important;
     }
 
     /* Custom Designed Toast Notifications */
@@ -1666,10 +1678,9 @@
         <!-- Dynamically populated: CAM 1, CAM 2, etc. -->
       </div>
       <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-        <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="openAddCameraModal()">➕ Add
-          Camera</button>
-        <button class="btn-act" id="gridToggleBtn" style="padding:4px 8px; font-size:0.72rem;"
-          onclick="toggleNVRViewMode()">⊞ Multi-Grid</button>
+        <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="openAddCameraModal()">➕ Add Camera</button>
+        <button class="btn-act" id="nvrMultiGridToggleBtn" style="padding:4px 8px; font-size:0.72rem;" onclick="toggleNVRViewMode()">⊞ Multi-Grid</button>
+        <button class="btn-act" id="gridFullscreenAllBtn" style="padding:4px 8px; font-size:0.72rem;" onclick="toggleGridFullscreen()" title="Fullscreen Multi-Grid">⛶ Fullscreen Grid</button>
       </div>
     </div>
 
@@ -1690,7 +1701,7 @@
         <video id="viewerIntercomPreview" autoplay muted playsinline></video>
       </div>
 
-      <video class="cctv-video" id="officeFeedVideo" autoplay playsinline></video>
+      <video class="cctv-video" id="officeFeedVideo" autoplay playsinline muted></video>
     </div>
 
     <!-- VIEW 1B: MULTI-CAMERA NVR GRID -->
@@ -2341,6 +2352,35 @@
     }
 
     // ==========================================
+    // UNIFIED CONNECT BUTTON & STATUS SYNC
+    // ==========================================
+    function updateConnectButtonState(connected) {
+      isOfficeConnected = !!connected;
+      const connBtn = document.getElementById('officeConnectBtn');
+      const hud = document.getElementById('hudOfficeStatus');
+      if (connBtn) {
+        if (connected) {
+          connBtn.disabled = false;
+          connBtn.className = "btn-act danger";
+          connBtn.textContent = "🔌 Disconnect";
+        } else {
+          connBtn.disabled = false;
+          connBtn.className = "btn-act cyan";
+          connBtn.textContent = "⚡ Connect Live";
+        }
+      }
+      if (hud) {
+        if (connected) {
+          hud.textContent = "LIVE P2P";
+          hud.style.color = "var(--cyan)";
+        } else {
+          hud.textContent = "STANDBY";
+          hud.style.color = "var(--text-dim)";
+        }
+      }
+    }
+
+    // ==========================================
     // TWO-WAY VIDEO & VOICE INTERCOM ENGINE
     // ==========================================
     async function toggleVideoIntercom() {
@@ -2348,8 +2388,9 @@
       const viewerPiP = document.getElementById('viewerIntercomPiP');
       const viewerPreview = document.getElementById('viewerIntercomPreview');
 
-      if (!isOfficeConnected) {
-        showToast("Please connect to a camera feed first before starting Video Intercom!", "warning");
+      const isAnyLive = isOfficeConnected || Object.values(multiGridPeers).some(p => p && p.stream);
+      if (!isAnyLive) {
+        showToast("Please connect to a live camera feed first before starting Video Intercom!", "warning");
         return;
       }
 
@@ -2361,12 +2402,14 @@
         if (viewerPreview) viewerPreview.srcObject = null;
         if (viewerPiP) viewerPiP.classList.add('hidden');
 
-        if (dataChannel && dataChannel.open) {
-          dataChannel.send({ type: 'intercom_state', active: false, hasVideo: false });
+        const activeConn = dataChannel || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].conn);
+        if (activeConn && activeConn.open) {
+          activeConn.send({ type: 'intercom_state', active: false, hasVideo: false });
         }
 
-        if (activeViewerCall && activeViewerCall.peerConnection) {
-          const senders = activeViewerCall.peerConnection.getSenders();
+        const activeCall = activeViewerCall || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].call);
+        if (activeCall && activeCall.peerConnection) {
+          const senders = activeCall.peerConnection.getSenders();
           const vSender = senders.find(s => s.track && s.track.kind === 'video');
           if (vSender) {
             try { await vSender.replaceTrack(null); } catch (e) { }
@@ -2380,56 +2423,109 @@
         }
         showToast("Video Intercom turned OFF.", "info");
       } else {
+        if (btn) btn.textContent = "⏳ Accessing Cam/Mic...";
+
+        let stream = null;
+        let hasVideo = false;
+
+        // Progressive acquisition with robust fallbacks
         try {
-          if (btn) btn.textContent = "⏳ Starting Intercom...";
-          viewerIntercomStream = await navigator.mediaDevices.getUserMedia({
-            video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+          // Attempt 1: Standard video + audio
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 640 }, height: { ideal: 480 } },
             audio: true
           });
-
-          if (viewerPreview) {
-            viewerPreview.srcObject = viewerIntercomStream;
-            viewerPreview.play().catch(() => { });
+          hasVideo = true;
+        } catch (e1) {
+          console.warn("Intercom Attempt 1 (ideal video+audio) failed:", e1);
+          try {
+            // Attempt 2: Relaxed video only
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            hasVideo = true;
+            if (officeMicStream) {
+              officeMicStream.getAudioTracks().forEach(t => stream.addTrack(t));
+            }
+          } catch (e2) {
+            console.warn("Intercom Attempt 2 (video only) failed:", e2);
+            // Attempt 3: Fallback to Voice/Audio Intercom
+            try {
+              if (officeMicStream && officeMicStream.getAudioTracks().length > 0) {
+                stream = officeMicStream;
+              } else {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+              }
+              hasVideo = false;
+            } catch (e3) {
+              console.error("Intercom Attempt 3 (audio only) failed:", e3);
+              if (btn) {
+                btn.textContent = "📹 Video Intercom: OFF";
+                btn.classList.remove('emerald');
+              }
+              if (e1.name === 'NotAllowedError' || e2.name === 'NotAllowedError') {
+                showToast("⚠️ Camera/Microphone blocked by browser. Click the lock 🔒 icon in the URL bar to allow.", "error", 5500);
+              } else if (e1.name === 'NotReadableError' || e2.name === 'NotReadableError') {
+                showToast("⚠️ Webcam is currently in use by another tab or process (Phone Broadcaster).", "warning", 5500);
+              } else {
+                showToast("Intercom device error: " + (e1.message || "Hardware unavailable"), "error", 4500);
+              }
+              return;
+            }
           }
-          if (viewerPiP) viewerPiP.classList.remove('hidden');
+        }
 
+        viewerIntercomStream = stream;
+
+        if (viewerPreview && hasVideo) {
+          viewerPreview.srcObject = viewerIntercomStream;
+          viewerPreview.play().catch(() => {});
+        }
+        if (viewerPiP) {
+          viewerPiP.classList.remove('hidden');
+          const titleSpan = viewerPiP.querySelector('span');
+          if (titleSpan) {
+            titleSpan.innerHTML = hasVideo ? "📹 You (Live Video)" : "🎙️ You (Voice Only)";
+          }
+        }
+
+        const activeCall = activeViewerCall || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].call);
+        if (activeCall && activeCall.peerConnection) {
+          const pc = activeCall.peerConnection;
+          const senders = pc.getSenders();
           const vTrack = viewerIntercomStream.getVideoTracks()[0];
           const aTrack = viewerIntercomStream.getAudioTracks()[0];
 
-          if (activeViewerCall && activeViewerCall.peerConnection) {
-            const senders = activeViewerCall.peerConnection.getSenders();
+          if (vTrack) {
             const vSender = senders.find(s => s.track && s.track.kind === 'video');
-            if (vSender && vTrack) {
+            if (vSender) {
               await vSender.replaceTrack(vTrack);
-            } else if (vTrack) {
-              activeViewerCall.peerConnection.addTrack(vTrack, viewerIntercomStream);
+            } else {
+              try { pc.addTrack(vTrack, viewerIntercomStream); } catch(e){}
             }
+          }
 
+          if (aTrack) {
+            aTrack.enabled = true;
             const aSender = senders.find(s => s.track && s.track.kind === 'audio');
-            if (aSender && aTrack) {
+            if (aSender) {
               await aSender.replaceTrack(aTrack);
+            } else {
+              try { pc.addTrack(aTrack, viewerIntercomStream); } catch(e){}
             }
           }
-
-          if (dataChannel && dataChannel.open) {
-            dataChannel.send({ type: 'intercom_state', active: true, hasVideo: true });
-            dataChannel.send({ type: 'laptop_mic_state', active: true });
-          }
-
-          isVideoIntercomActive = true;
-          if (btn) {
-            btn.textContent = "📹 Video Intercom: LIVE";
-            btn.classList.add('emerald');
-          }
-          showToast("📹 Video Intercom Active! Broadcaster can now see and hear you.", "success");
-        } catch (err) {
-          console.error("Video intercom error:", err);
-          if (btn) {
-            btn.textContent = "📹 Video Intercom: OFF";
-            btn.classList.remove('emerald');
-          }
-          showToast("Camera/Microphone permission error: " + err.message, "error", 4000);
         }
+
+        const activeConn = dataChannel || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].conn);
+        if (activeConn && activeConn.open) {
+          activeConn.send({ type: 'intercom_state', active: true, hasVideo: hasVideo });
+          activeConn.send({ type: 'laptop_mic_state', active: true });
+        }
+
+        isVideoIntercomActive = true;
+        if (btn) {
+          btn.textContent = hasVideo ? "📹 Video Intercom: LIVE" : "🎙️ Voice Intercom: LIVE";
+          btn.classList.add('emerald');
+        }
+        showToast(hasVideo ? "📹 Video Intercom Active! Broadcaster can now see and hear you." : "🎙️ Voice Intercom Active (Webcam was busy, mic connected)!", "success", 4000);
       }
     }
 
@@ -2510,8 +2606,6 @@
     }
 
     async function selectNVRChannel(id) {
-      if (activeChannelId === id && isOfficeConnected) return;
-
       const target = nvrChannels.find(c => c.id === id);
       if (!target) return;
 
@@ -2528,13 +2622,30 @@
         toggleNVRViewMode();
       }
 
-      if (isOfficeConnected) {
-        disconnectOfficeViewer();
-        setTimeout(() => {
-          connectOfficeViewer();
-        }, 400);
+      // Check if this channel is already streaming in multiGridPeers
+      if (multiGridPeers[id] && multiGridPeers[id].stream) {
+        const video = document.getElementById('officeFeedVideo');
+        if (video) {
+          video.srcObject = multiGridPeers[id].stream;
+          video.muted = !isHearActive;
+          video.play().catch(() => {
+            video.muted = true;
+            video.play().catch(() => {});
+          });
+        }
+        if (multiGridPeers[id].call) activeViewerCall = multiGridPeers[id].call;
+        if (multiGridPeers[id].conn) dataChannel = multiGridPeers[id].conn;
+        updateConnectButtonState(true);
+        showToast(`Switched focus to ${target.name}`, "info", 1800);
       } else {
-        connectOfficeViewer();
+        if (isOfficeConnected) {
+          disconnectOfficeViewer();
+          setTimeout(() => {
+            connectOfficeViewer();
+          }, 350);
+        } else {
+          connectOfficeViewer();
+        }
       }
     }
 
@@ -2632,7 +2743,7 @@
     }
 
     function toggleNVRViewMode() {
-      const btn = document.getElementById('nvrMultiGridToggleBtn');
+      const btn = document.getElementById('nvrMultiGridToggleBtn') || document.getElementById('gridToggleBtn');
       const stage = document.getElementById('stageViewport');
       const grid = document.getElementById('multiCameraGrid');
 
@@ -2642,14 +2753,35 @@
         if (stage) stage.classList.add('hidden');
         if (grid) grid.classList.remove('hidden');
         renderMultiCameraGrid();
-        showToast("Switched to Multi-Grid NVR View (All Channels)", "info", 2000);
+        showToast("Switched to Multi-Grid NVR View", "info", 1800);
       } else {
         nvrViewMode = 'focus';
         if (btn) btn.innerHTML = "⊞ Multi-Grid";
         if (stage) stage.classList.remove('hidden');
         if (grid) grid.classList.add('hidden');
-        cleanupMultiGridPeers();
-        showToast("Switched to Focus View (1x1 Active Camera)", "info", 2000);
+
+        // Keep active channel stream alive!
+        cleanupMultiGridPeers(activeChannelId);
+
+        // Attach active stream to main stage video immediately!
+        if (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].stream) {
+          const mainVid = document.getElementById('officeFeedVideo');
+          if (mainVid) {
+            mainVid.srcObject = multiGridPeers[activeChannelId].stream;
+            mainVid.muted = !isHearActive;
+            mainVid.play().catch(() => {
+              mainVid.muted = true;
+              mainVid.play().catch(() => {});
+            });
+          }
+          if (multiGridPeers[activeChannelId].call) activeViewerCall = multiGridPeers[activeChannelId].call;
+          if (multiGridPeers[activeChannelId].conn) dataChannel = multiGridPeers[activeChannelId].conn;
+          updateConnectButtonState(true);
+        } else if (!isOfficeConnected) {
+          connectOfficeViewer();
+        }
+
+        showToast("Switched to Single Focus View (1x1)", "info", 1800);
       }
     }
 
@@ -2657,20 +2789,25 @@
       const grid = document.getElementById('multiCameraGrid');
       if (!grid) return;
 
-      cleanupMultiGridPeers();
+      // Keep active channel peer if already live to avoid flicker
+      cleanupMultiGridPeers(activeChannelId);
 
       grid.innerHTML = nvrChannels.map(ch => {
         const isFocused = ch.id === activeChannelId;
         return `
-          <div class="cam-grid-tile ${isFocused ? 'focused-tile' : ''}" id="tile_${escapeHTML(ch.id)}">
+          <div class="cam-grid-tile ${isFocused ? 'focused-tile' : ''}" id="tile_${escapeHTML(ch.id)}" ondblclick="fullscreenTile('${escapeHTML(ch.id)}')">
             <div class="cam-tile-header">
               <span>📹 ${escapeHTML(ch.name)}</span>
-              <span class="chip" id="tileStatus_${escapeHTML(ch.id)}" style="font-size:0.65rem;">CONNECTING...</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="chip" id="tileStatus_${escapeHTML(ch.id)}" style="font-size:0.65rem;">CONNECTING...</span>
+                <button class="btn-act" style="padding:2px 6px; font-size:0.65rem;" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera Tile">⛶</button>
+              </div>
             </div>
             <video class="cam-tile-video" id="tileVideo_${escapeHTML(ch.id)}" autoplay playsinline muted></video>
             <div class="cam-tile-controls">
               <button class="btn-act cyan" style="font-size:0.7rem; padding:4px 10px;" onclick="focusCameraTile('${escapeHTML(ch.id)}')">🔍 Focus 1x1</button>
               <button class="btn-act" style="font-size:0.7rem; padding:4px 10px;" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')">🔊 Hear</button>
+              <button class="btn-act" style="font-size:0.7rem; padding:4px 10px;" onclick="fullscreenTile('${escapeHTML(ch.id)}')">⛶ Fullscreen</button>
             </div>
           </div>
         `;
@@ -2686,28 +2823,72 @@
       const status = document.getElementById(`tileStatus_${ch.id}`);
       if (!video || !status) return;
 
+      // If already connected and streaming, re-attach immediately
+      if (multiGridPeers[ch.id] && multiGridPeers[ch.id].stream) {
+        video.srcObject = multiGridPeers[ch.id].stream;
+        video.muted = true;
+        video.play().catch(() => {});
+        status.textContent = "LIVE";
+        status.style.color = "var(--emerald)";
+        ch.isLive = true;
+        renderNVRChannelChips();
+        updateConnectButtonState(true);
+        return;
+      }
+
       try {
         const gridPeer = new Peer(peerConfig);
-        multiGridPeers[ch.id] = { peer: gridPeer, video: video, stream: null };
+        multiGridPeers[ch.id] = { peer: gridPeer, video: video, stream: null, call: null, conn: null };
 
         gridPeer.on('open', () => {
           const conn = gridPeer.connect(ch.id);
+          multiGridPeers[ch.id].conn = conn;
+
           conn.on('open', () => {
             if (ch.pin) {
               conn.send({ type: 'auth_pin', pin: ch.pin });
             }
           });
 
+          conn.on('data', (cmd) => {
+            if (cmd && cmd.type === 'auth_error') {
+              status.textContent = "AUTH FAILED";
+              status.style.color = "var(--danger)";
+              showToast(`🔒 ${ch.name}: PIN Authentication Failed!`, "error", 4500);
+            }
+          });
+
           gridPeer.on('call', (call) => {
             call.answer();
+            multiGridPeers[ch.id].call = call;
+
             call.on('stream', (stream) => {
               video.srcObject = stream;
+              video.muted = true;
               video.play().catch(() => { });
               status.textContent = "LIVE";
               status.style.color = "var(--emerald)";
               ch.isLive = true;
               renderNVRChannelChips();
               multiGridPeers[ch.id].stream = stream;
+
+              // Synchronize overall connection state
+              updateConnectButtonState(true);
+
+              // If this is the active channel, pipe it directly into main focus video too!
+              if (ch.id === activeChannelId) {
+                const mainVid = document.getElementById('officeFeedVideo');
+                if (mainVid) {
+                  mainVid.srcObject = stream;
+                  mainVid.muted = !isHearActive;
+                  mainVid.play().catch(() => {
+                    mainVid.muted = true;
+                    mainVid.play().catch(() => {});
+                  });
+                }
+                activeViewerCall = call;
+                dataChannel = conn;
+              }
             });
           });
         });
@@ -2734,15 +2915,37 @@
       btn.classList.toggle('cyan', !video.muted);
     }
 
-    function cleanupMultiGridPeers() {
+    function fullscreenTile(id) {
+      const tile = document.getElementById(`tile_${id}`);
+      if (!tile) return;
+      if (tile.requestFullscreen) tile.requestFullscreen();
+      else if (tile.webkitRequestFullscreen) tile.webkitRequestFullscreen();
+      else if (tile.mozRequestFullScreen) tile.mozRequestFullScreen();
+      else if (tile.msRequestFullscreen) tile.msRequestFullscreen();
+    }
+
+    function toggleGridFullscreen() {
+      const grid = document.getElementById('multiCameraGrid');
+      if (!grid) return;
+      if (document.fullscreenElement) {
+        if (document.exitFullscreen) document.exitFullscreen();
+      } else {
+        if (grid.requestFullscreen) grid.requestFullscreen();
+        else if (grid.webkitRequestFullscreen) grid.webkitRequestFullscreen();
+      }
+    }
+
+    function cleanupMultiGridPeers(keepChannelId = null) {
       Object.keys(multiGridPeers).forEach(id => {
+        if (keepChannelId && id === keepChannelId) return;
         try {
           const obj = multiGridPeers[id];
           if (obj.video) obj.video.srcObject = null;
           if (obj.peer) obj.peer.destroy();
         } catch (e) { }
+        delete multiGridPeers[id];
       });
-      multiGridPeers = {};
+      if (!keepChannelId) multiGridPeers = {};
     }
 
     function focusCameraTile(id) {
@@ -3725,7 +3928,11 @@
       if (isOfficeConnected) {
         disconnectOfficeViewer();
       } else {
-        connectOfficeViewer();
+        if (nvrViewMode === 'grid') {
+          renderMultiCameraGrid();
+        } else {
+          connectOfficeViewer();
+        }
       }
     }
 
@@ -3754,12 +3961,7 @@
         dataChannel = peer.connect(key);
 
         dataChannel.on('open', () => {
-          isOfficeConnected = true;
-          connBtn.disabled = false;
-          connBtn.className = "btn-act danger";
-          connBtn.textContent = "🔌 Disconnect";
-          hud.textContent = "LIVE P2P";
-          hud.style.color = "var(--cyan)";
+          updateConnectButtonState(true);
 
           const activeCam = getActiveNVRChannel();
           if (activeCam) {
@@ -3859,7 +4061,11 @@
           call.answer(viewerIntercomStream || officeMicStream);
           call.on('stream', (stream) => {
             video.srcObject = stream;
-            video.play().catch(() => { });
+            video.muted = !isHearActive;
+            video.play().catch(() => {
+              video.muted = true;
+              video.play().catch(() => {});
+            });
 
             video.onresize = () => {
               if (video.videoWidth && video.videoHeight) {
@@ -3897,24 +4103,19 @@
     }
 
     function disconnectOfficeViewer() {
-      isOfficeConnected = false;
-      const video = document.getElementById('officeFeedVideo');
-      const hud = document.getElementById('hudOfficeStatus');
-      const connBtn = document.getElementById('officeConnectBtn');
-
       if (isVideoIntercomActive) {
         toggleVideoIntercom();
       }
       activeViewerCall = null;
 
-      const activeCam = getActiveNVRChannel();
-      if (activeCam) {
-        activeCam.isLive = false;
-        renderNVRChannelChips();
-      }
+      cleanupMultiGridPeers();
+
+      nvrChannels.forEach(c => c.isLive = false);
+      renderNVRChannelChips();
 
       stopViewerRecordingEngines();
 
+      const video = document.getElementById('officeFeedVideo');
       if (video) video.srcObject = null;
       if (peer) {
         peer.destroy();
@@ -3927,12 +4128,9 @@
         officeMicStream = null;
       }
 
-      hud.textContent = "STANDBY";
-      hud.style.color = "var(--text-dim)";
-      document.getElementById('statRes').textContent = "STANDBY";
-      connBtn.disabled = false;
-      connBtn.className = "btn-act cyan";
-      connBtn.textContent = "⚡ Connect Live";
+      updateConnectButtonState(false);
+      const statRes = document.getElementById('statRes');
+      if (statRes) statRes.textContent = "STANDBY";
 
       // Hide timer & telemetry badges in Top Bar (No duplicate on video stage)
       const topBadge = document.getElementById('topRecBadge');
