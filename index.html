@@ -780,6 +780,74 @@
       object-fit: contain !important;
     }
 
+    /* Floating Exit Fullscreen Button */
+    .btn-fullscreen-exit {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(13, 22, 38, 0.9);
+      color: #fff;
+      border: 1px solid rgba(0, 245, 255, 0.45);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 245, 255, 0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-fullscreen-exit:hover {
+      background: rgba(239, 68, 68, 0.95);
+      border-color: var(--danger);
+      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.45);
+      transform: scale(1.05);
+    }
+
+    /* Adaptive Orientation: Portrait vs Landscape */
+    .cctv-stage.feed-portrait {
+      width: auto !important;
+      max-width: 480px;
+      aspect-ratio: 9 / 16;
+      margin: 0 auto;
+      border: 2px solid rgba(0, 245, 255, 0.45);
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 245, 255, 0.2);
+    }
+    .cctv-stage.feed-portrait .cctv-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .cctv-stage.feed-landscape {
+      width: 100% !important;
+      aspect-ratio: 16 / 9;
+    }
+    .cctv-stage.feed-landscape .cctv-video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .cam-grid-tile.tile-portrait {
+      aspect-ratio: 9 / 16;
+      max-width: 320px;
+      margin: 0 auto;
+      border: 1.5px solid rgba(0, 245, 255, 0.35);
+    }
+    .cam-grid-tile.tile-portrait .cam-tile-video {
+      object-fit: cover;
+    }
+    .cam-grid-tile.tile-landscape {
+      aspect-ratio: 16 / 9;
+    }
+    .cam-grid-tile.tile-landscape .cam-tile-video {
+      object-fit: contain;
+    }
+
     /* Custom Designed Toast Notifications */
     .custom-toast-container {
       position: fixed;
@@ -1691,6 +1759,9 @@
         <span class="chip" id="hudActiveCamName" style="color:var(--cyan); font-weight:800;">CAM 1</span>
       </div>
 
+      <!-- FLOATING EXIT FULLSCREEN BUTTON (FOR MOBILE/DESKTOP FULLSCREEN) -->
+      <button class="btn-fullscreen-exit hidden" id="stageFullscreenExitBtn" onclick="exitFullscreenTile()" title="Exit Fullscreen">✕ Exit Fullscreen</button>
+
       <!-- VIEWER OWN INTERCOM WEBCAM PREVIEW PiP -->
       <div id="viewerIntercomPiP" class="hidden intercom-pip-viewer">
         <div
@@ -1967,6 +2038,7 @@
     let isVideoIntercomActive = false;
     let viewerIntercomStream = null;
     let activeViewerCall = null;
+    let activeIntercomCall = null;
     let isPhoneIntercomAudioMuted = false;
 
     // Multi-Camera NVR Channels & Grid State
@@ -1978,6 +2050,18 @@
 
     // Auth & Session State
     let currentUserSession = null;
+
+    function attemptAutoConnectCameras() {
+      if (isOfficeConnected) return;
+      const activeCam = getActiveNVRChannel();
+      if (!activeCam || !activeCam.id) return;
+
+      if (nvrViewMode === 'grid') {
+        renderMultiCameraGrid();
+      } else {
+        connectOfficeViewer();
+      }
+    }
 
     // Playback Speed State
     let phonePlaybackSpeed = 1.0;
@@ -2256,6 +2340,7 @@
         showToast(`Welcome back, ${matched.name || matched.username}! Access granted.`, "success");
         if (userInput) userInput.value = '';
         if (passInput) passInput.value = '';
+        setTimeout(attemptAutoConnectCameras, 700);
       } else {
         showToast("Invalid credentials! Default: admin / admin123", "error", 4000);
       }
@@ -2321,6 +2406,7 @@
       }
 
       showToast(`Account created successfully! Welcome, ${newUser.name}.`, "success");
+      setTimeout(attemptAutoConnectCameras, 700);
 
       if (nameInput) nameInput.value = '';
       if (userInput) userInput.value = '';
@@ -2395,6 +2481,10 @@
       }
 
       if (isVideoIntercomActive) {
+        if (activeIntercomCall) {
+          try { activeIntercomCall.close(); } catch (e) { }
+          activeIntercomCall = null;
+        }
         if (viewerIntercomStream) {
           viewerIntercomStream.getTracks().forEach(t => t.stop());
           viewerIntercomStream = null;
@@ -2405,15 +2495,6 @@
         const activeConn = dataChannel || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].conn);
         if (activeConn && activeConn.open) {
           activeConn.send({ type: 'intercom_state', active: false, hasVideo: false });
-        }
-
-        const activeCall = activeViewerCall || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].call);
-        if (activeCall && activeCall.peerConnection) {
-          const senders = activeCall.peerConnection.getSenders();
-          const vSender = senders.find(s => s.track && s.track.kind === 'video');
-          if (vSender) {
-            try { await vSender.replaceTrack(null); } catch (e) { }
-          }
         }
 
         isVideoIntercomActive = false;
@@ -2430,7 +2511,6 @@
 
         // Progressive acquisition with robust fallbacks
         try {
-          // Attempt 1: Standard video + audio
           stream = await navigator.mediaDevices.getUserMedia({
             video: { width: { ideal: 640 }, height: { ideal: 480 } },
             audio: true
@@ -2439,7 +2519,6 @@
         } catch (e1) {
           console.warn("Intercom Attempt 1 (ideal video+audio) failed:", e1);
           try {
-            // Attempt 2: Relaxed video only
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
             hasVideo = true;
             if (officeMicStream) {
@@ -2447,7 +2526,6 @@
             }
           } catch (e2) {
             console.warn("Intercom Attempt 2 (video only) failed:", e2);
-            // Attempt 3: Fallback to Voice/Audio Intercom
             try {
               if (officeMicStream && officeMicStream.getAudioTracks().length > 0) {
                 stream = officeMicStream;
@@ -2487,31 +2565,14 @@
           }
         }
 
-        const activeCall = activeViewerCall || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].call);
-        if (activeCall && activeCall.peerConnection) {
-          const pc = activeCall.peerConnection;
-          const senders = pc.getSenders();
-          const vTrack = viewerIntercomStream.getVideoTracks()[0];
-          const aTrack = viewerIntercomStream.getAudioTracks()[0];
-
-          if (vTrack) {
-            const vSender = senders.find(s => s.track && s.track.kind === 'video');
-            if (vSender) {
-              await vSender.replaceTrack(vTrack);
-            } else {
-              try { pc.addTrack(vTrack, viewerIntercomStream); } catch(e){}
-            }
-          }
-
-          if (aTrack) {
-            aTrack.enabled = true;
-            const aSender = senders.find(s => s.track && s.track.kind === 'audio');
-            if (aSender) {
-              await aSender.replaceTrack(aTrack);
-            } else {
-              try { pc.addTrack(aTrack, viewerIntercomStream); } catch(e){}
-            }
-          }
+        // DIRECT WEBRTC CALL TO BROADCASTER FOR OPERATOR FEED
+        const targetKey = activeChannelId || (nvrChannels[0] && nvrChannels[0].id);
+        const callerPeer = peer || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].peer);
+        if (targetKey && callerPeer) {
+          activeIntercomCall = callerPeer.call(targetKey, viewerIntercomStream);
+          activeIntercomCall.on('close', () => {
+            // Call ended
+          });
         }
 
         const activeConn = dataChannel || (multiGridPeers[activeChannelId] && multiGridPeers[activeChannelId].conn);
@@ -2705,41 +2766,44 @@
     }
 
     async function removeCameraChannel(id) {
-      if (nvrChannels.length <= 1) {
-        showToast("You must keep at least 1 camera channel configured.", "warning");
-        return;
-      }
-
       const target = nvrChannels.find(c => c.id === id);
       const name = target ? target.name : id;
 
       const ok = await showConfirmModal({
-        title: "Delete Camera Channel",
-        message: `Remove "${name}" (${id}) from your NVR channels list? Recordings will be preserved.`,
-        confirmText: "Delete Channel",
+        title: "Remove Camera Channel",
+        message: `Remove "${name}" (${id}) from your NVR channels list? Vault recordings will remain safe.`,
+        confirmText: "Remove Channel",
         cancelText: "Keep",
         danger: true
       });
 
       if (!ok) return;
 
+      if (multiGridPeers[id]) {
+        try {
+          if (multiGridPeers[id].video) multiGridPeers[id].video.srcObject = null;
+          if (multiGridPeers[id].peer) multiGridPeers[id].peer.destroy();
+        } catch(e){}
+        delete multiGridPeers[id];
+      }
+
       nvrChannels = nvrChannels.filter(c => c.id !== id);
+      if (nvrChannels.length === 0) {
+        nvrChannels = [{ id: 'prs-secure-cam-782', name: 'CAM 1 (Main Feed)', pin: '', isLive: false }];
+      }
       saveNVRChannels();
 
       if (activeChannelId === id) {
         activeChannelId = nvrChannels[0].id;
         const keyInput = document.getElementById('officeSecretKey');
         if (keyInput) keyInput.value = activeChannelId;
-        if (isOfficeConnected) {
-          disconnectOfficeViewer();
-          setTimeout(connectOfficeViewer, 400);
-        }
+        disconnectOfficeViewer();
       }
 
       renderNVRChannelChips();
       updatePlaybackCameraSelectors();
       if (nvrViewMode === 'grid') renderMultiCameraGrid();
-      showToast("Camera channel removed.", "info");
+      showToast(`Camera channel "${name}" removed.`, "info", 2500);
     }
 
     function toggleNVRViewMode() {
@@ -2785,6 +2849,77 @@
       }
     }
 
+    // ==========================================
+    // ADAPTIVE ORIENTATION & DISCONNECT ENGINES
+    // ==========================================
+    function applyFeedOrientation(channelId, isPortrait, w, h) {
+      const stage = document.getElementById('stageViewport');
+      if (stage && channelId === activeChannelId) {
+        if (isPortrait) {
+          stage.classList.add('feed-portrait');
+          stage.classList.remove('feed-landscape');
+        } else {
+          stage.classList.add('feed-landscape');
+          stage.classList.remove('feed-portrait');
+        }
+      }
+
+      const tile = document.getElementById(`tile_${channelId}`);
+      if (tile) {
+        if (isPortrait) {
+          tile.classList.add('tile-portrait');
+          tile.classList.remove('tile-landscape');
+        } else {
+          tile.classList.add('tile-landscape');
+          tile.classList.remove('tile-portrait');
+        }
+      }
+
+      const statRes = document.getElementById('statRes');
+      if (statRes && w && h && channelId === activeChannelId) {
+        statRes.textContent = `${w}x${h} (${isPortrait ? 'Portrait 📱' : 'Landscape 🖥️'})`;
+      }
+    }
+
+    function handleRemoteCameraDisconnect(id, reason) {
+      const target = nvrChannels.find(c => c.id === id);
+      const name = target ? target.name : id;
+
+      if (target) target.isLive = false;
+      renderNVRChannelChips();
+
+      if (id === activeChannelId) {
+        const video = document.getElementById('officeFeedVideo');
+        if (video) video.srcObject = null;
+        updateConnectButtonState(false);
+        const hud = document.getElementById('hudOfficeStatus');
+        if (hud) {
+          hud.textContent = "OFFLINE";
+          hud.style.color = "var(--danger)";
+        }
+        const statRes = document.getElementById('statRes');
+        if (statRes) statRes.textContent = "OFFLINE";
+        showToast(`📡 ${name} disconnected (${reason}).`, "warning", 4000);
+      }
+    }
+
+    function handleGridTileDisconnect(id, reason) {
+      const status = document.getElementById(`tileStatus_${id}`);
+      const video = document.getElementById(`tileVideo_${id}`);
+      if (status) {
+        status.textContent = "OFFLINE";
+        status.style.color = "var(--text-dim)";
+      }
+      if (video) video.srcObject = null;
+      const target = nvrChannels.find(c => c.id === id);
+      if (target) target.isLive = false;
+      renderNVRChannelChips();
+
+      if (id === activeChannelId) {
+        handleRemoteCameraDisconnect(id, reason);
+      }
+    }
+
     function renderMultiCameraGrid() {
       const grid = document.getElementById('multiCameraGrid');
       if (!grid) return;
@@ -2801,8 +2936,10 @@
               <div style="display:flex; align-items:center; gap:6px;">
                 <span class="chip" id="tileStatus_${escapeHTML(ch.id)}" style="font-size:0.65rem;">CONNECTING...</span>
                 <button class="btn-act" style="padding:2px 6px; font-size:0.65rem;" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera Tile">⛶</button>
+                <button class="btn-act danger" style="padding:2px 6px; font-size:0.65rem;" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera Channel">✕</button>
               </div>
             </div>
+            <button class="btn-fullscreen-exit hidden" id="tileExitBtn_${escapeHTML(ch.id)}" onclick="exitFullscreenTile()" title="Exit Fullscreen">✕ Exit Fullscreen</button>
             <video class="cam-tile-video" id="tileVideo_${escapeHTML(ch.id)}" autoplay playsinline muted></video>
             <div class="cam-tile-controls">
               <button class="btn-act cyan" style="font-size:0.7rem; padding:4px 10px;" onclick="focusCameraTile('${escapeHTML(ch.id)}')">🔍 Focus 1x1</button>
@@ -2850,17 +2987,32 @@
             }
           });
 
+          conn.on('close', () => {
+            handleGridTileDisconnect(ch.id, "Connection closed");
+          });
+
           conn.on('data', (cmd) => {
             if (cmd && cmd.type === 'auth_error') {
               status.textContent = "AUTH FAILED";
               status.style.color = "var(--danger)";
               showToast(`🔒 ${ch.name}: PIN Authentication Failed!`, "error", 4500);
+            } else if (cmd && cmd.type === 'camera_disconnected') {
+              handleGridTileDisconnect(ch.id, cmd.reason || "Broadcaster disconnected");
+            } else if (cmd && cmd.type === 'camera_orientation') {
+              applyFeedOrientation(ch.id, cmd.isPortrait, cmd.width, cmd.height);
             }
           });
 
           gridPeer.on('call', (call) => {
             call.answer();
             multiGridPeers[ch.id].call = call;
+
+            call.peerConnection.onconnectionstatechange = () => {
+              const st = call.peerConnection.connectionState;
+              if (st === 'disconnected' || st === 'failed' || st === 'closed') {
+                handleGridTileDisconnect(ch.id, `Stream ${st}`);
+              }
+            };
 
             call.on('stream', (stream) => {
               video.srcObject = stream;
@@ -2871,6 +3023,13 @@
               ch.isLive = true;
               renderNVRChannelChips();
               multiGridPeers[ch.id].stream = stream;
+
+              video.onresize = () => {
+                if (video.videoWidth && video.videoHeight) {
+                  const isPort = video.videoHeight > video.videoWidth;
+                  applyFeedOrientation(ch.id, isPort, video.videoWidth, video.videoHeight);
+                }
+              };
 
               // Synchronize overall connection state
               updateConnectButtonState(true);
@@ -2918,22 +3077,56 @@
     function fullscreenTile(id) {
       const tile = document.getElementById(`tile_${id}`);
       if (!tile) return;
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        exitFullscreenTile();
+        return;
+      }
       if (tile.requestFullscreen) tile.requestFullscreen();
       else if (tile.webkitRequestFullscreen) tile.webkitRequestFullscreen();
       else if (tile.mozRequestFullScreen) tile.mozRequestFullScreen();
       else if (tile.msRequestFullscreen) tile.msRequestFullscreen();
     }
 
+    function exitFullscreenTile() {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    }
+
     function toggleGridFullscreen() {
       const grid = document.getElementById('multiCameraGrid');
       if (!grid) return;
-      if (document.fullscreenElement) {
-        if (document.exitFullscreen) document.exitFullscreen();
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        exitFullscreenTile();
       } else {
         if (grid.requestFullscreen) grid.requestFullscreen();
         else if (grid.webkitRequestFullscreen) grid.webkitRequestFullscreen();
       }
     }
+
+    document.addEventListener('fullscreenchange', () => {
+      const fullEl = document.fullscreenElement || document.webkitFullscreenElement;
+      const stageExitBtn = document.getElementById('stageFullscreenExitBtn');
+      if (stageExitBtn) {
+        if (fullEl && fullEl === document.getElementById('stageViewport')) {
+          stageExitBtn.classList.remove('hidden');
+        } else {
+          stageExitBtn.classList.add('hidden');
+        }
+      }
+
+      nvrChannels.forEach(ch => {
+        const tileExitBtn = document.getElementById(`tileExitBtn_${ch.id}`);
+        if (tileExitBtn) {
+          if (fullEl && fullEl === document.getElementById(`tile_${ch.id}`)) {
+            tileExitBtn.classList.remove('hidden');
+          } else {
+            tileExitBtn.classList.add('hidden');
+          }
+        }
+      });
+    });
 
     function cleanupMultiGridPeers(keepChannelId = null) {
       Object.keys(multiGridPeers).forEach(id => {
@@ -3047,6 +3240,10 @@
       if (savedCamPin) {
         const el = document.getElementById('phoneCameraPin');
         if (el) el.value = savedCamPin;
+      }
+
+      if (currentUserSession) {
+        setTimeout(attemptAutoConnectCameras, 800);
       }
 
       const selSegment = document.getElementById('phoneSegmentSelect');
@@ -3489,6 +3686,57 @@
           }
         });
 
+        // LISTEN FOR INCOMING DEDICATED OPERATOR VIDEO/VOICE CALL ON PHONE
+        peer.on('call', (incCall) => {
+          incCall.answer();
+          incCall.on('stream', (operatorStream) => {
+            const incVid = document.getElementById('phoneIncomingIntercomVideo');
+            const incCont = document.getElementById('phoneIncomingIntercomContainer');
+            const speaker = document.getElementById('phoneSpeaker');
+
+            if (incVid) {
+              incVid.srcObject = operatorStream;
+              incVid.muted = true; // prevent phone feedback
+              incVid.play().catch(() => {});
+            }
+            if (speaker) {
+              speaker.srcObject = operatorStream;
+              speaker.muted = isPhoneIntercomAudioMuted;
+              speaker.play().catch(() => {});
+            }
+            if (incCont) incCont.classList.remove('hidden');
+            showToast("📹 Operator Video Intercom Live!", "info", 3000);
+          });
+
+          incCall.on('close', () => {
+            const incCont = document.getElementById('phoneIncomingIntercomContainer');
+            if (incCont) incCont.classList.add('hidden');
+            const incVid = document.getElementById('phoneIncomingIntercomVideo');
+            if (incVid) incVid.srcObject = null;
+          });
+        });
+
+        // Broadcast camera orientation telemetry (Portrait vs Landscape)
+        const sendOrientation = () => {
+          const preview = document.getElementById('phonePreviewVideo');
+          const vTrack = localStream ? localStream.getVideoTracks()[0] : null;
+          const s = vTrack && vTrack.getSettings ? vTrack.getSettings() : {};
+          const w = s.width || (preview ? preview.videoWidth : 0);
+          const h = s.height || (preview ? preview.videoHeight : 0);
+          const isPort = (h > w);
+          if (dataChannel && dataChannel.open) {
+            dataChannel.send({
+              type: 'camera_orientation',
+              isPortrait: isPort,
+              width: w,
+              height: h
+            });
+          }
+        };
+
+        window.addEventListener('resize', sendOrientation);
+        window.addEventListener('orientationchange', sendOrientation);
+
         peer.on('connection', (conn) => {
           dataChannel = conn;
           msg.textContent = "🔵 Viewer Connected! Streaming live...";
@@ -3513,6 +3761,9 @@
 
             // Send initial battery & network telemetry immediately
             sendPhoneTelemetryOverDataChannel();
+
+            // Send orientation metadata immediately
+            sendOrientation();
 
             // Automatically send latest clips catalog to viewer
             sendPhoneClipsCatalog(conn);
@@ -3607,10 +3858,13 @@
       // 1. Await saving active clip to IndexedDB
       await stopPhoneRollingSegmentAsync();
 
-      // 2. Broadcast updated catalog to viewer if connected
+      // 2. Broadcast disconnect signal & updated catalog to viewer
       if (dataChannel && dataChannel.open) {
+        try {
+          dataChannel.send({ type: 'camera_disconnected', reason: 'Broadcaster manually stopped camera' });
+        } catch (e) { }
         sendPhoneClipsCatalog(dataChannel);
-        await new Promise(r => setTimeout(r, 400));
+        await new Promise(r => setTimeout(r, 350));
       }
 
       // 3. Stop media tracks
@@ -3984,7 +4238,12 @@
           // Handle incoming messages & structured binary chunks
           dataChannel.on('data', (msg) => {
             if (typeof msg === 'object' && msg !== null) {
-              if (msg.type === 'camera_meta') {
+              if (msg.type === 'camera_disconnected') {
+                handleRemoteCameraDisconnect(activeChannelId, msg.reason || "Camera disconnected");
+                return;
+              } else if (msg.type === 'camera_orientation') {
+                applyFeedOrientation(activeChannelId, msg.isPortrait, msg.width, msg.height);
+              } else if (msg.type === 'camera_meta') {
                 const curCam = getActiveNVRChannel();
                 if (curCam && msg.name) {
                   curCam.name = msg.name;
@@ -4053,12 +4312,19 @@
         });
 
         dataChannel.on('close', () => {
-          disconnectOfficeViewer();
+          handleRemoteCameraDisconnect(activeChannelId, "P2P Data Channel closed");
         });
 
         peer.on('call', (call) => {
           activeViewerCall = call;
           call.answer(viewerIntercomStream || officeMicStream);
+          call.peerConnection.onconnectionstatechange = () => {
+            const st = call.peerConnection.connectionState;
+            if (st === 'disconnected' || st === 'failed' || st === 'closed') {
+              handleRemoteCameraDisconnect(activeChannelId, `Stream ${st}`);
+            }
+          };
+
           call.on('stream', (stream) => {
             video.srcObject = stream;
             video.muted = !isHearActive;
@@ -4067,23 +4333,17 @@
               video.play().catch(() => {});
             });
 
-            video.onresize = () => {
+            const checkOrientationAndBadge = () => {
               if (video.videoWidth && video.videoHeight) {
+                const isPort = video.videoHeight > video.videoWidth;
+                applyFeedOrientation(activeChannelId, isPort, video.videoWidth, video.videoHeight);
                 updateFeedBadge(officeRequestedQuality, video.videoWidth, video.videoHeight);
               }
             };
 
-            video.onloadedmetadata = () => {
-              if (video.videoWidth && video.videoHeight) {
-                updateFeedBadge(officeRequestedQuality, video.videoWidth, video.videoHeight);
-              }
-            };
-
-            setTimeout(() => {
-              if (video.videoWidth && video.videoHeight) {
-                updateFeedBadge(officeRequestedQuality, video.videoWidth, video.videoHeight);
-              }
-            }, 800);
+            video.onresize = checkOrientationAndBadge;
+            video.onloadedmetadata = checkOrientationAndBadge;
+            setTimeout(checkOrientationAndBadge, 400);
 
             // Viewer Auto-Record (if enabled)
             if (autoRecordEnabled) {
@@ -5308,6 +5568,9 @@
     }
 
     window.addEventListener('beforeunload', () => {
+      if (dataChannel && dataChannel.open) {
+        try { dataChannel.send({ type: 'camera_disconnected', reason: 'Broadcaster closed window/tab' }); } catch (e) { }
+      }
       if (phoneMediaRecorder && phoneMediaRecorder.state === 'recording') {
         try { phoneMediaRecorder.stop(); } catch (e) { }
       }
