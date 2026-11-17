@@ -327,15 +327,13 @@
        2. VIEWER CONSOLE (LAPTOP & MOBILE OPTIMIZED)
        ======================================================== */
     .laptop-console {
-      height: 100dvh;
-      max-height: 100dvh;
-      width: 100%;
+      min-height: 100dvh;
       max-width: 100vw;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       padding: 6px 10px;
-      overflow: hidden;
+      overflow-y: auto;
       background: var(--bg);
     }
 
@@ -811,57 +809,45 @@
       transform: scale(1.05);
     }
 
-    /* Adaptive Orientation: Portrait (9:16) vs Landscape (16:9) Upright Frames */
-    .cctv-stage.feed-portrait {
-      width: auto !important;
-      max-width: 440px;
-      height: 100%;
-      max-height: 85vh;
-      aspect-ratio: 9 / 16;
-      margin: 0 auto;
-      border: 2px solid rgba(0, 245, 255, 0.5);
-      border-radius: 16px;
-      box-shadow: 0 14px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 245, 255, 0.25);
-      background: #000;
-    }
-    .cctv-stage.feed-portrait .cctv-video {
+    /* CCTV STAGE & TILE ASPECT RATIOS (ALWAYS 16:9 LANDSCAPE, NEVER BLOWING OUT FLEXBOX) */
+    .cctv-stage {
+      flex: 1 1 0;
+      min-height: 0;
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 14px;
-      transform: none !important;
-    }
-    .cctv-stage.feed-landscape {
-      width: 100% !important;
-      height: 100%;
-      aspect-ratio: 16 / 9;
-      margin: 0 auto;
+      position: relative;
+      background: #000;
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      background: #000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 16 / 9;
+      max-height: 100%;
     }
-    .cctv-stage.feed-landscape .cctv-video {
+    .cctv-stage.feed-portrait,
+    .cctv-stage.feed-landscape {
+      width: 100% !important;
+      max-width: 100% !important;
+      aspect-ratio: 16 / 9;
+    }
+    .cctv-video {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      transform: none !important;
+      transform-origin: center center;
+      cursor: grab;
+      transition: transform 0.15s ease-out;
     }
-    .cam-grid-tile.tile-portrait {
-      aspect-ratio: 9 / 16;
-      max-width: 320px;
-      margin: 0 auto;
-      border: 1.5px solid rgba(0, 245, 255, 0.4);
-    }
-    .cam-grid-tile.tile-portrait .cam-tile-video {
-      object-fit: contain;
-      transform: none !important;
-    }
-    .cam-grid-tile.tile-landscape {
+    .cam-grid-tile {
       aspect-ratio: 16 / 9;
     }
-    .cam-grid-tile.tile-landscape .cam-tile-video {
+    .cam-grid-tile .cam-tile-video {
+      width: 100%;
+      height: 100%;
       object-fit: contain;
-      transform: none !important;
+      transform-origin: center center;
+      transition: transform 0.15s ease-out;
     }
 
     /* Custom Designed Toast Notifications */
@@ -3344,13 +3330,14 @@
         updateConnectButtonState(false);
         const hud = document.getElementById('hudOfficeStatus');
         if (hud) {
-          hud.textContent = "OFFLINE";
+          hud.textContent = "OFFLINE (AUTO-RETRYING)";
           hud.style.color = "var(--danger)";
         }
         const statRes = document.getElementById('statRes');
         if (statRes) statRes.textContent = "OFFLINE";
-        showToast(`📡 ${name} disconnected (${reason}).`, "warning", 4000);
+        showToast(`📡 ${name} disconnected (${reason}). Auto-reconnect active...`, "warning", 4000);
       }
+      triggerAutoReconnectDaemon();
     }
 
     function handleGridTileDisconnect(id, reason) {
@@ -3387,6 +3374,49 @@
       }
       connectSingleGridTile(target);
       showToast(`Reconnecting to ${target.name}...`, "info", 1800);
+    }
+
+    // ==========================================
+    // AUTO-RECONNECT DAEMON (AUTO RECOVERS CAMERAS)
+    // ==========================================
+    let autoReconnectDaemonTimer = null;
+
+    function triggerAutoReconnectDaemon() {
+      if (autoReconnectDaemonTimer) return; // already active
+
+      autoReconnectDaemonTimer = setInterval(() => {
+        const viewerConsole = document.getElementById('officeConsole');
+        if (!viewerConsole || viewerConsole.classList.contains('hidden')) return;
+
+        if (nvrViewMode === 'grid') {
+          const offlineChannels = nvrChannels.filter(c => !c.isLive);
+          if (offlineChannels.length === 0) {
+            clearInterval(autoReconnectDaemonTimer);
+            autoReconnectDaemonTimer = null;
+            return;
+          }
+          offlineChannels.forEach(ch => {
+            const status = document.getElementById(`tileStatus_${ch.id}`);
+            if (status && status.textContent !== "CONNECTING..." && status.textContent !== "RECONNECTING...") {
+              connectSingleGridTile(ch);
+            }
+          });
+        } else {
+          // Single Focus View
+          if (!isOfficeConnected) {
+            const activeCam = getActiveNVRChannel();
+            if (activeCam && activeCam.id) {
+              const hud = document.getElementById('hudOfficeStatus');
+              if (hud && hud.textContent !== "CONNECTING..." && hud.textContent !== "DIALING P2P...") {
+                connectOfficeViewer(true);
+              }
+            }
+          } else {
+            clearInterval(autoReconnectDaemonTimer);
+            autoReconnectDaemonTimer = null;
+          }
+        }
+      }, 3500);
     }
 
     function renderMultiCameraGrid() {
@@ -3931,21 +3961,33 @@
       const liveBtn = document.getElementById('tabLiveBtn');
       const playbackBtn = document.getElementById('tabPlaybackBtn');
       const liveStage = document.getElementById('stageViewport');
+      const multiGrid = document.getElementById('multiCameraGrid');
+      const channelsBar = document.getElementById('nvrChannelsBar');
       const playbackConsole = document.getElementById('nvrPlaybackConsole');
       const dock = document.getElementById('officeDockControls');
 
       if (tab === 'live') {
         liveBtn.classList.add('active');
         playbackBtn.classList.remove('active');
-        liveStage.classList.remove('hidden');
-        playbackConsole.classList.add('hidden');
+        if (channelsBar) channelsBar.classList.remove('hidden');
+        if (nvrViewMode === 'grid') {
+          if (multiGrid) multiGrid.classList.remove('hidden');
+          if (liveStage) liveStage.classList.add('hidden');
+        } else {
+          if (liveStage) liveStage.classList.remove('hidden');
+          if (multiGrid) multiGrid.classList.add('hidden');
+        }
+        if (playbackConsole) playbackConsole.classList.add('hidden');
         if (dock) dock.classList.remove('hidden');
       } else {
+        // PLAYBACK MODE: HIDE ALL LIVE CAMERA SCREENS & CONTROLS!
         playbackBtn.classList.add('active');
         liveBtn.classList.remove('active');
-        liveStage.classList.add('hidden');
-        playbackConsole.classList.remove('hidden');
-        if (dock) dock.classList.add('hidden'); // 100% height for Playback on mobile!
+        if (liveStage) liveStage.classList.add('hidden');
+        if (multiGrid) multiGrid.classList.add('hidden');
+        if (channelsBar) channelsBar.classList.add('hidden');
+        if (dock) dock.classList.add('hidden');
+        if (playbackConsole) playbackConsole.classList.remove('hidden');
         syncRemotePhoneClips();
         renderNVRPlaybackList();
       }
@@ -4626,23 +4668,28 @@
         const oldVideoTrack = localStream.getVideoTracks()[0];
         let newVideoTrack = null;
 
-        // Method A: Fast in-place applyConstraints (no track recreation)
+        // Check if camera track needs re-acquisition for clean orientation switch
         let constraintApplied = false;
         if (oldVideoTrack && oldVideoTrack.applyConstraints) {
           try {
             await oldVideoTrack.applyConstraints({
               width: { ideal: targetW },
-              height: { ideal: targetH },
-              aspectRatio: isPortrait ? (9 / 16) : (16 / 9)
+              height: { ideal: targetH }
             });
-            newVideoTrack = oldVideoTrack;
-            constraintApplied = true;
+            const sCheck = oldVideoTrack.getSettings ? oldVideoTrack.getSettings() : {};
+            if (sCheck.width && sCheck.height) {
+              const checkPort = (sCheck.height > sCheck.width);
+              if (checkPort === isPortrait) {
+                newVideoTrack = oldVideoTrack;
+                constraintApplied = true;
+              }
+            }
           } catch (cErr) {
-            console.warn("applyConstraints not supported, acquiring clean stream:", cErr);
+            console.warn("applyConstraints not supported:", cErr);
           }
         }
 
-        // Method B: Re-acquire stream (MUST stop old track first so mobile hardware releases)
+        // Method B: Re-acquire stream (stop old track first so mobile hardware releases sensor)
         if (!constraintApplied) {
           if (oldVideoTrack) {
             oldVideoTrack.stop();
@@ -4926,15 +4973,18 @@
       }
     }
 
-    async function connectOfficeViewer() {
+    async function connectOfficeViewer(isAutoRetry = false) {
       const key = document.getElementById('officeSecretKey').value.trim();
       const video = document.getElementById('officeFeedVideo');
       const hud = document.getElementById('hudOfficeStatus');
       const connBtn = document.getElementById('officeConnectBtn');
 
-      if (!key) return showToast("Please enter Secret Camera Key!", "warning");
+      if (!key) {
+        if (!isAutoRetry) showToast("Please enter Secret Camera Key!", "warning");
+        return;
+      }
 
-      hud.textContent = "CONNECTING...";
+      hud.textContent = isAutoRetry ? "AUTO-CONNECTING..." : "CONNECTING...";
       connBtn.disabled = true;
       connBtn.textContent = "⏳ Connecting...";
 
@@ -5030,6 +5080,10 @@
                   renderNVRChannelChips();
                 }
                 updateConnectButtonState(true);
+                if (autoReconnectDaemonTimer) {
+                  clearInterval(autoReconnectDaemonTimer);
+                  autoReconnectDaemonTimer = null;
+                }
               } else if (msg.type === 'quality_ack') {
                 officeRequestedQuality = msg.quality;
                 const sel = document.getElementById('remoteResSelect');
@@ -5293,7 +5347,10 @@
     function applyTransform() {
       const video = document.getElementById('officeFeedVideo');
       if (video) {
-        video.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px) rotate(${currentFeedRotation}deg)`;
+        const isSideways = (currentFeedRotation === 90 || currentFeedRotation === 270);
+        const fitScale = isSideways ? 0.5625 : 1.0;
+        const effScale = zoomLevel * fitScale;
+        video.style.transform = `scale(${effScale}) translate(${panX}px, ${panY}px) rotate(${currentFeedRotation}deg)`;
       }
     }
 
@@ -5305,7 +5362,7 @@
         target.rotation = currentFeedRotation;
         saveNVRChannels();
       }
-      showToast(`📐 Video rotated to ${currentFeedRotation}°`, "info", 1800);
+      showToast(`📐 Video rotated to ${currentFeedRotation}° (Upright Fit)`, "info", 1800);
     }
 
     function rotateTile(id) {
@@ -5314,7 +5371,9 @@
       target.rotation = ((target.rotation || 0) + 90) % 360;
       const vid = document.getElementById(`tileVideo_${id}`);
       if (vid) {
-        vid.style.transform = `rotate(${target.rotation}deg)`;
+        const isSideways = (target.rotation === 90 || target.rotation === 270);
+        const fitScale = isSideways ? 0.5625 : 1.0;
+        vid.style.transform = `scale(${fitScale}) rotate(${target.rotation}deg)`;
       }
       saveNVRChannels();
       showToast(`📐 ${target.name} rotated to ${target.rotation}°`, "info", 1800);
