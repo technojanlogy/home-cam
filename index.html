@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#070a10" />
-  <title>PRScam • Pro Surveillance System & NVR Cockpit</title>
+  <title>PRScam • Pro CCTV & NVR System</title>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     :root {
       --bg: #070a10;
-      --card-bg: rgba(14, 20, 32, 0.94);
+      --card-bg: rgba(14, 20, 32, 0.95);
       --card-border: rgba(255, 255, 255, 0.1);
       --cyan: #00f5ff;
       --cyan-glow: 0 0 16px rgba(0, 245, 255, 0.4);
@@ -38,9 +38,7 @@
       overflow-x: hidden;
     }
 
-    /* ========================================================
-       TOP GLOBAL HEADER & APP BAR
-       ======================================================== */
+    /* GLOBAL BRAND & NAVIGATION */
     .brand-logo {
       font-size: 1.15rem;
       font-weight: 900;
@@ -49,7 +47,7 @@
       -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       letter-spacing: 0.5px;
       white-space: nowrap;
     }
@@ -113,9 +111,9 @@
       transition: all 0.2s;
     }
     .tab-btn.active {
-      background: rgba(0, 245, 255, 0.15);
+      background: rgba(0, 245, 255, 0.16);
       color: var(--cyan);
-      border: 1px solid rgba(0, 245, 255, 0.3);
+      border: 1px solid rgba(0, 245, 255, 0.35);
     }
 
     .chip {
@@ -134,8 +132,24 @@
     }
     .chip b { color: var(--cyan); }
 
+    .rec-flag {
+      color: var(--danger);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rec-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--danger);
+      border-radius: 50%;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
     /* ========================================================
-       1. PHONE APP VIEW (MOBILE BROADCASTER / STANDALONE CCTV)
+       1. PHONE APP VIEW (MOBILE BROADCASTER & AUTONOMOUS CCTV)
        ======================================================== */
     .phone-app-container {
       max-width: 480px;
@@ -235,17 +249,7 @@
       color: #fff;
     }
 
-    .phone-transcript-box {
-      background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(0, 245, 255, 0.2);
-      border-radius: 10px;
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    /* PITCH BLACK OLED FULLSCREEN */
+    /* PITCH BLACK FULLSCREEN (PHONE STEALTH) */
     #stealthCover {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -261,7 +265,7 @@
     #stealthCover p { color: #222; font-size: 0.8rem; user-select: none; }
 
     /* ========================================================
-       2. VIEWER CONSOLE (WORKS SEAMLESSLY ON LAPTOP & MOBILE)
+       2. VIEWER CONSOLE (MOBILE & LAPTOP OPTIMIZED)
        ======================================================== */
     .laptop-console {
       height: 100dvh;
@@ -297,7 +301,7 @@
       gap: 6px 8px;
     }
 
-    /* STAGE VIEWPORT (FOR LIVE FEED) */
+    /* LIVE CCTV VIEWPORT */
     .cctv-stage {
       flex: 1 1 0;
       min-height: 0;
@@ -333,109 +337,8 @@
       pointer-events: none;
       z-index: 10;
     }
-    .rec-flag {
-      color: var(--danger);
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .rec-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--danger);
-      border-radius: 50%;
-      animation: blink 1s infinite;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
 
-    /* REALTIME TRANSCRIPT SUBTITLE TICKER */
-    .transcript-hud {
-      position: absolute;
-      bottom: 12px;
-      left: 5%;
-      right: 5%;
-      background: rgba(7, 10, 16, 0.92);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 245, 255, 0.35);
-      border-radius: 10px;
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 20;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-      transition: opacity 0.3s, transform 0.3s;
-    }
-    .transcript-tag {
-      background: rgba(0, 245, 255, 0.15);
-      border: 1px solid var(--cyan);
-      color: var(--cyan);
-      padding: 2px 7px;
-      border-radius: 6px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-    .transcript-text {
-      color: #ffe600;
-      font-size: 0.88rem;
-      font-weight: 700;
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* COLLAPSIBLE TRANSCRIPT HISTORY DRAWER */
-    .transcript-drawer {
-      position: absolute;
-      top: 48px;
-      right: 14px;
-      width: 340px;
-      max-width: 90vw;
-      max-height: 260px;
-      background: rgba(14, 20, 32, 0.95);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      z-index: 30;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
-    }
-    .drawer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 6px;
-      font-size: 0.78rem;
-      font-weight: 800;
-      color: var(--cyan);
-    }
-    .drawer-body {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.76rem;
-      padding-right: 4px;
-    }
-    .transcript-entry {
-      background: rgba(0,0,0,0.4);
-      padding: 5px 8px;
-      border-radius: 6px;
-      border-left: 3px solid var(--cyan);
-    }
-    .entry-time { color: var(--text-dim); font-size: 0.68rem; margin-right: 6px; font-family: monospace; }
-    .entry-msg { color: #fff; }
-
-    /* OFFICE CONTROLS DOCK */
+    /* OFFICE CONTROLS DOCK (LOWER BAR) */
     .office-dock {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -448,7 +351,6 @@
       flex-shrink: 0;
     }
 
-    /* ZOOM CONTROL ROW */
     .zoom-deck {
       display: flex;
       align-items: center;
@@ -486,7 +388,6 @@
     }
     .zoom-chip:hover { color: var(--cyan); border-color: var(--cyan); }
 
-    /* BUTTONS ROW - RESPONSIVE & NO OVERFLOW */
     .office-actions {
       display: flex;
       gap: 6px;
@@ -505,12 +406,12 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 5px 9px;
+      padding: 6px 10px;
       border-radius: 7px;
       border: 1px solid var(--card-border);
       background: rgba(255,255,255,0.07);
       color: #fff;
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.15s;
@@ -537,8 +438,8 @@
     }
     .btn-act.active-rec {
       border-color: var(--danger);
-      color: var(--danger);
-      background: rgba(255, 23, 68, 0.15);
+      color: #fff;
+      background: linear-gradient(135deg, #ff1744, #b70020);
       animation: pulse 1.5s infinite;
     }
 
@@ -560,7 +461,7 @@
     }
 
     /* ========================================================
-       3. NVR PLAYBACK CONSOLE (DATE-WISE TIMELINE & PLAYBACK)
+       3. NVR PLAYBACK CONSOLE (CLEAN CARDS & RESPONSIVE LIST)
        ======================================================== */
     .nvr-playback-console {
       flex: 1 1 0;
@@ -568,7 +469,7 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       overflow: hidden;
     }
 
@@ -577,11 +478,11 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px 10px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 8px 12px;
+      padding: 6px 10px;
       flex-shrink: 0;
     }
 
@@ -593,15 +494,19 @@
       overflow: hidden;
     }
 
-    @media (max-width: 820px) {
+    @media (max-width: 860px) {
       .nvr-main-layout {
         flex-direction: column;
+      }
+      .nvr-player-box {
+        min-height: 200px !important;
+        max-height: 220px !important;
       }
     }
 
     .nvr-player-box {
-      flex: 1 1 55%;
-      min-height: 220px;
+      flex: 1 1 50%;
+      min-height: 240px;
       background: #000;
       border: 1px solid var(--card-border);
       border-radius: 14px;
@@ -619,7 +524,7 @@
     }
 
     .nvr-timeline-box {
-      flex: 1 1 45%;
+      flex: 1 1 50%;
       min-height: 0;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -635,7 +540,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 800;
       color: var(--cyan);
       background: rgba(0,0,0,0.3);
@@ -647,31 +552,78 @@
       padding: 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .nvr-clip-card {
+    /* BIG TAP-FRIENDLY CLIP CARD */
+    .clip-card {
+      background: rgba(18, 25, 40, 0.75);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .clip-card:hover {
+      background: rgba(18, 25, 40, 0.95);
+      border-color: rgba(0, 245, 255, 0.35);
+    }
+    .clip-card.active-playing {
+      border-color: var(--cyan);
+      background: rgba(0, 245, 255, 0.1);
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+    }
+
+    .card-top-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(18, 25, 40, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 9px;
-      padding: 8px 10px;
-      cursor: pointer;
-      transition: all 0.2s;
       flex-wrap: wrap;
+      gap: 4px;
+    }
+    .card-title {
+      font-weight: 800;
+      font-size: 0.84rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
       gap: 6px;
     }
-    .nvr-clip-card:hover {
-      background: rgba(18, 25, 40, 0.95);
-      border-color: rgba(0, 245, 255, 0.4);
+    .card-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-family: monospace;
+      flex-wrap: wrap;
     }
-    .nvr-clip-card.active-playing {
-      border-color: var(--cyan);
-      background: rgba(0, 245, 255, 0.1);
-      box-shadow: 0 0 12px rgba(0, 245, 255, 0.2);
+
+    .card-btn-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
     }
+    .btn-play-hero {
+      flex: 1;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #00f5ff, #0099ff);
+      color: #000;
+      font-weight: 900;
+      font-size: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-play-hero:active { transform: scale(0.98); }
 
     .nvr-date-input {
       background: rgba(0,0,0,0.5);
@@ -683,6 +635,35 @@
       font-weight: 700;
       outline: none;
       cursor: pointer;
+    }
+
+    /* STREAMING PROGRESS BAR (REMOTE P2P) */
+    .stream-progress-box {
+      position: absolute;
+      bottom: 12px;
+      left: 10px;
+      right: 10px;
+      background: rgba(7, 10, 16, 0.95);
+      border: 1px solid var(--cyan);
+      border-radius: 8px;
+      padding: 8px 12px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #222;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00f5ff, #00e676);
+      transition: width 0.1s linear;
     }
 
     .hidden { display: none !important; }
@@ -702,7 +683,7 @@
   </div>
 
   <!-- ========================================================
-       SECTION 1: PHONE APP VIEW (MOBILE BROADCASTER / AUTONOMOUS CCTV)
+       SECTION 1: PHONE APP VIEW (MOBILE BROADCASTER & CCTV)
        ======================================================== -->
   <div class="phone-app-container" id="phoneAppSection">
     
@@ -723,6 +704,7 @@
       <div style="position: absolute; bottom: 10px; right: 10px;" class="chip">
         QUALITY: <b id="phoneActiveRes">1080p FHD</b>
       </div>
+      <!-- PHONE RECORDING TIMER BADGE -->
       <div style="position: absolute; bottom: 10px; left: 10px;" class="chip hidden rec-flag" id="phoneRecBadge">
         <span class="rec-dot"></span> <span id="phoneRecText">REC [AUTO] 00:00</span>
       </div>
@@ -752,9 +734,9 @@
 
       <!-- AUTO-RECORD LOCAL LOOP SETTING -->
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-RECORD (NVR LOOP):</span>
+        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-RECORD (24/7 NVR):</span>
         <select class="dock-select" id="phoneAutoRecSetting" onchange="onPhoneAutoRecChange(this.value)">
-          <option value="true" selected>ON (Record 24/7 in Background)</option>
+          <option value="true" selected>ON (Record in Background)</option>
           <option value="false">OFF (Only Stream Live)</option>
         </select>
       </div>
@@ -777,9 +759,9 @@
         🚀 Start Camera
       </button>
 
-      <!-- VIEW PAST RECORDINGS (PLAYBACK) ON PHONE -->
+      <!-- OPEN PLAYBACK RECORDINGS ON PHONE -->
       <button class="btn-large muted-btn" onclick="openPhonePlayback()">
-        📼 Open Date-wise Playback (<span id="phonePlaybackCount">0</span>)
+        📼 Open NVR Playback (<span id="phonePlaybackCount">0</span> Clips)
       </button>
 
       <!-- PHONE MIC TOGGLE -->
@@ -792,17 +774,6 @@
         🔋 100% Black Screen (Battery Saver)
       </button>
 
-      <!-- AI LIVE TRANSCRIPT PREVIEW BOX -->
-      <div class="phone-transcript-box">
-        <div style="font-size: 0.72rem; color: var(--cyan); font-weight: 800; display: flex; justify-content: space-between; align-items: center;">
-          <span>🎙️ AI LIVE TRANSCRIPT (ROOM)</span>
-          <span id="phoneSpeechStatus" style="color: var(--text-dim); font-size: 0.68rem;">STANDBY</span>
-        </div>
-        <div id="phoneLiveTranscriptText" style="font-size: 0.82rem; color: #ffe600; min-height: 20px; font-weight: 600;">
-          Room speech will transcribe live here...
-        </div>
-      </div>
-
       <div style="font-size: 0.76rem; color: var(--text-dim); text-align: center;" id="phoneMsg">
         Camera is ready. Tap Start Camera to begin.
       </div>
@@ -810,7 +781,7 @@
   </div>
 
   <!-- ========================================================
-       SECTION 2: VIEWER CONSOLE (LAPTOP & MOBILE RESPONSIVE)
+       SECTION 2: VIEWER CONSOLE (MOBILE & LAPTOP RESPONSIVE)
        ======================================================== -->
   <div class="laptop-console hidden" id="officeConsoleSection">
     
@@ -825,11 +796,18 @@
             🔴 Live View
           </button>
           <button class="tab-btn" id="tabPlaybackBtn" onclick="switchViewerTab('playback')">
-            📼 Playback (NVR)
+            📼 Playback (<span id="topVaultCount">0</span>)
           </button>
         </div>
 
         <span class="chip" id="feedChipWrapper">FEED: <b id="statRes">STANDBY</b></span>
+
+        <!-- PROMINENT RECORDING TIMER IN TOP BAR -->
+        <span class="chip hidden rec-flag" id="topRecBadge">
+          <span class="rec-dot"></span>
+          <span id="topRecLabel">REC 00:00</span>
+        </span>
+
         <span class="chip" id="clockChipWrapper">CLOCK: <b id="statClock">00:00:00</b></span>
       </div>
 
@@ -846,31 +824,12 @@
     <div class="cctv-stage" id="stageViewport" ondblclick="toggleFullscreen()">
       <div class="osd-hud">
         <span class="chip" id="hudOfficeStatus">STANDBY</span>
+        <!-- PROMINENT OSD RECORDING TIMER OVERLAY -->
         <span class="chip hidden rec-flag" id="recBadge">
           <span class="rec-dot"></span>
-          <span id="recModeBadge">REC</span>
-          <span id="recTimer">00:00</span>
+          <span id="recModeBadge">REC [AUTO]</span>
+          <span id="recTimer" style="font-size:0.82rem; font-weight:800;">00:00</span>
         </span>
-      </div>
-
-      <!-- LIVE TRANSCRIPT SUBTITLE OVERLAY -->
-      <div class="transcript-hud hidden" id="ccTicker">
-        <span class="transcript-tag">💬 LIVE SPEECH</span>
-        <span class="transcript-text" id="ccText">Listening for speech...</span>
-      </div>
-
-      <!-- TRANSCRIPT HISTORY DRAWER -->
-      <div class="transcript-drawer hidden" id="transcriptDrawer">
-        <div class="drawer-header">
-          <span>📜 Speech History</span>
-          <div style="display: flex; gap: 6px;">
-            <button class="zoom-chip" onclick="clearTranscriptHistory()">Clear</button>
-            <button class="zoom-chip" onclick="toggleTranscriptDrawer()">✕</button>
-          </div>
-        </div>
-        <div class="drawer-body" id="transcriptHistoryList">
-          <div style="color: var(--text-dim); text-align: center; padding: 10px;">No speech recorded yet.</div>
-        </div>
       </div>
 
       <video class="cctv-video" id="officeFeedVideo" autoplay playsinline></video>
@@ -879,23 +838,30 @@
     <!-- VIEW 2: NVR DATE-WISE PLAYBACK CONSOLE -->
     <div class="nvr-playback-console hidden" id="nvrPlaybackConsole">
       
-      <!-- TOOLBAR: DATE SELECTOR & PURGE STATS -->
+      <!-- TOOLBAR: SOURCE TOGGLE & DATE SELECTOR -->
       <div class="nvr-toolbar">
-        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 0.78rem; font-weight: 800; color: var(--cyan);">📅 SELECT DATE:</span>
-          <input type="date" class="nvr-date-input" id="nvrDateInput" onchange="onNVRDateChange(this.value)" />
-          <button class="btn-act" onclick="filterPlaybackQuick('today')">Today</button>
-          <button class="btn-act" onclick="filterPlaybackQuick('yesterday')">Yesterday</button>
-          <button class="btn-act" onclick="filterPlaybackQuick('all')">All Dates</button>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <button class="tab-btn active" id="sourcePhoneBtn" onclick="switchPlaybackSource('phone')">
+            📱 Phone Clips (<span id="sourcePhoneCount">0</span>)
+          </button>
+          <button class="tab-btn" id="sourceLocalBtn" onclick="switchPlaybackSource('local')">
+            💻 Local Device (<span id="sourceLocalCount">0</span>)
+          </button>
+          <button class="btn-act cyan" style="padding:4px 8px;" onclick="syncRemotePhoneClips()">
+            🔄 Refresh
+          </button>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <span class="chip" id="nvrDateSummaryChip">0 Clips Found</span>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <input type="date" class="nvr-date-input" id="nvrDateInput" onchange="onNVRDateChange(this.value)" />
+          <button class="btn-act" onclick="filterPlaybackQuick('all')">All</button>
+          <button class="btn-act" onclick="filterPlaybackQuick('today')">Today</button>
+          <button class="btn-act" onclick="filterPlaybackQuick('yesterday')">Yesterday</button>
           <button class="btn-act danger" onclick="confirmClearAllRecordings()">🗑️ Delete All</button>
         </div>
       </div>
 
-      <!-- MAIN PLAYBACK SPLIT: PLAYER & TIMELINE LIST -->
+      <!-- MAIN PLAYBACK SPLIT: VIDEO PLAYER & CARDS LIST -->
       <div class="nvr-main-layout">
         
         <!-- NVR PLAYER SCREEN -->
@@ -904,18 +870,30 @@
             <span class="chip" id="nvrPlayerTitle">Select a clip to play</span>
             <button class="zoom-chip" style="pointer-events: auto;" onclick="togglePlayerFullscreen()">⛶ Fullscreen</button>
           </div>
+
+          <!-- STREAMING FROM PHONE PROGRESS OVERLAY -->
+          <div class="stream-progress-box hidden" id="streamProgressBox">
+            <div style="display: flex; justify-content: space-between; font-size: 0.74rem; font-weight: 700; color: #fff;">
+              <span id="streamProgressLabel">Streaming clip from phone...</span>
+              <span id="streamProgressPct">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="streamProgressBar"></div>
+            </div>
+          </div>
+
           <video class="nvr-player-video" id="nvrMainPlayer" controls playsinline></video>
         </div>
 
         <!-- DATE-WISE CLIPS TIMELINE -->
         <div class="nvr-timeline-box">
           <div class="nvr-timeline-header">
-            <span>📹 Recordings on Selected Date</span>
+            <span id="timelineTitleLabel">📹 Recordings</span>
             <span style="font-size: 0.72rem; color: var(--amber);" id="autoDeletePolicyBadge">Auto-deletes after 2 days</span>
           </div>
           <div class="nvr-clips-list" id="nvrClipsList">
-            <div style="text-align: center; color: var(--text-dim); padding: 30px; font-size: 0.8rem;">
-              No recordings found on this date.
+            <div style="text-align: center; color: var(--text-dim); padding: 30px; font-size: 0.82rem;">
+              Loading clips...
             </div>
           </div>
         </div>
@@ -924,10 +902,10 @@
 
     </div>
 
-    <!-- MASTER CONTROLS DOCK (FLUID & NON-OVERFLOWING) -->
+    <!-- MASTER CONTROLS DOCK (LOWER BAR FOR LIVE VIEW) -->
     <div class="office-dock" id="officeDockControls">
       
-      <!-- ROW 1: 100x ZOOM SLIDER (SHOWN IN LIVE VIEW) -->
+      <!-- ROW 1: 100x ZOOM SLIDER -->
       <div class="zoom-deck" id="liveZoomDeck">
         <span style="font-size: 0.72rem; font-weight: 800; min-width: 58px; color:var(--cyan);">🔍 <span id="zoomReadout">1.0x</span></span>
         <div class="zoom-chips-wrap">
@@ -943,11 +921,12 @@
       </div>
 
       <!-- ROW 2: ACTION BUTTONS (CLEAN WRAPPING) -->
-      <div class="office-actions">
+      <div class="office-actions" id="liveActionButtons">
         
         <!-- GROUP 1: CONNECTION & RECORDING -->
         <div class="action-group">
           <button class="btn-act cyan" id="officeConnectBtn" onclick="toggleOfficeConnection()">⚡ Connect Live</button>
+          <!-- PROMINENT RECORD BUTTON WITH LIVE TIMER TEXT -->
           <button class="btn-act danger" id="recBtn" onclick="toggleManualRecording()">🔴 Record</button>
           <button class="btn-act" id="autoRecToggleBtn" onclick="toggleAutoRecord()">🔄 Auto-Rec: ON</button>
           <button class="btn-act" onclick="switchViewerTab('playback')">📼 Playback (<span id="dockVaultCount">0</span>)</button>
@@ -959,7 +938,6 @@
           <button class="btn-act" id="talkBtn" onclick="toggleTalk()">🎙️ Speak: OFF</button>
           <button class="btn-act" onclick="remoteFlipCamera()">🔄 Flip</button>
           <button class="btn-act" onclick="captureZoomedSnapshot()">📸 Snap</button>
-          <button class="btn-act" id="transcriptToggleBtn" onclick="toggleTranscriptDrawer()">📜 Transcript (<span id="transcriptCount">0</span>)</button>
         </div>
         
         <!-- GROUP 3: QUALITY & FULLSCREEN -->
@@ -1031,30 +1009,24 @@
     let isDragging = false;
     let startX, startY;
 
-    // AI Speech Recognition
-    let recognition = null;
-    let isSpeechActive = false;
-    let speechRestartTimeout = null;
-    let transcriptHistory = [];
-    let ccHideTimeout = null;
-
     let currentFacing = 'environment';
     let currentQuality = '1080';
     let officeRequestedQuality = '1080';
 
-    // Auto-Recording & NVR Retention Policy
-    let autoRecordEnabled = localStorage.getItem('prscam_auto_record') !== 'false'; // default true
-    let autoDeleteDays = parseFloat(localStorage.getItem('prscam_auto_delete_days') || '2'); // default 2 days
-    let autoRecordSegmentMins = parseInt(localStorage.getItem('prscam_segment_mins') || '5'); // default 5 mins
-    let phoneAutoRecordEnabled = localStorage.getItem('prscam_phone_auto_rec') !== 'false'; // default true
+    // Auto-Recording & Retention Policy
+    let autoRecordEnabled = localStorage.getItem('prscam_auto_record') !== 'false';
+    let autoDeleteDays = parseFloat(localStorage.getItem('prscam_auto_delete_days') || '2');
+    let autoRecordSegmentMins = parseInt(localStorage.getItem('prscam_segment_mins') || '5');
+    let phoneAutoRecordEnabled = localStorage.getItem('prscam_phone_auto_rec') !== 'false';
 
-    // Recorders
+    // Phone Recorder
     let phoneMediaRecorder = null;
     let phoneRecordedBlobs = [];
     let phoneSegmentTimer = null;
     let phoneRecSeconds = 0;
     let phoneRecInterval = null;
 
+    // Viewer Recorder
     let viewerMediaRecorder = null;
     let viewerRecordedBlobs = [];
     let isManualRecording = false;
@@ -1063,9 +1035,15 @@
     let viewerRecInterval = null;
     let viewerAutoRecTimer = null;
 
-    // NVR Playback State
-    let selectedPlaybackDate = getTodayDateKey();
+    // Playback Engine State
+    let selectedPlaybackDate = 'all';
+    let playbackSource = 'phone'; // 'phone' or 'local'
+    let remotePhoneClips = [];
     let currentlyPlayingClipId = null;
+
+    // P2P Remote Clip Streaming State
+    let incomingClipMeta = null;
+    let incomingClipChunks = [];
 
     // Live Clock Display
     setInterval(() => {
@@ -1074,15 +1052,14 @@
       if (statClock) statClock.textContent = timeStr;
     }, 1000);
 
-    // Initial Routing & Setup
+    // Initial Setup
     window.addEventListener('DOMContentLoaded', () => {
       initVaultStorage();
 
-      // Set initial date in NVR input
+      // Default quick date
       const dateInput = document.getElementById('nvrDateInput');
-      if (dateInput) dateInput.value = selectedPlaybackDate;
+      if (dateInput) dateInput.value = getTodayDateKey();
 
-      // Sync UI buttons
       const autoRecBtn = document.getElementById('autoRecToggleBtn');
       if (autoRecBtn) {
         autoRecBtn.textContent = autoRecordEnabled ? "🔄 Auto-Rec: ON" : "🔄 Auto-Rec: OFF";
@@ -1121,26 +1098,28 @@
       const playbackBtn = document.getElementById('tabPlaybackBtn');
       const liveStage = document.getElementById('stageViewport');
       const playbackConsole = document.getElementById('nvrPlaybackConsole');
-      const zoomDeck = document.getElementById('liveZoomDeck');
+      const dock = document.getElementById('officeDockControls');
 
       if (tab === 'live') {
         liveBtn.classList.add('active');
         playbackBtn.classList.remove('active');
         liveStage.classList.remove('hidden');
         playbackConsole.classList.add('hidden');
-        if (zoomDeck) zoomDeck.classList.remove('hidden');
+        if (dock) dock.classList.remove('hidden');
       } else {
         playbackBtn.classList.add('active');
         liveBtn.classList.remove('active');
         liveStage.classList.add('hidden');
         playbackConsole.classList.remove('hidden');
-        if (zoomDeck) zoomDeck.classList.add('hidden');
+        if (dock) dock.classList.add('hidden'); // Free up 100% height for Playback on mobile!
+        syncRemotePhoneClips();
         renderNVRPlaybackList();
       }
     }
 
     function openPhonePlayback() {
       showViewerMode();
+      playbackSource = 'local'; // on phone, local storage has all phone clips
       switchViewerTab('playback');
     }
 
@@ -1189,7 +1168,7 @@
     }
 
     // ==========================================
-    // 1. HOME PHONE BROADCASTER & LOCAL NVR RECORDER
+    // 1. HOME PHONE BROADCASTER & AUTONOMOUS NVR
     // ==========================================
     async function togglePhoneCamera() {
       if (isPhoneCameraRunning) {
@@ -1254,11 +1233,9 @@
           startBtn.innerHTML = "🛑 Stop Camera";
           badge.textContent = "LIVE";
           badge.style.color = "var(--emerald)";
-          msg.textContent = `🟢 Camera Live (${actW}x${actH})! Ready for office connection.`;
+          msg.textContent = `🟢 Camera Live (${actW}x${actH})! Ready for viewer connection.`;
 
-          startSpeechRecognition();
-
-          // AUTOMATIC STANDALONE NVR LOCAL RECORDING ON PHONE!
+          // START CONTINUOUS 24/7 BACKGROUND RECORDING ON PHONE
           if (phoneAutoRecordEnabled) {
             startPhoneRollingSegment();
           }
@@ -1278,6 +1255,9 @@
               actH: ts.height || q.height,
               name: q.name
             });
+
+            // Automatically send clips catalog to viewer
+            sendPhoneClipsCatalog(conn);
 
             const call = peer.call(conn.peer, localStream);
             call.on('stream', (officeAudio) => {
@@ -1302,6 +1282,10 @@
             } else if (cmd.type === 'laptop_mic_state') {
               const speaker = document.getElementById('phoneSpeaker');
               speaker.muted = !cmd.active;
+            } else if (cmd.type === 'req_phone_clips') {
+              sendPhoneClipsCatalog(conn);
+            } else if (cmd.type === 'req_stream_clip') {
+              streamClipOverP2P(conn, cmd.clipId);
             }
           });
         });
@@ -1330,7 +1314,6 @@
       const startBtn = document.getElementById('phoneStartBtn');
 
       isPhoneCameraRunning = false;
-      stopSpeechRecognition();
       stopPhoneRollingSegment();
 
       if (localStream) {
@@ -1463,7 +1446,7 @@
     }
 
     // ========================================================
-    // STANDALONE LOCAL PHONE ROLLING RECORDER
+    // STANDALONE PHONE ROLLING RECORDER
     // ========================================================
     function startPhoneRollingSegment() {
       if (!localStream) return;
@@ -1494,6 +1477,10 @@
         if (phoneRecordedBlobs.length > 0 && durationSec >= 2) {
           const blob = new Blob(phoneRecordedBlobs, { type: phoneMediaRecorder.mimeType || 'video/mp4' });
           await saveRecordingToVault(blob, durationSec, currentQuality, 'phone');
+          // If viewer connected, update their catalog too!
+          if (dataChannel && dataChannel.open) {
+            sendPhoneClipsCatalog(dataChannel);
+          }
         }
 
         if (isPhoneCameraRunning && phoneAutoRecordEnabled) {
@@ -1527,6 +1514,7 @@
     function updatePhoneRecBadge(active) {
       const badge = document.getElementById('phoneRecBadge');
       const text = document.getElementById('phoneRecText');
+      const startBtn = document.getElementById('phoneStartBtn');
       if (!badge) return;
 
       clearInterval(phoneRecInterval);
@@ -1538,113 +1526,20 @@
           const m = String(Math.floor(phoneRecSeconds / 60)).padStart(2, '0');
           const s = String(phoneRecSeconds % 60).padStart(2, '0');
           if (text) text.textContent = `REC [AUTO] ${m}:${s}`;
+          if (startBtn && isPhoneCameraRunning) {
+            startBtn.innerHTML = `🛑 Stop Camera (REC ${m}:${s})`;
+          }
         }, 1000);
       } else {
         badge.classList.add('hidden');
+        if (startBtn && isPhoneCameraRunning) {
+          startBtn.innerHTML = "🛑 Stop Camera";
+        }
       }
     }
 
     // ==========================================
-    // AI SPEECH RECOGNITION (LIVE TRANSCRIPT)
-    // ==========================================
-    function startSpeechRecognition() {
-      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const statusLabel = document.getElementById('phoneSpeechStatus');
-      const transcriptBox = document.getElementById('phoneLiveTranscriptText');
-
-      if (!Speech) {
-        if (statusLabel) statusLabel.textContent = "UNAVAILABLE";
-        if (transcriptBox) transcriptBox.textContent = "Web Speech API not supported in this browser (Use Chrome).";
-        return;
-      }
-
-      if (recognition) {
-        try { recognition.stop(); } catch(e){}
-      }
-
-      recognition = new Speech();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'hi-IN';
-      recognition.maxAlternatives = 1;
-      isSpeechActive = true;
-
-      recognition.onstart = () => {
-        if (statusLabel) {
-          statusLabel.textContent = "🟢 LISTENING";
-          statusLabel.style.color = "var(--emerald)";
-        }
-      };
-
-      recognition.onresult = (event) => {
-        let fullTranscript = '';
-        let isFinalResult = false;
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          fullTranscript += event.results[i][0].transcript;
-          if (event.results[i].isFinal) isFinalResult = true;
-        }
-
-        const trimmed = fullTranscript.trim();
-        if (trimmed) {
-          if (transcriptBox) transcriptBox.textContent = trimmed;
-          if (dataChannel && dataChannel.open) {
-            dataChannel.send({
-              type: 'live_transcript',
-              text: trimmed,
-              isFinal: isFinalResult,
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-            });
-          }
-        }
-      };
-
-      recognition.onerror = (event) => {
-        if (event.error !== 'no-speech') {
-          if (statusLabel) {
-            statusLabel.textContent = `ERR: ${event.error}`;
-            statusLabel.style.color = "var(--danger)";
-          }
-        }
-      };
-
-      recognition.onend = () => {
-        if (isSpeechActive && isPhoneCameraRunning) {
-          clearTimeout(speechRestartTimeout);
-          speechRestartTimeout = setTimeout(() => {
-            if (isSpeechActive && isPhoneCameraRunning) {
-              try { recognition.start(); } catch(e){}
-            }
-          }, 300);
-        } else {
-          if (statusLabel) {
-            statusLabel.textContent = "STANDBY";
-            statusLabel.style.color = "var(--text-dim)";
-          }
-        }
-      };
-
-      try {
-        recognition.start();
-      } catch (e) {
-        console.warn("SpeechRecognition start error:", e);
-      }
-    }
-
-    function stopSpeechRecognition() {
-      isSpeechActive = false;
-      clearTimeout(speechRestartTimeout);
-      if (recognition) {
-        try { recognition.stop(); } catch(e){}
-      }
-      const statusLabel = document.getElementById('phoneSpeechStatus');
-      if (statusLabel) {
-        statusLabel.textContent = "OFF";
-        statusLabel.style.color = "var(--text-dim)";
-      }
-    }
-
-    // ==========================================
-    // 2. VIEWER CONSOLE VIEWER ENGINE
+    // 2. VIEWER CONSOLE ENGINE
     // ==========================================
     function toggleOfficeConnection() {
       if (isOfficeConnected) {
@@ -1692,14 +1587,36 @@
           dataChannel.send({ type: 'remote_quality', quality: officeRequestedQuality });
           updateFeedBadge(officeRequestedQuality, null, null, `⏳ Requesting ${officeRequestedQuality.toUpperCase()}...`);
 
+          // Request list of recordings stored on the phone!
+          dataChannel.send({ type: 'req_phone_clips' });
+
+          // Handle incoming binary chunks or messages
           dataChannel.on('data', (msg) => {
-            if (msg.type === 'live_transcript') {
-              displaySubtitle(msg.text, msg.time, msg.isFinal);
-            } else if (msg.type === 'quality_ack') {
-              officeRequestedQuality = msg.quality;
-              const sel = document.getElementById('remoteResSelect');
-              if (sel && msg.quality) sel.value = msg.quality;
-              updateFeedBadge(msg.quality, msg.actW, msg.actH);
+            if (msg instanceof ArrayBuffer) {
+              incomingClipChunks.push(msg);
+              const receivedBytes = incomingClipChunks.reduce((acc, c) => acc + c.byteLength, 0);
+              const totalBytes = incomingClipMeta ? incomingClipMeta.totalBytes : 1;
+              const pct = Math.min(100, Math.round((receivedBytes / totalBytes) * 100));
+              updateStreamProgressUI(pct);
+            } else if (typeof msg === 'object') {
+              if (msg.type === 'quality_ack') {
+                officeRequestedQuality = msg.quality;
+                const sel = document.getElementById('remoteResSelect');
+                if (sel && msg.quality) sel.value = msg.quality;
+                updateFeedBadge(msg.quality, msg.actW, msg.actH);
+              } else if (msg.type === 'phone_clips_catalog') {
+                remotePhoneClips = msg.clips || [];
+                updateAllCounters();
+                renderNVRPlaybackList();
+              } else if (msg.type === 'clip_stream_start') {
+                incomingClipMeta = msg;
+                incomingClipChunks = [];
+                showStreamProgressUI(0);
+              } else if (msg.type === 'clip_stream_end') {
+                const fullBlob = new Blob(incomingClipChunks, { type: (incomingClipMeta && incomingClipMeta.mimeType) || 'video/mp4' });
+                hideStreamProgressUI();
+                playReceivedRemoteBlob(fullBlob, incomingClipMeta);
+              }
             }
           });
         });
@@ -1726,7 +1643,7 @@
               }
             }, 800);
 
-            // Viewer Auto Loop Recording (if enabled)
+            // Viewer Auto-Record (if enabled)
             if (autoRecordEnabled) {
               startViewerRollingSegment();
             }
@@ -1807,59 +1724,6 @@
     }
 
     // ==========================================
-    // LIVE SUBTITLES & TRANSCRIPT DRAWER
-    // ==========================================
-    function displaySubtitle(text, timeStr, isFinal) {
-      const ticker = document.getElementById('ccTicker');
-      const ccText = document.getElementById('ccText');
-      if (!ticker || !ccText) return;
-
-      ccText.textContent = text;
-      ticker.classList.remove('hidden');
-
-      clearTimeout(ccHideTimeout);
-      ccHideTimeout = setTimeout(() => {
-        ticker.classList.add('hidden');
-      }, 6000);
-
-      if (isFinal || transcriptHistory.length === 0 || transcriptHistory[transcriptHistory.length - 1].text !== text) {
-        transcriptHistory.push({ time: timeStr || new Date().toLocaleTimeString(), text });
-        if (transcriptHistory.length > 50) transcriptHistory.shift();
-        renderTranscriptHistory();
-      }
-    }
-
-    function renderTranscriptHistory() {
-      const list = document.getElementById('transcriptHistoryList');
-      const count = document.getElementById('transcriptCount');
-      if (!list) return;
-
-      if (count) count.textContent = transcriptHistory.length;
-
-      if (transcriptHistory.length === 0) {
-        list.innerHTML = `<div style="color: var(--text-dim); text-align: center; padding: 10px;">No speech recorded yet.</div>`;
-        return;
-      }
-
-      list.innerHTML = transcriptHistory.slice().reverse().map(item => `
-        <div class="transcript-entry">
-          <span class="entry-time">${item.time}</span>
-          <span class="entry-msg">${item.text}</span>
-        </div>
-      `).join('');
-    }
-
-    function toggleTranscriptDrawer() {
-      const drawer = document.getElementById('transcriptDrawer');
-      if (drawer) drawer.classList.toggle('hidden');
-    }
-
-    function clearTranscriptHistory() {
-      transcriptHistory = [];
-      renderTranscriptHistory();
-    }
-
-    // ==========================================
     // AUDIO CONTROLS (HEAR & SPEAK)
     // ==========================================
     function toggleHear() {
@@ -1931,11 +1795,10 @@
 
     window.addEventListener('mouseup', () => { isDragging = false; });
 
-    // ==========================================
-    // ZOOM SNAPSHOT & FULLSCREEN
-    // ==========================================
-    function renderZoomedCanvas() {
+    function captureZoomedSnapshot() {
       const video = document.getElementById('officeFeedVideo');
+      if (!video.videoWidth) return alert("No active video feed to capture!");
+
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth || 1920;
       canvas.height = video.videoHeight || 1080;
@@ -1947,14 +1810,7 @@
       ctx.translate(panX * (canvas.width / stage.clientWidth), panY * (canvas.height / stage.clientHeight));
       ctx.drawImage(video, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
       ctx.restore();
-      return canvas;
-    }
 
-    function captureZoomedSnapshot() {
-      const video = document.getElementById('officeFeedVideo');
-      if (!video.videoWidth) return alert("No active video feed to capture!");
-
-      const canvas = renderZoomedCanvas();
       const link = document.createElement('a');
       link.download = `PRScam_Snap_${zoomLevel.toFixed(0)}x_${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
@@ -1982,7 +1838,7 @@
     }
 
     // ========================================================
-    // 3. UNIFIED INDEXEDDB STORAGE (DATE-WISE ARCHITECTURE)
+    // 3. UNIFIED INDEXEDDB VAULT & RETENTION ENGINE
     // ========================================================
     const DB_NAME = 'PRScam_Vault_DB';
     const DB_VERSION = 2;
@@ -2052,7 +1908,16 @@
           const tx = db.transaction(STORE_NAME, 'readonly');
           const store = tx.objectStore(STORE_NAME);
           const req = store.getAll();
-          req.onsuccess = () => resolve(req.result || []);
+          req.onsuccess = () => {
+            const records = req.result || [];
+            // Backfill dateKey for older records if needed
+            records.forEach(r => {
+              if (!r.dateKey) {
+                r.dateKey = getDateKey(new Date(r.timestamp || Date.now()));
+              }
+            });
+            resolve(records);
+          };
           req.onerror = () => reject(req.error);
         });
       } catch (e) {
@@ -2090,9 +1955,7 @@
       });
     }
 
-    // ========================================================
-    // AUTO-PURGE RETENTION POLICY (AUTOMATIC PURGE ENGINE)
-    // ========================================================
+    // Auto-Purge Old Clips
     async function runAutoPurgePolicy() {
       if (autoDeleteDays <= 0) return;
 
@@ -2129,18 +1992,24 @@
       openVaultDB().then(() => {
         runAutoPurgePolicy();
         updateAllCounters();
-        renderNVRPlaybackList();
       }).catch(err => {
         console.warn("IndexedDB not ready:", err);
       });
     }
 
     async function updateAllCounters() {
-      const clips = await getAllRecordingsFromVault();
+      const localClips = await getAllRecordingsFromVault();
       const phoneCount = document.getElementById('phonePlaybackCount');
+      const topCount = document.getElementById('topVaultCount');
       const dockCount = document.getElementById('dockVaultCount');
-      if (phoneCount) phoneCount.textContent = clips.length;
-      if (dockCount) dockCount.textContent = clips.length;
+      const sourcePhoneCount = document.getElementById('sourcePhoneCount');
+      const sourceLocalCount = document.getElementById('sourceLocalCount');
+
+      if (phoneCount) phoneCount.textContent = localClips.length;
+      if (topCount) topCount.textContent = (remotePhoneClips.length || localClips.length);
+      if (dockCount) dockCount.textContent = (remotePhoneClips.length || localClips.length);
+      if (sourcePhoneCount) sourcePhoneCount.textContent = remotePhoneClips.length;
+      if (sourceLocalCount) sourceLocalCount.textContent = localClips.length;
     }
 
     function onRetentionChange(val) {
@@ -2161,7 +2030,7 @@
 
       const policyBadge = document.getElementById('autoDeletePolicyBadge');
       if (policyBadge) {
-        policyBadge.textContent = autoDeleteDays > 0 ? `Auto-deletes after ${autoDeleteDays} days` : "Never auto-deleted";
+        policyBadge.textContent = autoDeleteDays > 0 ? `Auto-deletes after ${autoDeleteDays} days` : "Kept permanently";
       }
 
       runAutoPurgePolicy();
@@ -2169,7 +2038,104 @@
     }
 
     // ========================================================
-    // 4. DATE-WISE NVR PLAYBACK ENGINE & INTERFACE
+    // 4. P2P REMOTE PLAYBACK & STREAMING ENGINE
+    // ========================================================
+    function sendPhoneClipsCatalog(conn) {
+      getAllRecordingsFromVault().then(clips => {
+        const metaList = clips.map(c => ({
+          id: c.id,
+          timestamp: c.timestamp,
+          dateKey: c.dateKey || getDateKey(new Date(c.timestamp)),
+          dateStr: c.dateStr,
+          timeStr: c.timeStr || new Date(c.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          durationSec: c.durationSec,
+          sizeBytes: c.sizeBytes,
+          sizeFormatted: c.sizeFormatted,
+          quality: c.quality,
+          recordedBy: 'phone'
+        }));
+        conn.send({ type: 'phone_clips_catalog', clips: metaList });
+      });
+    }
+
+    function syncRemotePhoneClips() {
+      if (isOfficeConnected && dataChannel && dataChannel.open) {
+        dataChannel.send({ type: 'req_phone_clips' });
+      } else {
+        getAllRecordingsFromVault().then(() => renderNVRPlaybackList());
+      }
+    }
+
+    async function streamClipOverP2P(conn, clipId) {
+      const clips = await getAllRecordingsFromVault();
+      const rec = clips.find(c => c.id === clipId);
+      if (!rec || !rec.blob) return;
+
+      const blob = rec.blob;
+      const arrayBuffer = await blob.arrayBuffer();
+      const totalBytes = arrayBuffer.byteLength;
+      const chunkSize = 64 * 1024; // 64KB
+      const totalChunks = Math.ceil(totalBytes / chunkSize);
+
+      conn.send({
+        type: 'clip_stream_start',
+        clipId: rec.id,
+        dateStr: rec.dateStr,
+        durationSec: rec.durationSec,
+        sizeFormatted: rec.sizeFormatted,
+        quality: rec.quality,
+        totalBytes: totalBytes,
+        totalChunks: totalChunks,
+        mimeType: blob.type || 'video/mp4'
+      });
+
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * chunkSize;
+        const end = Math.min(start + chunkSize, totalBytes);
+        const chunk = arrayBuffer.slice(start, end);
+        conn.send(chunk);
+
+        if (conn.dataChannel && conn.dataChannel.bufferedAmount > 512 * 1024) {
+          await new Promise(r => setTimeout(r, 25));
+        }
+      }
+
+      conn.send({ type: 'clip_stream_end', clipId: rec.id });
+    }
+
+    function showStreamProgressUI(pct) {
+      const box = document.getElementById('streamProgressBox');
+      const bar = document.getElementById('streamProgressBar');
+      const label = document.getElementById('streamProgressPct');
+      if (box) box.classList.remove('hidden');
+      if (bar) bar.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+    }
+
+    function updateStreamProgressUI(pct) {
+      const bar = document.getElementById('streamProgressBar');
+      const label = document.getElementById('streamProgressPct');
+      if (bar) bar.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+    }
+
+    function hideStreamProgressUI() {
+      const box = document.getElementById('streamProgressBox');
+      if (box) box.classList.add('hidden');
+    }
+
+    function playReceivedRemoteBlob(blob, meta) {
+      const player = document.getElementById('nvrMainPlayer');
+      const title = document.getElementById('nvrPlayerTitle');
+      if (title) title.textContent = `▶ ${meta.dateStr} (${formatSeconds(meta.durationSec)}) • ${meta.sizeFormatted} • ${meta.quality}`;
+      if (player.src) URL.revokeObjectURL(player.src);
+      player.src = URL.createObjectURL(blob);
+      player.play().catch(()=>{});
+      document.getElementById('nvrPlayerBox').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ========================================================
+    // 5. NVR DATE-WISE TIMELINE & PLAYBACK UI
     // ========================================================
     function getDateKey(d) {
       const year = d.getFullYear();
@@ -2204,33 +2170,57 @@
       renderNVRPlaybackList();
     }
 
+    function switchPlaybackSource(src) {
+      playbackSource = src;
+      const phoneBtn = document.getElementById('sourcePhoneBtn');
+      const localBtn = document.getElementById('sourceLocalBtn');
+      const titleLabel = document.getElementById('timelineTitleLabel');
+
+      if (src === 'phone') {
+        phoneBtn.classList.add('active');
+        localBtn.classList.remove('active');
+        if (titleLabel) titleLabel.textContent = "📹 Phone Camera Recordings";
+      } else {
+        localBtn.classList.add('active');
+        phoneBtn.classList.remove('active');
+        if (titleLabel) titleLabel.textContent = "📹 Local Device Recordings";
+      }
+      renderNVRPlaybackList();
+    }
+
     async function renderNVRPlaybackList() {
       const listEl = document.getElementById('nvrClipsList');
-      const summaryEl = document.getElementById('nvrDateSummaryChip');
       if (!listEl) return;
 
-      const allClips = await getAllRecordingsFromVault();
-      allClips.sort((a, b) => b.timestamp - a.timestamp); // newest first
+      const localClips = await getAllRecordingsFromVault();
+      updateAllCounters();
 
-      let filtered = allClips;
-      if (selectedPlaybackDate && selectedPlaybackDate !== 'all') {
-        filtered = allClips.filter(c => c.dateKey === selectedPlaybackDate);
+      // Determine active clip list
+      let activeClips = [];
+      if (playbackSource === 'phone') {
+        // If remote phone clips are available, use them. Otherwise fallback to local.
+        activeClips = remotePhoneClips.length > 0 ? remotePhoneClips : localClips;
+      } else {
+        activeClips = localClips;
       }
 
-      if (summaryEl) {
-        let totalBytes = 0;
-        let totalSec = 0;
-        filtered.forEach(c => {
-          totalBytes += (c.sizeBytes || 0);
-          totalSec += (c.durationSec || 0);
+      // Sort newest first
+      activeClips.sort((a, b) => b.timestamp - a.timestamp);
+
+      // Date Filter
+      let filtered = activeClips;
+      if (selectedPlaybackDate && selectedPlaybackDate !== 'all') {
+        filtered = activeClips.filter(c => {
+          const k = c.dateKey || getDateKey(new Date(c.timestamp));
+          return k === selectedPlaybackDate;
         });
-        summaryEl.textContent = `${filtered.length} Clips (${formatSeconds(totalSec)} • ${formatBytes(totalBytes)})`;
       }
 
       if (filtered.length === 0) {
         listEl.innerHTML = `
           <div style="text-align: center; color: var(--text-dim); padding: 30px; font-size: 0.82rem;">
-            No recordings found ${selectedPlaybackDate === 'all' ? 'in vault' : 'for ' + selectedPlaybackDate}.
+            No recordings found ${selectedPlaybackDate === 'all' ? '' : 'for ' + selectedPlaybackDate}.<br>
+            <button class="btn-act cyan" style="margin-top:10px;" onclick="filterPlaybackQuick('all')">Show All (${activeClips.length})</button>
           </div>
         `;
         return;
@@ -2252,20 +2242,19 @@
             expiryBadge = `<span style="color:var(--danger);">⚠️ Expired</span>`;
           }
         } else {
-          expiryBadge = `<span style="color:var(--emerald);">♾️ Permanent</span>`;
+          expiryBadge = `<span style="color:var(--emerald);">♾️ Kept permanently</span>`;
         }
 
         const isPlaying = c.id === currentlyPlayingClipId;
 
         return `
-          <div class="nvr-clip-card ${isPlaying ? 'active-playing' : ''}" onclick="playNVRClip('${c.id}')">
-            <div style="display: flex; flex-direction: column; gap: 3px;">
-              <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 0.78rem; color: #fff;">
-                <span>${isPlaying ? '▶' : '📹'} ${c.timeStr}</span>
-                <span class="chip" style="font-size: 0.65rem; padding: 2px 5px;">${c.quality || 'HD'}</span>
-                <span class="chip" style="font-size: 0.65rem; padding: 2px 5px;">${c.recordedBy === 'phone' ? '📱 PHONE' : '💻 VIEWER'}</span>
+          <div class="clip-card ${isPlaying ? 'active-playing' : ''}">
+            <div class="card-top-info">
+              <div class="card-title">
+                <span>${isPlaying ? '▶' : '📹'} ${c.dateStr || c.timeStr}</span>
+                <span class="chip" style="font-size:0.65rem; padding:2px 5px;">${c.quality || 'HD'}</span>
               </div>
-              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-dim); font-family: monospace;">
+              <div class="card-meta-row">
                 <span>⏱️ ${formatSeconds(c.durationSec)}</span>
                 <span>•</span>
                 <span>💾 ${c.sizeFormatted}</span>
@@ -2274,45 +2263,64 @@
               </div>
             </div>
 
-            <div style="display: flex; gap: 4px;" onclick="event.stopPropagation();">
-              <button class="btn-act cyan" style="padding: 4px 8px; font-size: 0.7rem;" onclick="playNVRClip('${c.id}')">▶ Play</button>
-              <button class="btn-act" style="padding: 4px 8px; font-size: 0.7rem;" onclick="downloadNVRClip('${c.id}')">⬇</button>
-              <button class="btn-act danger" style="padding: 4px 8px; font-size: 0.7rem;" onclick="confirmDeleteClip('${c.id}')">🗑️</button>
+            <div class="card-btn-row">
+              <button class="btn-play-hero" onclick="playSelectedClip('${c.id}')">
+                ▶ PLAY VIDEO
+              </button>
+              <button class="btn-act" style="padding: 7px 10px;" onclick="downloadSelectedClip('${c.id}')" title="Download MP4">
+                ⬇ Save
+              </button>
+              <button class="btn-act danger" style="padding: 7px 10px;" onclick="confirmDeleteClip('${c.id}')" title="Delete">
+                🗑️
+              </button>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    function playNVRClip(id) {
+    function playSelectedClip(id) {
+      currentlyPlayingClipId = id;
+
+      // Check if clip exists in local storage
       getAllRecordingsFromVault().then(clips => {
-        const rec = clips.find(c => c.id === id);
-        if (!rec) return alert("Clip not found!");
+        const localRec = clips.find(c => c.id === id);
+        if (localRec && localRec.blob) {
+          const player = document.getElementById('nvrMainPlayer');
+          const title = document.getElementById('nvrPlayerTitle');
+          if (title) title.textContent = `▶ ${localRec.dateStr} (${formatSeconds(localRec.durationSec)}) • ${localRec.sizeFormatted} • ${localRec.quality}`;
+          if (player.src) URL.revokeObjectURL(player.src);
+          player.src = URL.createObjectURL(localRec.blob);
+          player.play().catch(()=>{});
+          document.getElementById('nvrPlayerBox').scrollIntoView({ behavior: 'smooth' });
+          renderNVRPlaybackList();
+          return;
+        }
 
-        currentlyPlayingClipId = id;
-        const player = document.getElementById('nvrMainPlayer');
-        const title = document.getElementById('nvrPlayerTitle');
-
-        if (title) title.textContent = `▶ ${rec.dateStr} (${formatSeconds(rec.durationSec)}) • ${rec.sizeFormatted} • ${rec.quality}`;
-        if (player.src) URL.revokeObjectURL(player.src);
-        player.src = URL.createObjectURL(rec.blob);
-        player.play().catch(()=>{});
-
-        renderNVRPlaybackList();
+        // If not in local, request from Phone over P2P!
+        if (isOfficeConnected && dataChannel && dataChannel.open) {
+          dataChannel.send({ type: 'req_stream_clip', clipId: id });
+          showStreamProgressUI(0);
+        } else {
+          alert("Clip is stored on the phone camera. Please connect Live P2P to stream it to laptop.");
+        }
       });
     }
 
-    function downloadNVRClip(id) {
+    function downloadSelectedClip(id) {
       getAllRecordingsFromVault().then(clips => {
         const rec = clips.find(c => c.id === id);
-        if (!rec) return alert("Clip not found!");
-        const url = URL.createObjectURL(rec.blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const safeDate = rec.dateStr.replace(/[/,: ]/g, '_');
-        a.download = `PRScam_NVR_${safeDate}_${rec.durationSec}s.mp4`;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 10000);
+        if (rec && rec.blob) {
+          const url = URL.createObjectURL(rec.blob);
+          const a = document.createElement('a');
+          a.href = url;
+          const safeDate = (rec.dateStr || '').replace(/[/,: ]/g, '_');
+          a.download = `PRScam_${safeDate}_${rec.durationSec}s.mp4`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 10000);
+        } else {
+          alert("To download, tap 'PLAY VIDEO' first to fetch from phone.");
+        }
       });
     }
 
@@ -2329,7 +2337,7 @@
     }
 
     // ========================================================
-    // 5. VIEWER ROLLING RECORDER & MANUAL RECORDER
+    // 6. VIEWER ROLLING RECORDER (WITH ACCURATE LIVE TIMERS)
     // ========================================================
     function toggleAutoRecord() {
       autoRecordEnabled = !autoRecordEnabled;
@@ -2425,7 +2433,7 @@
 
         const manualStart = Date.now();
         isManualRecording = true;
-        btn.textContent = "⏹️ Stop";
+        btn.textContent = "⏹️ Stop (00:00)";
         btn.classList.add('active-rec');
 
         viewerMediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) viewerRecordedBlobs.push(e.data); };
@@ -2470,25 +2478,39 @@
       }
     }
 
+    // MULTI-LOCATION RECORDING TIMER SYNC
     function updateViewerRecBadge(isActive, isAuto) {
-      const badge = document.getElementById('recBadge');
-      const modeLabel = document.getElementById('recModeBadge');
-      const timerEl = document.getElementById('recTimer');
-      if (!badge) return;
+      const osdBadge = document.getElementById('recBadge');
+      const topBadge = document.getElementById('topRecBadge');
+      const osdTimer = document.getElementById('recTimer');
+      const topLabel = document.getElementById('topRecLabel');
+      const recBtn = document.getElementById('recBtn');
 
       clearInterval(viewerRecInterval);
       if (isActive) {
-        badge.classList.remove('hidden');
-        if (modeLabel) modeLabel.textContent = isAuto ? "REC [AUTO]" : "REC";
+        if (osdBadge) osdBadge.classList.remove('hidden');
+        if (topBadge) topBadge.classList.remove('hidden');
+
+        const modeText = isAuto ? "REC [AUTO]" : "REC";
+        const modeBadge = document.getElementById('recModeBadge');
+        if (modeBadge) modeBadge.textContent = modeText;
+
         viewerRecSeconds = 0;
         viewerRecInterval = setInterval(() => {
           viewerRecSeconds++;
           const m = String(Math.floor(viewerRecSeconds / 60)).padStart(2, '0');
           const s = String(viewerRecSeconds % 60).padStart(2, '0');
-          if (timerEl) timerEl.textContent = `${m}:${s}`;
+          const timerStr = `${m}:${s}`;
+
+          if (osdTimer) osdTimer.textContent = timerStr;
+          if (topLabel) topLabel.textContent = `${modeText} ${timerStr}`;
+          if (recBtn && isManualRecording) {
+            recBtn.textContent = `⏹️ Stop (${timerStr})`;
+          }
         }, 1000);
       } else {
-        badge.classList.add('hidden');
+        if (osdBadge) osdBadge.classList.add('hidden');
+        if (topBadge) topBadge.classList.add('hidden');
       }
     }
 
