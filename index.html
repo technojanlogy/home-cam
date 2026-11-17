@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HomeCam 2-Way Audio</title>
+  <title>HomeCam (Mute Controls & Battery Saver)</title>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #121212; color: #e0e0e0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 1.5rem; }
     .card { background: #1e1e1e; border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 540px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-    h1 { font-size: 1.4rem; margin-bottom: 1rem; text-align: center; color: #fff; }
+    h1 { font-size: 1.3rem; margin-bottom: 1rem; text-align: center; color: #fff; }
     .tabs { display: flex; gap: 8px; margin-bottom: 1.2rem; }
     button.tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; background: #2c2c2c; color: #aaa; cursor: pointer; font-weight: 600; }
     button.tab-btn.active { background: #3b82f6; color: #fff; }
@@ -17,18 +17,32 @@
     label { display: block; font-size: 0.85rem; margin-bottom: 4px; color: #bbb; }
     input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #262626; color: #fff; font-size: 1rem; }
     .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem; margin-bottom: 8px; }
-    .btn:hover { background: #059669; }
-    .btn-mic { background: #ef4444; }
-    .btn-mic.active { background: #10b981; }
+    .btn:hover { opacity: 0.9; }
+    .btn-secondary { background: #374151; }
+    .btn-danger { background: #ef4444; }
+    .btn-dark { background: #111827; border: 1px solid #374151; }
     .status { margin-top: 10px; font-size: 0.9rem; text-align: center; color: #fbbf24; font-weight: 500; }
     video { width: 100%; border-radius: 8px; background: #000; margin-top: 1rem; max-height: 380px; object-fit: contain; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
+
+    /* AMOLED PURE BLACK OVERLAY (BATTERY SAVER) */
+    #blackScreenOverlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #000000; z-index: 999999; display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end; padding-bottom: 40px; cursor: pointer;
+    }
+    #blackScreenOverlay p { color: #222222; font-size: 0.85rem; user-select: none; }
   </style>
 </head>
 <body>
 
+  <!-- Fullscreen Battery Saver Overlay -->
+  <div id="blackScreenOverlay" class="hidden" onclick="exitBlackScreen()">
+    <p>⚡ Battery Saver Active • Tap screen to wake</p>
+  </div>
+
   <div class="card">
-    <h1>🏠 HomeCam (2-Way Audio)</h1>
+    <h1>🏠 HomeCam 2-Way</h1>
 
     <div class="tabs">
       <button class="tab-btn active" id="tabCamera" onclick="switchMode('camera')">📱 Home Phone (Camera)</button>
@@ -40,7 +54,7 @@
       <input type="text" id="secretKey" value="my-home-camera-782" />
     </div>
 
-    <!-- HOME PHONE SECTION -->
+    <!-- ================= HOME PHONE SECTION ================= -->
     <div id="cameraSection">
       <div class="field">
         <label>Select Camera:</label>
@@ -49,17 +63,31 @@
           <option value="user">Front Camera</option>
         </select>
       </div>
-      <button class="btn" onclick="startCamera()">1. Start Camera + Mic</button>
+
+      <button class="btn" id="startCamBtn" onclick="startCamera()">1. Start Camera + Mic</button>
+      
+      <!-- Phone Mute Button -->
+      <button class="btn btn-secondary hidden" id="phoneMicBtn" onclick="togglePhoneMic()">🎙️ Phone Mic: ON</button>
+      
+      <!-- Battery Saver Black Screen Button -->
+      <button class="btn btn-dark hidden" id="saverBtn" onclick="enterBlackScreen()">🔋 Black Screen (Battery Saver)</button>
+
       <div class="status" id="cameraStatus">Camera is off.</div>
       <video id="localPreview" autoplay muted playsinline class="hidden"></video>
-      <!-- Office se aane wali aawaz phone ke speaker par bajegi -->
       <audio id="incomingOfficeAudio" autoplay></audio>
     </div>
 
-    <!-- OFFICE LAPTOP SECTION -->
+    <!-- ================= OFFICE LAPTOP SECTION ================= -->
     <div id="viewerSection" class="hidden">
       <button class="btn" onclick="connectFromOffice()">Connect to Home Camera</button>
-      <button class="btn btn-mic hidden" id="micToggleBtn" onclick="toggleOfficeMic()">🎙️ Speak to Home: OFF</button>
+
+      <div style="display: flex; gap: 8px;">
+        <!-- Office Speaker Mute -->
+        <button class="btn btn-secondary hidden" id="speakerBtn" onclick="toggleHomeAudio()">🔊 Home Sound: ON</button>
+        <!-- Office Mic to Home -->
+        <button class="btn btn-danger hidden" id="officeMicBtn" onclick="toggleOfficeMic()">🎙️ Mic to Home: OFF</button>
+      </div>
+
       <div class="status" id="viewerStatus">Click Connect to start video & sound.</div>
       <video id="remoteFeed" autoplay playsinline controls></video>
     </div>
@@ -80,7 +108,9 @@
     let peer = null;
     let localStream = null;
     let officeMicStream = null;
-    let isMicActive = false;
+    let phoneMicActive = true;
+    let officeMicActive = false;
+    let homeAudioActive = true;
 
     function switchMode(mode) {
       const isCamera = mode === 'camera';
@@ -90,8 +120,16 @@
       document.getElementById('viewerSection').classList.toggle('hidden', isCamera);
     }
 
+    // --- BATTERY SAVER (BLACK SCREEN) ---
+    function enterBlackScreen() {
+      document.getElementById('blackScreenOverlay').classList.remove('hidden');
+    }
+    function exitBlackScreen() {
+      document.getElementById('blackScreenOverlay').classList.add('hidden');
+    }
+
     // ==========================================
-    // 1. HOME PHONE (CAMERA + MIC + SPEAKER)
+    // 1. HOME PHONE CONTROLS
     // ==========================================
     async function startCamera() {
       const key = document.getElementById('secretKey').value.trim();
@@ -100,15 +138,15 @@
 
       statusEl.textContent = "Starting camera & mic...";
       try {
-        // Video + Audio capture with Noise/Echo cancellation
         localStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: facing, width: { ideal: 640 }, height: { ideal: 480 } },
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
         });
 
-        const preview = document.getElementById('localPreview');
-        preview.srcObject = localStream;
-        preview.classList.remove('hidden');
+        document.getElementById('localPreview').srcObject = localStream;
+        document.getElementById('localPreview').classList.remove('hidden');
+        document.getElementById('phoneMicBtn').classList.remove('hidden');
+        document.getElementById('saverBtn').classList.remove('hidden');
 
         if ('wakeLock' in navigator) {
           try { await navigator.wakeLock.request('screen'); } catch(e){}
@@ -118,17 +156,13 @@
         peer = new Peer(key, peerConfig);
 
         peer.on('open', () => {
-          statusEl.textContent = "🟢 Ready! Waiting for Office to connect...";
+          statusEl.textContent = "🟢 Ready! Turn on 'Battery Saver' & leave phone.";
         });
 
-        // Jab office connect karega
         peer.on('connection', (conn) => {
-          statusEl.textContent = "🔵 Office connected! Streaming video + sound...";
+          statusEl.textContent = "🔵 Office connected! Streaming...";
           conn.on('open', () => {
-            // Call office with Phone's camera & audio
             const call = peer.call(conn.peer, localStream);
-
-            // Office se aane wali aawaz receive karna
             call.on('stream', (officeAudio) => {
               const audioTag = document.getElementById('incomingOfficeAudio');
               audioTag.srcObject = officeAudio;
@@ -137,79 +171,87 @@
           });
         });
 
-        peer.on('error', (err) => {
-          statusEl.textContent = `Error: ${err.type || err}`;
-        });
-
+        peer.on('error', (err) => { statusEl.textContent = `Error: ${err.type || err}`; });
       } catch (err) {
-        statusEl.textContent = `Permission Error: ${err.message}`;
+        statusEl.textContent = `Error: ${err.message}`;
       }
     }
 
+    // Toggle Phone's Mic
+    function togglePhoneMic() {
+      if (!localStream) return;
+      phoneMicActive = !phoneMicActive;
+      localStream.getAudioTracks().forEach(track => track.enabled = phoneMicActive);
+      const btn = document.getElementById('phoneMicBtn');
+      btn.textContent = phoneMicActive ? "🎙️ Phone Mic: ON" : "🔇 Phone Mic: MUTED";
+      btn.style.background = phoneMicActive ? "#374151" : "#ef4444";
+    }
+
     // ==========================================
-    // 2. OFFICE LAPTOP (VIEWER + MIC)
+    // 2. OFFICE LAPTOP CONTROLS
     // ==========================================
     async function connectFromOffice() {
       const key = document.getElementById('secretKey').value.trim();
       const statusEl = document.getElementById('viewerStatus');
       const video = document.getElementById('remoteFeed');
-      const micBtn = document.getElementById('micToggleBtn');
 
-      statusEl.textContent = "Getting Office Mic permission...";
+      statusEl.textContent = "Preparing mic & connection...";
 
-      // Office ka mic stream ready karna (initially muted)
       try {
         officeMicStream = await navigator.mediaDevices.getUserMedia({
           audio: { echoCancellation: true, noiseSuppression: true }
         });
-        // Default mute taaki office ki aawaz ghar na jaye jab tak button na dabayein
-        officeMicStream.getAudioTracks()[0].enabled = false;
-        micBtn.classList.remove('hidden');
+        officeMicStream.getAudioTracks()[0].enabled = false; // default mute
+        document.getElementById('officeMicBtn').classList.remove('hidden');
       } catch (e) {
-        console.warn("No mic or permission denied on Office PC:", e);
+        console.warn("No office mic found", e);
       }
 
-      statusEl.textContent = "Connecting to home phone...";
       if (peer) peer.destroy();
       peer = new Peer(peerConfig);
 
-      peer.on('open', (officeId) => {
-        statusEl.textContent = "Connecting...";
-        const conn = peer.connect(key);
+      peer.on('open', () => {
+        statusEl.textContent = "Connecting to phone...";
+        peer.connect(key);
 
         peer.on('call', (call) => {
-          // Office ka mic phone ko bhej rahe hain (2-way)
           call.answer(officeMicStream);
-
           call.on('stream', (homeStream) => {
             statusEl.textContent = "🟢 Live Video & Sound Connected!";
             video.srcObject = homeStream;
-            video.play().catch(() => {
-              statusEl.textContent = "Click video to unmute/play";
-            });
+            video.play();
+            document.getElementById('speakerBtn').classList.remove('hidden');
           });
         });
       });
 
-      peer.on('error', (err) => {
-        statusEl.textContent = `Error: ${err.type || err}`;
-      });
+      peer.on('error', (err) => { statusEl.textContent = `Error: ${err.type || err}`; });
     }
 
-    // Office Mic toggle (Talk to Home)
+    // Mute/Unmute Home Sound at Office
+    function toggleHomeAudio() {
+      const video = document.getElementById('remoteFeed');
+      const btn = document.getElementById('speakerBtn');
+      homeAudioActive = !homeAudioActive;
+      video.muted = !homeAudioActive;
+      btn.textContent = homeAudioActive ? "🔊 Home Sound: ON" : "🔇 Home Sound: MUTED";
+      btn.style.background = homeAudioActive ? "#374151" : "#ef4444";
+    }
+
+    // Speak to Home from Office
     function toggleOfficeMic() {
-      const micBtn = document.getElementById('micToggleBtn');
-      if (!officeMicStream) return alert("Mic is not accessible on this device.");
+      const btn = document.getElementById('officeMicBtn');
+      if (!officeMicStream) return alert("Office microphone not found.");
 
-      isMicActive = !isMicActive;
-      officeMicStream.getAudioTracks()[0].enabled = isMicActive;
+      officeMicActive = !officeMicActive;
+      officeMicStream.getAudioTracks()[0].enabled = officeMicActive;
 
-      if (isMicActive) {
-        micBtn.textContent = "📢 Speaking to Home: LIVE (Click to Mute)";
-        micBtn.classList.add('active');
+      if (officeMicActive) {
+        btn.textContent = "📢 Mic to Home: LIVE";
+        btn.style.background = "#10b981";
       } else {
-        micBtn.textContent = "🎙️ Speak to Home: OFF (Click to Speak)";
-        micBtn.classList.remove('active');
+        btn.textContent = "🎙️ Mic to Home: OFF";
+        btn.style.background = "#ef4444";
       }
     }
   </script>
