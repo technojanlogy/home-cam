@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HomeCam P2P (Live Stream)</title>
+  <title>HomeCam 2-Way Audio</title>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -16,17 +16,19 @@
     .field { margin-bottom: 1rem; }
     label { display: block; font-size: 0.85rem; margin-bottom: 4px; color: #bbb; }
     input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #262626; color: #fff; font-size: 1rem; }
-    .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem; }
+    .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem; margin-bottom: 8px; }
     .btn:hover { background: #059669; }
+    .btn-mic { background: #ef4444; }
+    .btn-mic.active { background: #10b981; }
     .status { margin-top: 10px; font-size: 0.9rem; text-align: center; color: #fbbf24; font-weight: 500; }
-    video { width: 100%; border-radius: 8px; background: #000; margin-top: 1rem; max-height: 400px; object-fit: contain; }
+    video { width: 100%; border-radius: 8px; background: #000; margin-top: 1rem; max-height: 380px; object-fit: contain; }
     .hidden { display: none; }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h1>🏠 HomeCam (Direct Push)</h1>
+    <h1>🏠 HomeCam (2-Way Audio)</h1>
 
     <div class="tabs">
       <button class="tab-btn active" id="tabCamera" onclick="switchMode('camera')">📱 Home Phone (Camera)</button>
@@ -38,7 +40,7 @@
       <input type="text" id="secretKey" value="my-home-camera-782" />
     </div>
 
-    <!-- CAMERA SECTION (HOME) -->
+    <!-- HOME PHONE SECTION -->
     <div id="cameraSection">
       <div class="field">
         <label>Select Camera:</label>
@@ -47,16 +49,19 @@
           <option value="user">Front Camera</option>
         </select>
       </div>
-      <button class="btn" onclick="startCamera()">1. Start Camera & Wait</button>
+      <button class="btn" onclick="startCamera()">1. Start Camera + Mic</button>
       <div class="status" id="cameraStatus">Camera is off.</div>
       <video id="localPreview" autoplay muted playsinline class="hidden"></video>
+      <!-- Office se aane wali aawaz phone ke speaker par bajegi -->
+      <audio id="incomingOfficeAudio" autoplay></audio>
     </div>
 
-    <!-- VIEWER SECTION (OFFICE) -->
+    <!-- OFFICE LAPTOP SECTION -->
     <div id="viewerSection" class="hidden">
       <button class="btn" onclick="connectFromOffice()">Connect to Home Camera</button>
-      <div class="status" id="viewerStatus">Click Connect to receive live feed.</div>
-      <video id="remoteFeed" autoplay muted playsinline controls></video>
+      <button class="btn btn-mic hidden" id="micToggleBtn" onclick="toggleOfficeMic()">🎙️ Speak to Home: OFF</button>
+      <div class="status" id="viewerStatus">Click Connect to start video & sound.</div>
+      <video id="remoteFeed" autoplay playsinline controls></video>
     </div>
   </div>
 
@@ -74,6 +79,8 @@
 
     let peer = null;
     let localStream = null;
+    let officeMicStream = null;
+    let isMicActive = false;
 
     function switchMode(mode) {
       const isCamera = mode === 'camera';
@@ -83,17 +90,20 @@
       document.getElementById('viewerSection').classList.toggle('hidden', isCamera);
     }
 
-    // --- HOME PHONE CODE ---
+    // ==========================================
+    // 1. HOME PHONE (CAMERA + MIC + SPEAKER)
+    // ==========================================
     async function startCamera() {
       const key = document.getElementById('secretKey').value.trim();
       const statusEl = document.getElementById('cameraStatus');
       const facing = document.getElementById('cameraFacing').value;
 
-      statusEl.textContent = "Starting camera...";
+      statusEl.textContent = "Starting camera & mic...";
       try {
+        // Video + Audio capture with Noise/Echo cancellation
         localStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: facing, width: { ideal: 640 }, height: { ideal: 480 } },
-          audio: false
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
         });
 
         const preview = document.getElementById('localPreview');
@@ -111,12 +121,19 @@
           statusEl.textContent = "🟢 Ready! Waiting for Office to connect...";
         });
 
-        // Jab office data connect kare, Phone direct video stream call karega
+        // Jab office connect karega
         peer.on('connection', (conn) => {
-          statusEl.textContent = "🔵 Office detected! Pushing video stream...";
+          statusEl.textContent = "🔵 Office connected! Streaming video + sound...";
           conn.on('open', () => {
-            // Push real camera stream to office
-            peer.call(conn.peer, localStream);
+            // Call office with Phone's camera & audio
+            const call = peer.call(conn.peer, localStream);
+
+            // Office se aane wali aawaz receive karna
+            call.on('stream', (officeAudio) => {
+              const audioTag = document.getElementById('incomingOfficeAudio');
+              audioTag.srcObject = officeAudio;
+              audioTag.play();
+            });
           });
         });
 
@@ -125,38 +142,50 @@
         });
 
       } catch (err) {
-        statusEl.textContent = `Camera Error: ${err.message}`;
+        statusEl.textContent = `Permission Error: ${err.message}`;
       }
     }
 
-    // --- OFFICE LAPTOP CODE ---
-    function connectFromOffice() {
+    // ==========================================
+    // 2. OFFICE LAPTOP (VIEWER + MIC)
+    // ==========================================
+    async function connectFromOffice() {
       const key = document.getElementById('secretKey').value.trim();
       const statusEl = document.getElementById('viewerStatus');
       const video = document.getElementById('remoteFeed');
+      const micBtn = document.getElementById('micToggleBtn');
 
-      statusEl.textContent = "Connecting to network...";
+      statusEl.textContent = "Getting Office Mic permission...";
+
+      // Office ka mic stream ready karna (initially muted)
+      try {
+        officeMicStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true }
+        });
+        // Default mute taaki office ki aawaz ghar na jaye jab tak button na dabayein
+        officeMicStream.getAudioTracks()[0].enabled = false;
+        micBtn.classList.remove('hidden');
+      } catch (e) {
+        console.warn("No mic or permission denied on Office PC:", e);
+      }
+
+      statusEl.textContent = "Connecting to home phone...";
       if (peer) peer.destroy();
       peer = new Peer(peerConfig);
 
       peer.on('open', (officeId) => {
-        statusEl.textContent = "Handshaking with home phone...";
-        
-        // Step 1: Send ping to phone
+        statusEl.textContent = "Connecting...";
         const conn = peer.connect(key);
-        
-        conn.on('open', () => {
-          statusEl.textContent = "Handshake success! Receiving video...";
-        });
 
-        // Step 2: Receive the incoming video stream from phone
         peer.on('call', (call) => {
-          call.answer(); // Answer without sending any camera
-          call.on('stream', (stream) => {
-            statusEl.textContent = "🟢 Live Video Feed Connected!";
-            video.srcObject = stream;
+          // Office ka mic phone ko bhej rahe hain (2-way)
+          call.answer(officeMicStream);
+
+          call.on('stream', (homeStream) => {
+            statusEl.textContent = "🟢 Live Video & Sound Connected!";
+            video.srcObject = homeStream;
             video.play().catch(() => {
-              statusEl.textContent = "Click play on video";
+              statusEl.textContent = "Click video to unmute/play";
             });
           });
         });
@@ -165,6 +194,23 @@
       peer.on('error', (err) => {
         statusEl.textContent = `Error: ${err.type || err}`;
       });
+    }
+
+    // Office Mic toggle (Talk to Home)
+    function toggleOfficeMic() {
+      const micBtn = document.getElementById('micToggleBtn');
+      if (!officeMicStream) return alert("Mic is not accessible on this device.");
+
+      isMicActive = !isMicActive;
+      officeMicStream.getAudioTracks()[0].enabled = isMicActive;
+
+      if (isMicActive) {
+        micBtn.textContent = "📢 Speaking to Home: LIVE (Click to Mute)";
+        micBtn.classList.add('active');
+      } else {
+        micBtn.textContent = "🎙️ Speak to Home: OFF (Click to Speak)";
+        micBtn.classList.remove('active');
+      }
     }
   </script>
 </body>
