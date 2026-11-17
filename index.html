@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#070a10" />
-  <title>PRScam • Pro CCTV & NVR System</title>
+  <title>PRScam • Pro CCTV & NVR Cockpit</title>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     :root {
@@ -38,9 +38,9 @@
       overflow-x: hidden;
     }
 
-    /* GLOBAL BRAND & NAVIGATION */
+    /* GLOBAL BRAND & HEADER */
     .brand-logo {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 900;
       background: linear-gradient(135deg, #ffffff 40%, var(--cyan));
       -webkit-background-clip: text;
@@ -89,31 +89,37 @@
       color: #fff;
     }
 
-    .tab-bar {
+    /* TAB NAVIGATION BARS */
+    .tabs-bar {
       display: flex;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.45);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 2px;
+      border-radius: 9px;
+      padding: 3px;
+      gap: 3px;
     }
     .tab-btn {
-      padding: 4px 10px;
+      flex: 1;
+      padding: 6px 12px;
       border: none;
-      border-radius: 6px;
+      border-radius: 7px;
       background: transparent;
       color: var(--text-dim);
-      font-size: 0.76rem;
-      font-weight: 700;
+      font-size: 0.78rem;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 5px;
+      justify-content: center;
+      gap: 6px;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .tab-btn.active {
       background: rgba(0, 245, 255, 0.16);
       color: var(--cyan);
       border: 1px solid rgba(0, 245, 255, 0.35);
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.15);
     }
 
     .chip {
@@ -135,7 +141,7 @@
     .rec-flag {
       color: var(--danger);
       font-weight: 800;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
     }
@@ -149,7 +155,7 @@
     @keyframes blink { 50% { opacity: 0; } }
 
     /* ========================================================
-       1. PHONE APP VIEW (MOBILE BROADCASTER & AUTONOMOUS CCTV)
+       1. PHONE APP VIEW (MOBILE BROADCASTER & MOBILE PLAYBACK)
        ======================================================== */
     .phone-app-container {
       max-width: 480px;
@@ -167,7 +173,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 0;
+      padding: 2px 0;
     }
 
     .phone-viewfinder {
@@ -194,7 +200,7 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
-      padding: 14px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -265,7 +271,7 @@
     #stealthCover p { color: #222; font-size: 0.8rem; user-select: none; }
 
     /* ========================================================
-       2. VIEWER CONSOLE (MOBILE & LAPTOP OPTIMIZED)
+       2. VIEWER CONSOLE (LAPTOP & MOBILE OPTIMIZED)
        ======================================================== */
     .laptop-console {
       height: 100dvh;
@@ -338,7 +344,7 @@
       z-index: 10;
     }
 
-    /* OFFICE CONTROLS DOCK (LOWER BAR) */
+    /* DOCK CONTROLS (LIVE VIEW) */
     .office-dock {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -461,7 +467,7 @@
     }
 
     /* ========================================================
-       3. NVR PLAYBACK CONSOLE (CLEAN CARDS & RESPONSIVE LIST)
+       3. NVR PLAYBACK CONSOLE (CLEAN CARD LIST & VIDEO PLAYER)
        ======================================================== */
     .nvr-playback-console {
       flex: 1 1 0;
@@ -500,7 +506,7 @@
       }
       .nvr-player-box {
         min-height: 200px !important;
-        max-height: 220px !important;
+        max-height: 230px !important;
       }
     }
 
@@ -613,7 +619,7 @@
       background: linear-gradient(135deg, #00f5ff, #0099ff);
       color: #000;
       font-weight: 900;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -637,7 +643,7 @@
       cursor: pointer;
     }
 
-    /* STREAMING PROGRESS BAR (REMOTE P2P) */
+    /* P2P STREAM PROGRESS OVERLAY */
     .stream-progress-box {
       position: absolute;
       bottom: 12px;
@@ -695,89 +701,139 @@
       </div>
     </div>
 
-    <!-- Phone Viewfinder (HARD MUTED) -->
-    <div class="phone-viewfinder">
-      <video class="phone-preview-video" id="phonePreviewVideo" autoplay muted playsinline></video>
-      <div style="position: absolute; top: 10px; left: 10px;" class="chip">
-        STATUS: <b id="phoneStatusBadge">STANDBY</b>
+    <!-- DEDICATED PHONE TABS: CAMERA vs PLAYBACK -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" id="phoneTabCameraBtn" onclick="switchPhoneTab('camera')">
+        📷 Camera & Live
+      </button>
+      <button class="tab-btn" id="phoneTabPlaybackBtn" onclick="switchPhoneTab('playback')">
+        📼 Playback (<span id="phoneTabCount">0</span>)
+      </button>
+    </div>
+
+    <!-- SUB-VIEW 1A: PHONE CAMERA VIEW -->
+    <div id="phoneCameraSubView" style="display: flex; flex-direction: column; gap: 10px;">
+      <!-- Phone Viewfinder (HARD MUTED) -->
+      <div class="phone-viewfinder">
+        <video class="phone-preview-video" id="phonePreviewVideo" autoplay muted playsinline></video>
+        <div style="position: absolute; top: 10px; left: 10px;" class="chip">
+          STATUS: <b id="phoneStatusBadge">STANDBY</b>
+        </div>
+        <div style="position: absolute; bottom: 10px; right: 10px;" class="chip">
+          QUALITY: <b id="phoneActiveRes">1080p FHD</b>
+        </div>
+        <!-- PHONE RECORDING TIMER BADGE -->
+        <div style="position: absolute; bottom: 10px; left: 10px;" class="chip hidden rec-flag" id="phoneRecBadge">
+          <span class="rec-dot"></span> <span id="phoneRecText">REC [AUTO] 00:00</span>
+        </div>
       </div>
-      <div style="position: absolute; bottom: 10px; right: 10px;" class="chip">
-        QUALITY: <b id="phoneActiveRes">1080p FHD</b>
-      </div>
-      <!-- PHONE RECORDING TIMER BADGE -->
-      <div style="position: absolute; bottom: 10px; left: 10px;" class="chip hidden rec-flag" id="phoneRecBadge">
-        <span class="rec-dot"></span> <span id="phoneRecText">REC [AUTO] 00:00</span>
+
+      <!-- Phone Controls Card -->
+      <div class="phone-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Secret Camera Key</label>
+          <button class="mode-btn" style="padding: 2px 6px; font-size: 0.7rem;" onclick="copySecretKey()">📋 Copy Key</button>
+        </div>
+        <input type="text" class="phone-input" id="phoneSecretKey" value="prs-secure-cam-782" />
+
+        <!-- QUALITY SELECTOR -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">CAMERA SENSOR:</span>
+          <select class="dock-select" id="phoneResSelect" onchange="onPhoneQualitySelect(this.value)">
+            <option value="240">240p (Zero-Heat 15fps)</option>
+            <option value="360">360p (Battery Saver)</option>
+            <option value="480">480p (SD Balanced)</option>
+            <option value="720">720p HD</option>
+            <option value="1080" selected>1080p Full HD</option>
+            <option value="4k">4K UHD (3840x2160)</option>
+            <option value="8k">8K Cinema (Max Sensor)</option>
+          </select>
+        </div>
+
+        <!-- AUTO-RECORD SETTING -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-RECORD (24/7 NVR):</span>
+          <select class="dock-select" id="phoneAutoRecSetting" onchange="onPhoneAutoRecChange(this.value)">
+            <option value="true" selected>ON (Record in Background)</option>
+            <option value="false">OFF (Only Stream Live)</option>
+          </select>
+        </div>
+
+        <!-- ROLLING CLIP DURATION -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">ROLLING CLIP LENGTH:</span>
+          <select class="dock-select" id="phoneSegmentSelect" onchange="onSegmentDurationChange(this.value)">
+            <option value="1">1 Minute (Rapid Clips)</option>
+            <option value="2" selected>2 Minutes (Recommended)</option>
+            <option value="5">5 Minutes</option>
+            <option value="15">15 Minutes</option>
+          </select>
+        </div>
+
+        <!-- AUTO-DELETE RETENTION SELECTOR -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-DELETE OLDER THAN:</span>
+          <select class="dock-select" id="phoneRetentionDays" onchange="onRetentionChange(this.value)">
+            <option value="1">1 Day (24 Hours)</option>
+            <option value="2" selected>2 Days (48 Hours)</option>
+            <option value="3">3 Days</option>
+            <option value="7">7 Days (1 Week)</option>
+            <option value="custom">Custom Days...</option>
+            <option value="0">Never (Manual Delete)</option>
+          </select>
+        </div>
+
+        <!-- MAIN START/STOP CAMERA BUTTON -->
+        <button class="btn-large emerald" id="phoneStartBtn" onclick="togglePhoneCamera()">
+          🚀 Start Camera
+        </button>
+
+        <!-- CUT / SAVE ACTIVE CLIP BUTTON -->
+        <button class="btn-large cyan" id="phoneCutClipBtn" onclick="cutPhoneSegmentNow()">
+          ✂️ Save / Cut Clip Now
+        </button>
+
+        <!-- PHONE MIC TOGGLE -->
+        <button class="btn-large muted-btn" id="phoneMicToggleBtn" onclick="togglePhoneMic()">
+          🎙️ Phone Mic: ON
+        </button>
+
+        <!-- 100% BLACK SCREEN STEALTH -->
+        <button class="btn-large stealth" onclick="enterStealth()">
+          🔋 100% Black Screen (Battery Saver)
+        </button>
+
+        <div style="font-size: 0.76rem; color: var(--text-dim); text-align: center;" id="phoneMsg">
+          Camera is ready. Tap Start Camera to begin.
+        </div>
       </div>
     </div>
 
-    <!-- Phone Controls Card -->
-    <div class="phone-card">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Secret Camera Key</label>
-        <button class="mode-btn" style="padding: 2px 6px; font-size: 0.7rem;" onclick="copySecretKey()">📋 Copy Key</button>
-      </div>
-      <input type="text" class="phone-input" id="phoneSecretKey" value="prs-secure-cam-782" />
-
-      <!-- LOCAL QUALITY SELECTOR -->
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">CAMERA SENSOR:</span>
-        <select class="dock-select" id="phoneResSelect" onchange="onPhoneQualitySelect(this.value)">
-          <option value="240">240p (Zero-Heat 15fps)</option>
-          <option value="360">360p (Battery Saver)</option>
-          <option value="480">480p (SD Balanced)</option>
-          <option value="720">720p HD</option>
-          <option value="1080" selected>1080p Full HD</option>
-          <option value="4k">4K UHD (3840x2160)</option>
-          <option value="8k">8K Cinema (7680x4320)</option>
-        </select>
+    <!-- SUB-VIEW 1B: DEDICATED MOBILE PLAYBACK VIEW -->
+    <div id="phonePlaybackSubView" class="hidden" style="display: flex; flex-direction: column; gap: 10px;">
+      
+      <!-- IN-MOBILE VIDEO PLAYER -->
+      <div style="background:#000; border:1px solid var(--card-border); border-radius:14px; overflow:hidden; position:relative; min-height:210px;">
+        <video id="phoneStandalonePlayer" controls playsinline style="width:100%; height:210px; background:#000; object-fit:contain;"></video>
+        <div id="phoneStandalonePlayerTitle" style="padding:6px 10px; font-size:0.75rem; color:#ffe600; background:rgba(0,0,0,0.8); font-weight:700;">
+          Select a clip below to play
+        </div>
       </div>
 
-      <!-- AUTO-RECORD LOCAL LOOP SETTING -->
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-RECORD (24/7 NVR):</span>
-        <select class="dock-select" id="phoneAutoRecSetting" onchange="onPhoneAutoRecChange(this.value)">
-          <option value="true" selected>ON (Record in Background)</option>
-          <option value="false">OFF (Only Stream Live)</option>
-        </select>
+      <!-- DATE FILTER TOOLBAR -->
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+        <div style="display:flex; gap:4px; align-items:center;">
+          <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="filterMobileClips('all')">All</button>
+          <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" onclick="filterMobileClips('today')">Today</button>
+          <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" onclick="filterMobileClips('yesterday')">Yesterday</button>
+        </div>
+        <button class="btn-act danger" style="padding:4px 8px; font-size:0.72rem;" onclick="confirmClearAllRecordings()">🗑️ Delete All</button>
       </div>
 
-      <!-- AUTO-DELETE RETENTION SELECTOR -->
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-DELETE OLDER THAN:</span>
-        <select class="dock-select" id="phoneRetentionDays" onchange="onRetentionChange(this.value)">
-          <option value="1">1 Day (24 Hours)</option>
-          <option value="2" selected>2 Days (48 Hours)</option>
-          <option value="3">3 Days</option>
-          <option value="7">7 Days (1 Week)</option>
-          <option value="custom">Custom Days...</option>
-          <option value="0">Never (Manual Delete)</option>
-        </select>
-      </div>
-
-      <!-- MAIN START/STOP CAMERA BUTTON -->
-      <button class="btn-large emerald" id="phoneStartBtn" onclick="togglePhoneCamera()">
-        🚀 Start Camera
-      </button>
-
-      <!-- OPEN PLAYBACK RECORDINGS ON PHONE -->
-      <button class="btn-large muted-btn" onclick="openPhonePlayback()">
-        📼 Open NVR Playback (<span id="phonePlaybackCount">0</span> Clips)
-      </button>
-
-      <!-- PHONE MIC TOGGLE -->
-      <button class="btn-large muted-btn" id="phoneMicToggleBtn" onclick="togglePhoneMic()">
-        🎙️ Phone Mic: ON
-      </button>
-
-      <!-- 100% BLACK SCREEN STEALTH -->
-      <button class="btn-large stealth" onclick="enterStealth()">
-        🔋 100% Black Screen (Battery Saver)
-      </button>
-
-      <div style="font-size: 0.76rem; color: var(--text-dim); text-align: center;" id="phoneMsg">
-        Camera is ready. Tap Start Camera to begin.
-      </div>
+      <!-- SCROLLABLE MOBILE CLIPS LIST -->
+      <div id="phoneClipsListContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
+
   </div>
 
   <!-- ========================================================
@@ -791,7 +847,7 @@
         <div class="brand-logo"><span class="pulse-dot"></span> PRScam Monitor</div>
         
         <!-- LIVE VIEW vs PLAYBACK TABS -->
-        <div class="tab-bar">
+        <div class="tabs-bar">
           <button class="tab-btn active" id="tabLiveBtn" onclick="switchViewerTab('live')">
             🔴 Live View
           </button>
@@ -802,7 +858,7 @@
 
         <span class="chip" id="feedChipWrapper">FEED: <b id="statRes">STANDBY</b></span>
 
-        <!-- PROMINENT RECORDING TIMER IN TOP BAR -->
+        <!-- PROMINENT RECORDING TIMER IN TOP BAR (SYNCED WITH PHONE!) -->
         <span class="chip hidden rec-flag" id="topRecBadge">
           <span class="rec-dot"></span>
           <span id="topRecLabel">REC 00:00</span>
@@ -848,7 +904,7 @@
             💻 Local Device (<span id="sourceLocalCount">0</span>)
           </button>
           <button class="btn-act cyan" style="padding:4px 8px;" onclick="syncRemotePhoneClips()">
-            🔄 Refresh
+            🔄 Refresh Phone Clips
           </button>
         </div>
 
@@ -953,9 +1009,10 @@
               <option value="720">720p HD</option>
               <option value="1080" selected>1080p Full HD</option>
               <option value="4k">4K UHD (3840x2160)</option>
-              <option value="8k">8K Cinema (7680x4320)</option>
+              <option value="8k">8K Cinema (Max Sensor)</option>
             </optgroup>
           </select>
+          <button class="btn-act" id="fitCoverToggleBtn" onclick="toggleVideoFit()">⛶ Fit Frame</button>
           <button class="btn-act" onclick="toggleFullscreen()">⛶ Fullscreen</button>
         </div>
 
@@ -971,13 +1028,13 @@
     // HARDWARE QUALITY PROFILES & PARAMETERS
     // ==========================================
     const QUALITY_PROFILES = {
-      '240':  { name: '240p ECO',       width: 426,  height: 240,  fps: 15, bitrate: 250000 },
-      '360':  { name: '360p Balanced',  width: 640,  height: 360,  fps: 20, bitrate: 500000 },
-      '480':  { name: '480p SD',        width: 854,  height: 480,  fps: 24, bitrate: 900000 },
-      '720':  { name: '720p HD',        width: 1280, height: 720,  fps: 30, bitrate: 2500000 },
-      '1080': { name: '1080p FHD',      width: 1920, height: 1080, fps: 30, bitrate: 6000000 },
-      '4k':   { name: '4K UHD',         width: 3840, height: 2160, fps: 30, bitrate: 18000000 },
-      '8k':   { name: '8K Cinema',      width: 7680, height: 4320, fps: 30, bitrate: 35000000 }
+      '240':  { name: '240p ECO',          width: 426,  height: 240,  fps: 15, bitrate: 250000 },
+      '360':  { name: '360p Balanced',     width: 640,  height: 360,  fps: 20, bitrate: 500000 },
+      '480':  { name: '480p SD',           width: 854,  height: 480,  fps: 24, bitrate: 900000 },
+      '720':  { name: '720p HD',           width: 1280, height: 720,  fps: 30, bitrate: 2000000 },
+      '1080': { name: '1080p FHD',         width: 1920, height: 1080, fps: 30, bitrate: 4000000 },
+      '4k':   { name: '4K UHD',            width: 3840, height: 2160, fps: 30, bitrate: 6000000 },
+      '8k':   { name: '8K Ultra Max',      width: 3840, height: 2160, fps: 30, bitrate: 8000000 }
     };
 
     const peerConfig = {
@@ -1003,6 +1060,7 @@
     let phoneMicActive = true;
     let isHearActive = true;
     let isTalkActive = false;
+    let videoFitMode = 'contain';
 
     let zoomLevel = 1.0;
     let panX = 0, panY = 0;
@@ -1016,7 +1074,7 @@
     // Auto-Recording & Retention Policy
     let autoRecordEnabled = localStorage.getItem('prscam_auto_record') !== 'false';
     let autoDeleteDays = parseFloat(localStorage.getItem('prscam_auto_delete_days') || '2');
-    let autoRecordSegmentMins = parseInt(localStorage.getItem('prscam_segment_mins') || '5');
+    let autoRecordSegmentMins = parseInt(localStorage.getItem('prscam_segment_mins') || '2');
     let phoneAutoRecordEnabled = localStorage.getItem('prscam_phone_auto_rec') !== 'false';
 
     // Phone Recorder
@@ -1025,6 +1083,7 @@
     let phoneSegmentTimer = null;
     let phoneRecSeconds = 0;
     let phoneRecInterval = null;
+    let phoneSegmentStartTime = 0;
 
     // Viewer Recorder
     let viewerMediaRecorder = null;
@@ -1037,15 +1096,16 @@
 
     // Playback Engine State
     let selectedPlaybackDate = 'all';
-    let playbackSource = 'phone'; // 'phone' or 'local'
+    let playbackSource = 'phone';
     let remotePhoneClips = [];
     let currentlyPlayingClipId = null;
 
-    // P2P Remote Clip Streaming State
-    let incomingClipMeta = null;
-    let incomingClipChunks = [];
+    // P2P Chunked Stream Receiver State
+    let p2pTransferMeta = null;
+    let p2pTransferChunks = [];
+    let p2pReceivedCount = 0;
 
-    // Live Clock Display
+    // Live Clock
     setInterval(() => {
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       const statClock = document.getElementById('statClock');
@@ -1055,10 +1115,6 @@
     // Initial Setup
     window.addEventListener('DOMContentLoaded', () => {
       initVaultStorage();
-
-      // Default quick date
-      const dateInput = document.getElementById('nvrDateInput');
-      if (dateInput) dateInput.value = getTodayDateKey();
 
       const autoRecBtn = document.getElementById('autoRecToggleBtn');
       if (autoRecBtn) {
@@ -1093,6 +1149,28 @@
       document.getElementById('officeConsoleSection').classList.remove('hidden');
     }
 
+    // PHONE SUB-TAB SWITCHER (CAMERA vs PLAYBACK)
+    function switchPhoneTab(tab) {
+      const camBtn = document.getElementById('phoneTabCameraBtn');
+      const playBtn = document.getElementById('phoneTabPlaybackBtn');
+      const camView = document.getElementById('phoneCameraSubView');
+      const playView = document.getElementById('phonePlaybackSubView');
+
+      if (tab === 'camera') {
+        camBtn.classList.add('active');
+        playBtn.classList.remove('active');
+        camView.classList.remove('hidden');
+        playView.classList.add('hidden');
+      } else {
+        playBtn.classList.add('active');
+        camBtn.classList.remove('active');
+        camView.classList.add('hidden');
+        playView.classList.remove('hidden');
+        renderMobilePhoneClips();
+      }
+    }
+
+    // VIEWER TAB SWITCHER (LIVE vs PLAYBACK)
     function switchViewerTab(tab) {
       const liveBtn = document.getElementById('tabLiveBtn');
       const playbackBtn = document.getElementById('tabPlaybackBtn');
@@ -1111,16 +1189,10 @@
         liveBtn.classList.remove('active');
         liveStage.classList.add('hidden');
         playbackConsole.classList.remove('hidden');
-        if (dock) dock.classList.add('hidden'); // Free up 100% height for Playback on mobile!
+        if (dock) dock.classList.add('hidden'); // 100% height for Playback on mobile!
         syncRemotePhoneClips();
         renderNVRPlaybackList();
       }
-    }
-
-    function openPhonePlayback() {
-      showViewerMode();
-      playbackSource = 'local'; // on phone, local storage has all phone clips
-      switchViewerTab('playback');
     }
 
     function copySecretKey() {
@@ -1167,12 +1239,86 @@
       }
     }
 
+    // ADAPTIVE CAMERA RESOLUTION ENGINE (ORIENTATION AWARE & CASCADE FALLBACK)
+    async function getAdaptiveCameraStream(profileKey) {
+      const q = QUALITY_PROFILES[profileKey] || QUALITY_PROFILES['1080'];
+      const isPortrait = window.innerHeight > window.innerWidth || window.orientation === 0 || window.orientation === 180;
+      
+      let candidateResolutions = [];
+      if (profileKey === '8k' || profileKey === '4k') {
+        candidateResolutions = [
+          { w: 3840, h: 2160, fps: 30 },
+          { w: 2560, h: 1440, fps: 30 },
+          { w: 1920, h: 1080, fps: 30 },
+          { w: 1280, h: 720,  fps: 30 }
+        ];
+      } else if (profileKey === '1080') {
+        candidateResolutions = [
+          { w: 1920, h: 1080, fps: 30 },
+          { w: 1280, h: 720,  fps: 30 },
+          { w: 960,  h: 540,  fps: 30 }
+        ];
+      } else if (profileKey === '720') {
+        candidateResolutions = [
+          { w: 1280, h: 720,  fps: 30 },
+          { w: 960,  h: 540,  fps: 30 },
+          { w: 640,  h: 480,  fps: 25 }
+        ];
+      } else if (profileKey === '480') {
+        candidateResolutions = [
+          { w: 854,  h: 480,  fps: 24 },
+          { w: 640,  h: 480,  fps: 24 }
+        ];
+      } else if (profileKey === '360') {
+        candidateResolutions = [
+          { w: 640,  h: 360,  fps: 20 },
+          { w: 480,  h: 360,  fps: 20 }
+        ];
+      } else {
+        candidateResolutions = [
+          { w: 426,  h: 240,  fps: 15 },
+          { w: 320,  h: 240,  fps: 15 }
+        ];
+      }
+
+      for (const cand of candidateResolutions) {
+        // Essential: Match portrait orientation so Android camera HAL does not default to 192x256!
+        const targetW = isPortrait ? Math.min(cand.w, cand.h) : Math.max(cand.w, cand.h);
+        const targetH = isPortrait ? Math.max(cand.w, cand.h) : Math.min(cand.w, cand.h);
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: currentFacing,
+              width: { ideal: targetW },
+              height: { ideal: targetH },
+              frameRate: { ideal: cand.fps, max: cand.fps }
+            },
+            audio: (localStream && localStream.getAudioTracks().length > 0) ? false : {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            }
+          });
+          return stream;
+        } catch (e) {
+          console.warn(`Camera rejected ${targetW}x${targetH}, checking fallback profile...`);
+        }
+      }
+
+      // Universal baseline fallback: native hardware default without failing to 192x256
+      return await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: currentFacing },
+        audio: (localStream && localStream.getAudioTracks().length > 0) ? false : true
+      });
+    }
+
     // ==========================================
-    // 1. HOME PHONE BROADCASTER & AUTONOMOUS NVR
+    // 1. HOME PHONE BROADCASTER & CCTV ENGINE
     // ==========================================
     async function togglePhoneCamera() {
       if (isPhoneCameraRunning) {
-        stopPhoneCamera();
+        await stopPhoneCamera();
       } else {
         await startPhoneCamera();
       }
@@ -1194,19 +1340,7 @@
         currentQuality = document.getElementById('phoneResSelect').value || '1080';
         const q = QUALITY_PROFILES[currentQuality] || QUALITY_PROFILES['1080'];
 
-        localStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: currentFacing,
-            width: { ideal: q.width },
-            height: { ideal: q.height },
-            frameRate: { ideal: q.fps, max: q.fps }
-          },
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          }
-        });
+        localStream = await getAdaptiveCameraStream(currentQuality);
 
         const preview = document.getElementById('phonePreviewVideo');
         preview.muted = true;
@@ -1214,7 +1348,7 @@
         preview.srcObject = localStream;
 
         const vTrack = localStream.getVideoTracks()[0];
-        const s = vTrack.getSettings();
+        const s = vTrack.getSettings ? vTrack.getSettings() : {};
         const actW = s.width || q.width;
         const actH = s.height || q.height;
         document.getElementById('phoneActiveRes').textContent = `${q.name} (${actW}x${actH})`;
@@ -1233,7 +1367,7 @@
           startBtn.innerHTML = "🛑 Stop Camera";
           badge.textContent = "LIVE";
           badge.style.color = "var(--emerald)";
-          msg.textContent = `🟢 Camera Live (${actW}x${actH})! Ready for viewer connection.`;
+          msg.textContent = `🟢 Camera Live (${actW}x${actH})! Streaming & recording active.`;
 
           // START CONTINUOUS 24/7 BACKGROUND RECORDING ON PHONE
           if (phoneAutoRecordEnabled) {
@@ -1247,7 +1381,7 @@
 
           conn.on('open', () => {
             const track = localStream.getVideoTracks()[0];
-            const ts = track.getSettings();
+            const ts = track.getSettings ? track.getSettings() : {};
             conn.send({
               type: 'quality_ack',
               quality: currentQuality,
@@ -1256,7 +1390,7 @@
               name: q.name
             });
 
-            // Automatically send clips catalog to viewer
+            // Automatically send latest clips catalog to viewer
             sendPhoneClipsCatalog(conn);
 
             const call = peer.call(conn.peer, localStream);
@@ -1286,6 +1420,10 @@
               sendPhoneClipsCatalog(conn);
             } else if (cmd.type === 'req_stream_clip') {
               streamClipOverP2P(conn, cmd.clipId);
+            } else if (cmd.type === 'delete_phone_clip') {
+              deleteRecordingFromVault(cmd.clipId).then(() => {
+                sendPhoneClipsCatalog(conn);
+              });
             }
           });
         });
@@ -1308,14 +1446,26 @@
       }
     }
 
-    function stopPhoneCamera() {
+    async function stopPhoneCamera() {
       const msg = document.getElementById('phoneMsg');
       const badge = document.getElementById('phoneStatusBadge');
       const startBtn = document.getElementById('phoneStartBtn');
 
       isPhoneCameraRunning = false;
-      stopPhoneRollingSegment();
+      startBtn.disabled = true;
+      startBtn.textContent = "⏳ Saving recording...";
+      msg.textContent = "Finalizing active recording clip...";
 
+      // 1. Await saving active clip to IndexedDB
+      await stopPhoneRollingSegmentAsync();
+
+      // 2. Broadcast updated catalog to viewer if connected
+      if (dataChannel && dataChannel.open) {
+        sendPhoneClipsCatalog(dataChannel);
+        await new Promise(r => setTimeout(r, 400));
+      }
+
+      // 3. Stop media tracks
       if (localStream) {
         localStream.getTracks().forEach(t => t.stop());
         localStream = null;
@@ -1342,7 +1492,7 @@
       startBtn.disabled = false;
       startBtn.className = "btn-large emerald";
       startBtn.innerHTML = "🚀 Start Camera";
-      msg.textContent = "Camera stopped. Tap Start Camera to begin broadcasting.";
+      msg.textContent = "Camera stopped. Recordings saved in Playback.";
     }
 
     function togglePhoneMic() {
@@ -1359,23 +1509,13 @@
       const msg = document.getElementById('phoneMsg');
       try {
         if (!localStream) return;
-        const oldTrack = localStream.getVideoTracks()[0];
         
-        if (oldTrack) oldTrack.stop();
-        await new Promise(r => setTimeout(r, 120));
-
-        const newStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: currentFacing,
-            width: { ideal: q.width },
-            height: { ideal: q.height },
-            frameRate: { ideal: q.fps, max: q.fps }
-          },
-          audio: false
-        });
-
+        // 1. Acquire new adaptive stream before stopping old track
+        const newStream = await getAdaptiveCameraStream(currentQuality);
         const newVideoTrack = newStream.getVideoTracks()[0];
+        const oldTrack = localStream.getVideoTracks()[0];
 
+        // 2. Replace track on all active WebRTC senders
         if (peer && peer.connections) {
           for (let callId in peer.connections) {
             peer.connections[callId].forEach(async (c) => {
@@ -1390,20 +1530,26 @@
           }
         }
 
-        if (oldTrack) localStream.removeTrack(oldTrack);
+        // 3. Stop old track and attach new track
+        if (oldTrack) {
+          oldTrack.stop();
+          localStream.removeTrack(oldTrack);
+        }
         localStream.addTrack(newVideoTrack);
 
+        // 4. Update preview video
         const preview = document.getElementById('phonePreviewVideo');
         if (preview) {
           preview.muted = true;
           preview.srcObject = localStream;
         }
 
-        const s = newVideoTrack.getSettings();
+        const s = newVideoTrack.getSettings ? newVideoTrack.getSettings() : {};
         const actW = s.width || q.width;
         const actH = s.height || q.height;
         document.getElementById('phoneActiveRes').textContent = `${q.name} (${actW}x${actH})`;
 
+        // 5. Send ACK to office viewer
         if (dataChannel && dataChannel.open) {
           dataChannel.send({
             type: 'quality_ack',
@@ -1414,7 +1560,7 @@
           });
         }
 
-        msg.textContent = `Switched to: ${q.name} (${actW}x${actH})`;
+        msg.textContent = `🟢 Active: ${q.name} (${actW}x${actH})`;
       } catch (e) {
         msg.textContent = "Switch error: " + e.message;
       }
@@ -1431,7 +1577,8 @@
               if (sender) {
                 const params = sender.getParameters();
                 if (!params.encodings || params.encodings.length === 0) params.encodings = [{}];
-                params.encodings[0].maxBitrate = q.bitrate;
+                const safeBitrate = Math.min(q.bitrate, 8000000);
+                params.encodings[0].maxBitrate = safeBitrate;
                 params.encodings[0].maxFramerate = q.fps;
                 params.encodings[0].scaleResolutionDownBy = 1.0;
                 params.degradationPreference = 'maintain-resolution';
@@ -1446,8 +1593,22 @@
     }
 
     // ========================================================
-    // STANDALONE PHONE ROLLING RECORDER
+    // STANDALONE PHONE ROLLING RECORDER (WITH LIVE SECONDS SYNC)
     // ========================================================
+    function getBestMimeType() {
+      const candidates = [
+        'video/mp4;codecs=avc1,mp4a.40.2',
+        'video/mp4',
+        'video/webm;codecs=vp8,opus',
+        'video/webm;codecs=vp9,opus',
+        'video/webm'
+      ];
+      for (const c of candidates) {
+        if (MediaRecorder.isTypeSupported(c)) return c;
+      }
+      return '';
+    }
+
     function startPhoneRollingSegment() {
       if (!localStream) return;
 
@@ -1456,9 +1617,8 @@
       }
 
       phoneRecordedBlobs = [];
-      let options = { mimeType: 'video/webm;codecs=vp8,opus' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/mp4' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: '' };
+      const mime = getBestMimeType();
+      const options = mime ? { mimeType: mime } : {};
 
       try {
         phoneMediaRecorder = new MediaRecorder(localStream, options);
@@ -1467,17 +1627,18 @@
         return;
       }
 
-      const segmentStart = Date.now();
+      phoneSegmentStartTime = Date.now();
       phoneMediaRecorder.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) phoneRecordedBlobs.push(e.data);
       };
 
       phoneMediaRecorder.onstop = async () => {
-        const durationSec = Math.round((Date.now() - segmentStart) / 1000);
-        if (phoneRecordedBlobs.length > 0 && durationSec >= 2) {
+        const durationSec = Math.max(1, Math.round((Date.now() - phoneSegmentStartTime) / 1000));
+        if (phoneRecordedBlobs.length > 0) {
           const blob = new Blob(phoneRecordedBlobs, { type: phoneMediaRecorder.mimeType || 'video/mp4' });
           await saveRecordingToVault(blob, durationSec, currentQuality, 'phone');
-          // If viewer connected, update their catalog too!
+          
+          // Send updated catalog immediately to viewer if connected
           if (dataChannel && dataChannel.open) {
             sendPhoneClipsCatalog(dataChannel);
           }
@@ -1511,6 +1672,57 @@
       updatePhoneRecBadge(false);
     }
 
+    function stopPhoneRollingSegmentAsync() {
+      return new Promise((resolve) => {
+        clearTimeout(phoneSegmentTimer);
+        clearInterval(phoneRecInterval);
+        updatePhoneRecBadge(false);
+
+        if (phoneMediaRecorder && phoneMediaRecorder.state !== 'inactive') {
+          const origOnStop = phoneMediaRecorder.onstop;
+          phoneMediaRecorder.onstop = async (e) => {
+            try {
+              if (origOnStop) await origOnStop(e);
+            } catch(err) {
+              console.warn("onstop error:", err);
+            }
+            resolve();
+          };
+          try {
+            phoneMediaRecorder.stop();
+          } catch (err) {
+            resolve();
+          }
+        } else {
+          resolve();
+        }
+      });
+    }
+
+    function cutPhoneSegmentNow() {
+      if (!isPhoneCameraRunning || !phoneMediaRecorder || phoneMediaRecorder.state !== 'recording') {
+        alert("Camera is not recording active video. Tap Start Camera first.");
+        return;
+      }
+      const msg = document.getElementById('phoneMsg');
+      if (msg) msg.textContent = "💾 Saving active clip to Vault...";
+      try {
+        phoneMediaRecorder.stop();
+      } catch (e) {
+        console.warn("cut segment error:", e);
+      }
+    }
+
+    function onSegmentDurationChange(val) {
+      autoRecordSegmentMins = parseFloat(val) || 2;
+      localStorage.setItem('prscam_segment_mins', autoRecordSegmentMins);
+      const msg = document.getElementById('phoneMsg');
+      if (msg) msg.textContent = `Clip duration set to ${autoRecordSegmentMins} min(s).`;
+      if (isPhoneCameraRunning && phoneMediaRecorder && phoneMediaRecorder.state === 'recording') {
+        cutPhoneSegmentNow();
+      }
+    }
+
     function updatePhoneRecBadge(active) {
       const badge = document.getElementById('phoneRecBadge');
       const text = document.getElementById('phoneRecText');
@@ -1525,15 +1737,29 @@
           phoneRecSeconds++;
           const m = String(Math.floor(phoneRecSeconds / 60)).padStart(2, '0');
           const s = String(phoneRecSeconds % 60).padStart(2, '0');
-          if (text) text.textContent = `REC [AUTO] ${m}:${s}`;
+          const timeStr = `${m}:${s}`;
+          if (text) text.textContent = `REC [AUTO] ${timeStr}`;
           if (startBtn && isPhoneCameraRunning) {
-            startBtn.innerHTML = `🛑 Stop Camera (REC ${m}:${s})`;
+            startBtn.innerHTML = `🛑 Stop Camera (REC ${timeStr})`;
+          }
+
+          // SYNC LIVE RECORDING SECONDS TO VIEWER!
+          if (dataChannel && dataChannel.open) {
+            dataChannel.send({
+              type: 'phone_rec_heartbeat',
+              isRecording: true,
+              seconds: phoneRecSeconds,
+              timeStr: timeStr
+            });
           }
         }, 1000);
       } else {
         badge.classList.add('hidden');
         if (startBtn && isPhoneCameraRunning) {
           startBtn.innerHTML = "🛑 Stop Camera";
+        }
+        if (dataChannel && dataChannel.open) {
+          dataChannel.send({ type: 'phone_rec_heartbeat', isRecording: false, seconds: 0, timeStr: '00:00' });
         }
       }
     }
@@ -1587,18 +1813,12 @@
           dataChannel.send({ type: 'remote_quality', quality: officeRequestedQuality });
           updateFeedBadge(officeRequestedQuality, null, null, `⏳ Requesting ${officeRequestedQuality.toUpperCase()}...`);
 
-          // Request list of recordings stored on the phone!
+          // Request full phone recordings catalog
           dataChannel.send({ type: 'req_phone_clips' });
 
-          // Handle incoming binary chunks or messages
+          // Handle incoming messages & structured binary chunks
           dataChannel.on('data', (msg) => {
-            if (msg instanceof ArrayBuffer) {
-              incomingClipChunks.push(msg);
-              const receivedBytes = incomingClipChunks.reduce((acc, c) => acc + c.byteLength, 0);
-              const totalBytes = incomingClipMeta ? incomingClipMeta.totalBytes : 1;
-              const pct = Math.min(100, Math.round((receivedBytes / totalBytes) * 100));
-              updateStreamProgressUI(pct);
-            } else if (typeof msg === 'object') {
+            if (typeof msg === 'object' && msg !== null) {
               if (msg.type === 'quality_ack') {
                 officeRequestedQuality = msg.quality;
                 const sel = document.getElementById('remoteResSelect');
@@ -1608,14 +1828,47 @@
                 remotePhoneClips = msg.clips || [];
                 updateAllCounters();
                 renderNVRPlaybackList();
-              } else if (msg.type === 'clip_stream_start') {
-                incomingClipMeta = msg;
-                incomingClipChunks = [];
-                showStreamProgressUI(0);
-              } else if (msg.type === 'clip_stream_end') {
-                const fullBlob = new Blob(incomingClipChunks, { type: (incomingClipMeta && incomingClipMeta.mimeType) || 'video/mp4' });
+              } else if (msg.type === 'phone_rec_heartbeat') {
+                // SYNC LIVE PHONE TIMER IN OFFICE DISPLAY!
+                handleRemotePhoneTimer(msg);
+              } else if (msg.type === 'clip_transfer_meta') {
+                p2pTransferMeta = msg;
+                p2pTransferChunks = new Array(msg.totalChunks);
+                p2pReceivedCount = 0;
+                showStreamProgressUI(0, `Downloading ${msg.dateStr}...`);
+              } else if (msg.type === 'clip_transfer_chunk') {
+                if (p2pTransferMeta && p2pTransferMeta.clipId === msg.clipId) {
+                  if (!p2pTransferChunks[msg.index]) {
+                    p2pTransferChunks[msg.index] = msg.data;
+                    p2pReceivedCount++;
+                  }
+                  const pct = Math.min(99, Math.round((p2pReceivedCount / p2pTransferMeta.totalChunks) * 100));
+                  updateStreamProgressUI(pct);
+                }
+              } else if (msg.type === 'clip_transfer_complete') {
+                if (p2pTransferMeta && p2pTransferMeta.clipId === msg.clipId) {
+                  let missing = 0;
+                  for (let i = 0; i < p2pTransferMeta.totalChunks; i++) {
+                    if (!p2pTransferChunks[i]) missing++;
+                  }
+                  if (missing > 0) {
+                    showStreamProgressUI(100, `Transfer incomplete (${missing} chunks missing).`);
+                    setTimeout(hideStreamProgressUI, 2500);
+                    return;
+                  }
+
+                  showStreamProgressUI(100, "Complete! Loading player...");
+                  setTimeout(hideStreamProgressUI, 800);
+
+                  const fullBlob = new Blob(p2pTransferChunks, { type: p2pTransferMeta.mimeType || 'video/mp4' });
+                  // Save copy to laptop storage so it can be re-played anytime!
+                  saveRecordingToVault(fullBlob, p2pTransferMeta.durationSec, p2pTransferMeta.quality, 'phone_transferred');
+                  // Play immediately!
+                  playBlobInNVRPlayer(fullBlob, p2pTransferMeta);
+                }
+              } else if (msg.type === 'clip_transfer_error') {
+                alert(msg.error || "Failed to transfer clip from phone.");
                 hideStreamProgressUI();
-                playReceivedRemoteBlob(fullBlob, incomingClipMeta);
               }
             }
           });
@@ -1632,6 +1885,12 @@
             video.play().catch(()=>{});
 
             video.onresize = () => {
+              if (video.videoWidth && video.videoHeight) {
+                updateFeedBadge(officeRequestedQuality, video.videoWidth, video.videoHeight);
+              }
+            };
+
+            video.onloadedmetadata = () => {
               if (video.videoWidth && video.videoHeight) {
                 updateFeedBadge(officeRequestedQuality, video.videoWidth, video.videoHeight);
               }
@@ -1686,6 +1945,31 @@
       connBtn.disabled = false;
       connBtn.className = "btn-act cyan";
       connBtn.textContent = "⚡ Connect Live";
+
+      // Hide timer badges
+      const topBadge = document.getElementById('topRecBadge');
+      const osdBadge = document.getElementById('recBadge');
+      if (topBadge) topBadge.classList.add('hidden');
+      if (osdBadge) osdBadge.classList.add('hidden');
+    }
+
+    function handleRemotePhoneTimer(msg) {
+      const topBadge = document.getElementById('topRecBadge');
+      const topLabel = document.getElementById('topRecLabel');
+      const osdBadge = document.getElementById('recBadge');
+      const osdTimer = document.getElementById('recTimer');
+      const osdMode = document.getElementById('recModeBadge');
+
+      if (msg.isRecording && !isManualRecording) {
+        if (topBadge) topBadge.classList.remove('hidden');
+        if (osdBadge) osdBadge.classList.remove('hidden');
+        if (topLabel) topLabel.textContent = `REC [PHONE] ${msg.timeStr}`;
+        if (osdMode) osdMode.textContent = "REC [PHONE]";
+        if (osdTimer) osdTimer.textContent = msg.timeStr;
+      } else if (!msg.isRecording && !isManualRecording && !isViewerAutoLoop) {
+        if (topBadge) topBadge.classList.add('hidden');
+        if (osdBadge) osdBadge.classList.add('hidden');
+      }
     }
 
     function updateFeedBadge(qualityKey, liveW, liveH, customText) {
@@ -1699,9 +1983,9 @@
 
       const q = QUALITY_PROFILES[qualityKey] || { name: (qualityKey || 'AUTO').toUpperCase() };
       if (liveW && liveH) {
-        statRes.innerHTML = `<span style="color:var(--cyan);">${q.name}</span> <span style="color:var(--emerald);">(${liveW}x${liveH})</span>`;
+        statRes.innerHTML = `<span style="color:var(--cyan); font-weight:800;">${q.name}</span> <span style="color:var(--emerald); font-weight:700;">(${liveW}x${liveH})</span>`;
       } else {
-        statRes.innerHTML = `<span style="color:var(--cyan);">${q.name}</span>`;
+        statRes.innerHTML = `<span style="color:var(--cyan); font-weight:800;">${q.name}</span>`;
       }
     }
 
@@ -1715,6 +1999,14 @@
       } else {
         alert("Viewer is not connected to camera live feed yet. Click Connect Live.");
       }
+    }
+
+    function toggleVideoFit() {
+      const video = document.getElementById('officeFeedVideo');
+      const btn = document.getElementById('fitCoverToggleBtn');
+      videoFitMode = videoFitMode === 'contain' ? 'cover' : 'contain';
+      if (video) video.style.objectFit = videoFitMode;
+      if (btn) btn.textContent = videoFitMode === 'contain' ? '⛶ Fit Frame' : '⛶ Fill Screen';
     }
 
     function remoteFlipCamera() {
@@ -1838,7 +2130,7 @@
     }
 
     // ========================================================
-    // 3. UNIFIED INDEXEDDB VAULT & RETENTION ENGINE
+    // 3. UNIFIED INDEXEDDB VAULT & STORAGE
     // ========================================================
     const DB_NAME = 'PRScam_Vault_DB';
     const DB_VERSION = 2;
@@ -1877,11 +2169,11 @@
           dateKey: dateKey,
           timeStr: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
           dateStr: now.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-          durationSec: durationSec,
+          durationSec: Math.max(1, durationSec),
           sizeBytes: blob.size,
           sizeFormatted: formatBytes(blob.size),
           quality: q.name,
-          recordedBy: role || 'viewer',
+          recordedBy: role || 'phone',
           blob: blob
         };
 
@@ -1910,7 +2202,6 @@
           const req = store.getAll();
           req.onsuccess = () => {
             const records = req.result || [];
-            // Backfill dateKey for older records if needed
             records.forEach(r => {
               if (!r.dateKey) {
                 r.dateKey = getDateKey(new Date(r.timestamp || Date.now()));
@@ -1934,6 +2225,7 @@
         tx.oncomplete = () => {
           resolve();
           renderNVRPlaybackList();
+          renderMobilePhoneClips();
           updateAllCounters();
         };
         tx.onerror = () => reject(tx.error);
@@ -1949,13 +2241,13 @@
         tx.oncomplete = () => {
           resolve();
           renderNVRPlaybackList();
+          renderMobilePhoneClips();
           updateAllCounters();
         };
         tx.onerror = () => reject(tx.error);
       });
     }
 
-    // Auto-Purge Old Clips
     async function runAutoPurgePolicy() {
       if (autoDeleteDays <= 0) return;
 
@@ -1976,9 +2268,9 @@
             }
           });
           if (purgedCount > 0) {
-            console.log(`Auto-purged ${purgedCount} expired recordings older than ${autoDeleteDays} days.`);
             updateAllCounters();
             renderNVRPlaybackList();
+            renderMobilePhoneClips();
           }
         };
       } catch (e) {
@@ -1999,13 +2291,13 @@
 
     async function updateAllCounters() {
       const localClips = await getAllRecordingsFromVault();
-      const phoneCount = document.getElementById('phonePlaybackCount');
+      const phoneTabCount = document.getElementById('phoneTabCount');
       const topCount = document.getElementById('topVaultCount');
       const dockCount = document.getElementById('dockVaultCount');
       const sourcePhoneCount = document.getElementById('sourcePhoneCount');
       const sourceLocalCount = document.getElementById('sourceLocalCount');
 
-      if (phoneCount) phoneCount.textContent = localClips.length;
+      if (phoneTabCount) phoneTabCount.textContent = localClips.length;
       if (topCount) topCount.textContent = (remotePhoneClips.length || localClips.length);
       if (dockCount) dockCount.textContent = (remotePhoneClips.length || localClips.length);
       if (sourcePhoneCount) sourcePhoneCount.textContent = remotePhoneClips.length;
@@ -2020,9 +2312,7 @@
           autoDeleteDays = num;
           localStorage.setItem('prscam_auto_delete_days', num);
           alert(`Auto-delete set to ${num} days.`);
-        } else {
-          return;
-        }
+        } else return;
       } else {
         autoDeleteDays = parseFloat(val);
         localStorage.setItem('prscam_auto_delete_days', autoDeleteDays);
@@ -2035,10 +2325,11 @@
 
       runAutoPurgePolicy();
       renderNVRPlaybackList();
+      renderMobilePhoneClips();
     }
 
     // ========================================================
-    // 4. P2P REMOTE PLAYBACK & STREAMING ENGINE
+    // 4. P2P REMOTE STREAMING ENGINE (PHONE TO LAPTOP)
     // ========================================================
     function sendPhoneClipsCatalog(conn) {
       getAllRecordingsFromVault().then(clips => {
@@ -2069,16 +2360,19 @@
     async function streamClipOverP2P(conn, clipId) {
       const clips = await getAllRecordingsFromVault();
       const rec = clips.find(c => c.id === clipId);
-      if (!rec || !rec.blob) return;
+      if (!rec || !rec.blob) {
+        conn.send({ type: 'clip_transfer_error', clipId: clipId, error: 'Clip file not found in phone storage.' });
+        return;
+      }
 
       const blob = rec.blob;
-      const arrayBuffer = await blob.arrayBuffer();
-      const totalBytes = arrayBuffer.byteLength;
-      const chunkSize = 64 * 1024; // 64KB
+      const buffer = await blob.arrayBuffer();
+      const totalBytes = buffer.byteLength;
+      const chunkSize = 16 * 1024; // 16KB per chunk safe for all dataChannels
       const totalChunks = Math.ceil(totalBytes / chunkSize);
 
       conn.send({
-        type: 'clip_stream_start',
+        type: 'clip_transfer_meta',
         clipId: rec.id,
         dateStr: rec.dateStr,
         durationSec: rec.durationSec,
@@ -2089,27 +2383,44 @@
         mimeType: blob.type || 'video/mp4'
       });
 
+      const dc = conn.dataChannel;
+
       for (let i = 0; i < totalChunks; i++) {
+        // Backpressure check to prevent dropped chunks over WebRTC
+        if (dc) {
+          while (dc.bufferedAmount > 65536) {
+            await new Promise(r => setTimeout(r, 20));
+          }
+        }
+
         const start = i * chunkSize;
         const end = Math.min(start + chunkSize, totalBytes);
-        const chunk = arrayBuffer.slice(start, end);
-        conn.send(chunk);
+        const chunk = buffer.slice(start, end);
 
-        if (conn.dataChannel && conn.dataChannel.bufferedAmount > 512 * 1024) {
-          await new Promise(r => setTimeout(r, 25));
+        conn.send({
+          type: 'clip_transfer_chunk',
+          clipId: rec.id,
+          index: i,
+          data: chunk
+        });
+
+        if (i % 8 === 0) {
+          await new Promise(r => setTimeout(r, 10));
         }
       }
 
-      conn.send({ type: 'clip_stream_end', clipId: rec.id });
+      conn.send({ type: 'clip_transfer_complete', clipId: rec.id, totalChunks: totalChunks });
     }
 
-    function showStreamProgressUI(pct) {
+    function showStreamProgressUI(pct, label) {
       const box = document.getElementById('streamProgressBox');
       const bar = document.getElementById('streamProgressBar');
-      const label = document.getElementById('streamProgressPct');
+      const pctEl = document.getElementById('streamProgressPct');
+      const labelEl = document.getElementById('streamProgressLabel');
       if (box) box.classList.remove('hidden');
       if (bar) bar.style.width = pct + '%';
-      if (label) label.textContent = pct + '%';
+      if (pctEl) pctEl.textContent = pct + '%';
+      if (labelEl && label) labelEl.textContent = label;
     }
 
     function updateStreamProgressUI(pct) {
@@ -2124,18 +2435,150 @@
       if (box) box.classList.add('hidden');
     }
 
-    function playReceivedRemoteBlob(blob, meta) {
+    function playBlobInNVRPlayer(blob, meta) {
       const player = document.getElementById('nvrMainPlayer');
       const title = document.getElementById('nvrPlayerTitle');
       if (title) title.textContent = `▶ ${meta.dateStr} (${formatSeconds(meta.durationSec)}) • ${meta.sizeFormatted} • ${meta.quality}`;
+      
       if (player.src) URL.revokeObjectURL(player.src);
       player.src = URL.createObjectURL(blob);
-      player.play().catch(()=>{});
+      player.muted = false;
+      player.playsInline = true;
+      player.setAttribute('playsinline', '');
+      player.load();
+
+      const playPromise = player.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          player.muted = true; // Fallback to muted autoplay if browser blocks audio
+          player.play().catch(()=>{});
+        });
+      }
       document.getElementById('nvrPlayerBox').scrollIntoView({ behavior: 'smooth' });
     }
 
     // ========================================================
-    // 5. NVR DATE-WISE TIMELINE & PLAYBACK UI
+    // 5. MOBILE STANDALONE PLAYBACK (DEDICATED MOBILE TAB)
+    // ========================================================
+    let mobileFilterMode = 'all';
+
+    function filterMobileClips(mode) {
+      mobileFilterMode = mode;
+      renderMobilePhoneClips();
+    }
+
+    async function renderMobilePhoneClips() {
+      const container = document.getElementById('phoneClipsListContainer');
+      if (!container) return;
+
+      const clips = await getAllRecordingsFromVault();
+      clips.sort((a, b) => b.timestamp - a.timestamp);
+      updateAllCounters();
+
+      let filtered = clips;
+      if (mobileFilterMode === 'today') {
+        filtered = clips.filter(c => c.dateKey === getTodayDateKey());
+      } else if (mobileFilterMode === 'yesterday') {
+        filtered = clips.filter(c => c.dateKey === getYesterdayDateKey());
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--text-dim); padding: 30px; font-size: 0.85rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--card-border);">
+            No recordings found (${mobileFilterMode === 'all' ? '0 clips' : mobileFilterMode}).<br>
+            <button class="btn-act cyan" style="margin-top:10px;" onclick="filterMobileClips('all')">Show All (${clips.length})</button>
+          </div>
+        `;
+        return;
+      }
+
+      const now = Date.now();
+      container.innerHTML = filtered.map(c => {
+        let expiryBadge = '';
+        if (autoDeleteDays > 0) {
+          const ageMs = now - c.timestamp;
+          const remainingMs = (autoDeleteDays * 24 * 60 * 60 * 1000) - ageMs;
+          if (remainingMs > 0) {
+            const hrs = Math.floor(remainingMs / (1000 * 60 * 60));
+            const days = Math.floor(hrs / 24);
+            const hrsRem = hrs % 24;
+            const timeStr = days > 0 ? `${days}d ${hrsRem}h` : `${hrsRem}h`;
+            expiryBadge = `<span style="color:var(--amber);">⏳ ${timeStr} left</span>`;
+          } else {
+            expiryBadge = `<span style="color:var(--danger);">⚠️ Expired</span>`;
+          }
+        } else {
+          expiryBadge = `<span style="color:var(--emerald);">♾️ Permanent</span>`;
+        }
+
+        return `
+          <div class="clip-card" id="mcard_${c.id}">
+            <div class="card-top-info">
+              <div class="card-title">
+                <span>📹 ${c.dateStr || c.timeStr}</span>
+                <span class="chip" style="font-size:0.65rem; padding:2px 5px;">${c.quality || 'HD'}</span>
+              </div>
+              <div class="card-meta-row">
+                <span>⏱️ ${formatSeconds(c.durationSec)}</span>
+                <span>•</span>
+                <span>💾 ${c.sizeFormatted}</span>
+                <span>•</span>
+                ${expiryBadge}
+              </div>
+            </div>
+
+            <div class="card-btn-row">
+              <button class="btn-play-hero" onclick="playMobileClip('${c.id}')">
+                ▶ PLAY VIDEO
+              </button>
+              <button class="btn-act" style="padding: 7px 10px;" onclick="downloadSelectedClip('${c.id}')" title="Download">
+                ⬇ Save
+              </button>
+              <button class="btn-act danger" style="padding: 7px 10px;" onclick="confirmDeleteClip('${c.id}')" title="Delete">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function playMobileClip(id) {
+      getAllRecordingsFromVault().then(clips => {
+        const rec = clips.find(c => c.id === id);
+        if (!rec || !rec.blob) return alert("Clip not found!");
+
+        const player = document.getElementById('phoneStandalonePlayer');
+        const title = document.getElementById('phoneStandalonePlayerTitle');
+
+        if (title) title.textContent = `▶ Playing: ${rec.dateStr} (${formatSeconds(rec.durationSec)}) • ${rec.sizeFormatted}`;
+        if (player.src) URL.revokeObjectURL(player.src);
+
+        player.src = URL.createObjectURL(rec.blob);
+        player.muted = false;
+        player.playsInline = true;
+        player.setAttribute('playsinline', '');
+        player.load();
+
+        const playPromise = player.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            player.muted = true; // Fallback to muted autoplay
+            player.play().catch(()=>{});
+          });
+        }
+
+        // Highlight active card
+        document.querySelectorAll('.clip-card').forEach(el => el.classList.remove('active-playing'));
+        const card = document.getElementById(`mcard_${id}`);
+        if (card) card.classList.add('active-playing');
+
+        player.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    // ========================================================
+    // 6. NVR DATE-WISE TIMELINE & PLAYBACK UI (VIEWER)
     // ========================================================
     function getDateKey(d) {
       const year = d.getFullYear();
@@ -2195,19 +2638,15 @@
       const localClips = await getAllRecordingsFromVault();
       updateAllCounters();
 
-      // Determine active clip list
       let activeClips = [];
       if (playbackSource === 'phone') {
-        // If remote phone clips are available, use them. Otherwise fallback to local.
         activeClips = remotePhoneClips.length > 0 ? remotePhoneClips : localClips;
       } else {
         activeClips = localClips;
       }
 
-      // Sort newest first
       activeClips.sort((a, b) => b.timestamp - a.timestamp);
 
-      // Date Filter
       let filtered = activeClips;
       if (selectedPlaybackDate && selectedPlaybackDate !== 'all') {
         filtered = activeClips.filter(c => {
@@ -2282,27 +2721,20 @@
     function playSelectedClip(id) {
       currentlyPlayingClipId = id;
 
-      // Check if clip exists in local storage
       getAllRecordingsFromVault().then(clips => {
         const localRec = clips.find(c => c.id === id);
         if (localRec && localRec.blob) {
-          const player = document.getElementById('nvrMainPlayer');
-          const title = document.getElementById('nvrPlayerTitle');
-          if (title) title.textContent = `▶ ${localRec.dateStr} (${formatSeconds(localRec.durationSec)}) • ${localRec.sizeFormatted} • ${localRec.quality}`;
-          if (player.src) URL.revokeObjectURL(player.src);
-          player.src = URL.createObjectURL(localRec.blob);
-          player.play().catch(()=>{});
-          document.getElementById('nvrPlayerBox').scrollIntoView({ behavior: 'smooth' });
+          playBlobInNVRPlayer(localRec.blob, localRec);
           renderNVRPlaybackList();
           return;
         }
 
-        // If not in local, request from Phone over P2P!
+        // Remote fetch from Phone over WebRTC P2P
         if (isOfficeConnected && dataChannel && dataChannel.open) {
           dataChannel.send({ type: 'req_stream_clip', clipId: id });
-          showStreamProgressUI(0);
+          showStreamProgressUI(0, "Connecting to phone stream...");
         } else {
-          alert("Clip is stored on the phone camera. Please connect Live P2P to stream it to laptop.");
+          alert("Clip is stored on the phone camera. Connect Live P2P to stream it to laptop.");
         }
       });
     }
@@ -2319,7 +2751,9 @@
           a.click();
           setTimeout(() => URL.revokeObjectURL(url), 10000);
         } else {
-          alert("To download, tap 'PLAY VIDEO' first to fetch from phone.");
+          // Trigger P2P download
+          playSelectedClip(id);
+          alert("Streaming clip from phone first... Once downloaded, tap Save again.");
         }
       });
     }
@@ -2327,6 +2761,9 @@
     function confirmDeleteClip(id) {
       if (confirm("Delete this recording permanently?")) {
         deleteRecordingFromVault(id);
+        if (isOfficeConnected && dataChannel && dataChannel.open && playbackSource === 'phone') {
+          dataChannel.send({ type: 'delete_phone_clip', clipId: id });
+        }
       }
     }
 
@@ -2337,7 +2774,7 @@
     }
 
     // ========================================================
-    // 6. VIEWER ROLLING RECORDER (WITH ACCURATE LIVE TIMERS)
+    // 7. VIEWER ROLLING RECORDER
     // ========================================================
     function toggleAutoRecord() {
       autoRecordEnabled = !autoRecordEnabled;
@@ -2365,9 +2802,8 @@
       }
 
       viewerRecordedBlobs = [];
-      let options = { mimeType: 'video/webm;codecs=vp8,opus' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/mp4' };
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: '' };
+      const mime = getBestMimeType();
+      const options = mime ? { mimeType: mime } : {};
 
       try {
         viewerMediaRecorder = new MediaRecorder(video.srcObject, options);
@@ -2384,8 +2820,8 @@
       };
 
       viewerMediaRecorder.onstop = async () => {
-        const durationSec = Math.round((Date.now() - segmentStart) / 1000);
-        if (viewerRecordedBlobs.length > 0 && durationSec >= 2) {
+        const durationSec = Math.max(1, Math.round((Date.now() - segmentStart) / 1000));
+        if (viewerRecordedBlobs.length > 0) {
           const blob = new Blob(viewerRecordedBlobs, { type: viewerMediaRecorder.mimeType || 'video/mp4' });
           await saveRecordingToVault(blob, durationSec, officeRequestedQuality, 'viewer');
         }
@@ -2424,9 +2860,8 @@
         }
 
         viewerRecordedBlobs = [];
-        let options = { mimeType: 'video/webm;codecs=vp8,opus' };
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/mp4' };
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: '' };
+        const mime = getBestMimeType();
+        const options = mime ? { mimeType: mime } : {};
 
         try { viewerMediaRecorder = new MediaRecorder(video.srcObject, options); }
         catch (e) { return alert("Record error: " + e.message); }
@@ -2438,8 +2873,8 @@
 
         viewerMediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) viewerRecordedBlobs.push(e.data); };
         viewerMediaRecorder.onstop = async () => {
-          const durationSec = Math.round((Date.now() - manualStart) / 1000);
-          if (viewerRecordedBlobs.length > 0 && durationSec >= 2) {
+          const durationSec = Math.max(1, Math.round((Date.now() - manualStart) / 1000));
+          if (viewerRecordedBlobs.length > 0) {
             const blob = new Blob(viewerRecordedBlobs, { type: viewerMediaRecorder.mimeType || 'video/mp4' });
             await saveRecordingToVault(blob, durationSec, officeRequestedQuality, 'viewer');
           }
@@ -2478,7 +2913,6 @@
       }
     }
 
-    // MULTI-LOCATION RECORDING TIMER SYNC
     function updateViewerRecBadge(isActive, isAuto) {
       const osdBadge = document.getElementById('recBadge');
       const topBadge = document.getElementById('topRecBadge');
