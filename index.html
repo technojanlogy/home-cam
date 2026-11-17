@@ -1322,48 +1322,63 @@
       box-shadow: 0 0 6px var(--emerald);
     }
 
-    /* Multi-Grid Layout Container: 100% Screen Fit for Laptops with Zero Overflow */
+    /* Multi-Grid Layout Container: Smooth Scroll for 16-Grid & High-Density Views */
     .cctv-multi-grid {
       flex: 1 1 0;
       min-height: 0;
       height: 100%;
-      max-height: calc(100vh - 115px);
       width: 100%;
-      padding: 6px;
+      padding: 8px;
       display: grid;
-      gap: 6px;
+      gap: 8px;
       background: #040810;
-      overflow: hidden;
+      overflow-y: auto !important;
+      overflow-x: hidden;
       box-sizing: border-box;
+    }
+
+    /* Custom Sleek Cyan/Dark Scrollbar */
+    .cctv-multi-grid::-webkit-scrollbar {
+      width: 6px;
+    }
+    .cctv-multi-grid::-webkit-scrollbar-track {
+      background: rgba(4, 8, 16, 0.7);
+    }
+    .cctv-multi-grid::-webkit-scrollbar-thumb {
+      background: rgba(0, 245, 255, 0.35);
+      border-radius: 4px;
+    }
+    .cctv-multi-grid::-webkit-scrollbar-thumb:hover {
+      background: var(--cyan);
     }
 
     .cctv-multi-grid.grid-layout-1 {
       grid-template-columns: 1fr;
-      grid-template-rows: 1fr;
+      grid-auto-rows: 1fr;
     }
     .cctv-multi-grid.grid-layout-2 {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: 1fr;
+      grid-auto-rows: minmax(260px, 1fr);
     }
     .cctv-multi-grid.grid-layout-4 {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-auto-rows: minmax(200px, 1fr);
     }
     .cctv-multi-grid.grid-layout-6 {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-auto-rows: minmax(180px, 1fr);
     }
     .cctv-multi-grid.grid-layout-8 {
       grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-auto-rows: minmax(160px, 1fr);
     }
     .cctv-multi-grid.grid-layout-9 {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
+      grid-auto-rows: minmax(160px, 1fr);
     }
     .cctv-multi-grid.grid-layout-16 {
       grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
+      grid-auto-rows: minmax(140px, 1fr);
     }
 
     .cam-grid-tile {
@@ -1941,7 +1956,7 @@
     </div>
 
     <!-- VIEW 1: LIVE CCTV FEED STAGE (SINGLE FOCUS) -->
-    <div class="cctv-stage" id="stageViewport" ondblclick="toggleFullscreen()">
+    <div class="cctv-stage hidden" id="stageViewport" ondblclick="toggleFullscreen()">
       <div class="osd-hud">
         <div style="display:flex; align-items:center; gap:6px;">
           <span class="chip" id="hudOfficeStatus">STANDBY</span>
@@ -1950,8 +1965,8 @@
         </div>
       </div>
 
-      <!-- FLOATING EXIT FULLSCREEN BUTTON (FOR MOBILE/DESKTOP FULLSCREEN) -->
-      <button class="btn-fullscreen-exit hidden" id="stageFullscreenExitBtn" onclick="exitFullscreenTile()" title="Exit Fullscreen">✕ Exit Fullscreen</button>
+      <!-- FLOATING EXIT FULLSCREEN BUTTON -->
+      <button class="btn-fullscreen-exit" id="stageFullscreenExitBtn" onclick="exitFullscreenTile()" title="Exit Fullscreen">✕ Exit Fullscreen</button>
 
       <!-- VIEWER OWN INTERCOM WEBCAM PREVIEW PiP -->
       <div id="viewerIntercomPiP" class="hidden intercom-pip-viewer">
@@ -1966,8 +1981,8 @@
       <video class="cctv-video" id="officeFeedVideo" autoplay playsinline muted></video>
     </div>
 
-    <!-- VIEW 1B: MULTI-CAMERA NVR GRID -->
-    <div class="cctv-multi-grid hidden" id="multiCameraGrid">
+    <!-- VIEW 1B: MULTI-CAMERA NVR GRID (DEFAULT 4-GRID DISPLAYED ON START) -->
+    <div class="cctv-multi-grid grid-layout-4" id="multiCameraGrid">
       <!-- Dynamically rendered multi-camera tiles -->
     </div>
 
@@ -2347,7 +2362,7 @@
     // Multi-Camera NVR Channels & Grid State
     let nvrChannels = [];
     let activeChannelId = 'prs-secure-cam-782';
-    let nvrViewMode = 'focus'; // 'focus' or 'grid'
+    let nvrViewMode = 'grid'; // Default 'grid' (matches button 4 active)
     let multiGridPeers = {};
     let selectedPlaybackCamera = 'all';
 
@@ -3670,6 +3685,13 @@
                 }
               };
 
+              // Attach Universal PTZ Zoom & Pan to this tile
+              const tileContainer = document.getElementById(`tile_${ch.id}`);
+              if (tileContainer) {
+                attachPTZControls(tileContainer, ch.id);
+              }
+              applyTransform(ch.id);
+
               // Synchronize overall connection state
               updateConnectButtonState(true);
 
@@ -3977,6 +3999,9 @@
         const el = document.getElementById('phoneCameraPin');
         if (el) el.value = savedCamPin;
       }
+
+      // Synchronize active grid layout on startup (Default 4 screens)
+      setNVRGridLayout(selectedNVRGridSize || 4);
 
       if (currentUserSession) {
         setTimeout(attemptAutoConnectCameras, 800);
@@ -5486,72 +5511,132 @@
     // ==========================================
     let currentFeedRotation = 0;
 
-    function applyTransform() {
-      const video = document.getElementById('officeFeedVideo');
-      if (video) {
-        const isSideways = (currentFeedRotation === 90 || currentFeedRotation === 270);
-        const fitScale = isSideways ? 0.5625 : 1.0;
-        const effScale = zoomLevel * fitScale;
-        video.style.transform = `scale(${effScale}) translate(${panX}px, ${panY}px) rotate(${currentFeedRotation}deg)`;
+    // ========================================================
+    // UNIVERSAL PTZ DIGITAL ZOOM & PAN ENGINE (ALL TILES & MODES)
+    // ========================================================
+    function applyTransform(targetId = null) {
+      const id = targetId || activeChannelId;
+      const ch = nvrChannels.find(c => c.id === id) || { zoom: 1, panX: 0, panY: 0, rotation: 0 };
+      const z = ch.zoom || 1;
+      const px = ch.panX || 0;
+      const py = ch.panY || 0;
+      const rot = ch.rotation || 0;
+      const isSideways = (rot === 90 || rot === 270);
+      const fitScale = isSideways ? 0.5625 : 1.0;
+      const effScale = z * fitScale;
+
+      // 1. Apply to single focus video if matching
+      if (id === activeChannelId) {
+        const mainVid = document.getElementById('officeFeedVideo');
+        if (mainVid) {
+          mainVid.style.transform = `scale(${effScale}) translate(${px}px, ${py}px) rotate(${rot}deg)`;
+        }
+        // Update dock readout
+        const slider = document.getElementById('zoomSlider');
+        const readout = document.getElementById('zoomReadout');
+        if (slider) slider.value = z;
+        if (readout) readout.textContent = z.toFixed(1) + 'x';
+      }
+
+      // 2. Apply to grid tile video
+      const tileVid = document.getElementById(`tileVideo_${id}`);
+      if (tileVid) {
+        tileVid.style.transform = `scale(${effScale}) translate(${px}px, ${py}px) rotate(${rot}deg)`;
       }
     }
 
+    function setZoom(val, channelId = null) {
+      const id = channelId || activeChannelId;
+      const ch = nvrChannels.find(c => c.id === id);
+      if (!ch) return;
+
+      ch.zoom = Math.max(1, Math.min(50, parseFloat(val) || 1));
+      if (ch.zoom === 1) { ch.panX = 0; ch.panY = 0; }
+      applyTransform(id);
+    }
+
     function rotateFeedSingle() {
-      currentFeedRotation = (currentFeedRotation + 90) % 360;
-      applyTransform();
       const target = getActiveNVRChannel();
-      if (target) {
-        target.rotation = currentFeedRotation;
-        saveNVRChannels();
-      }
-      showToast(`📐 Video rotated to ${currentFeedRotation}° (Upright Fit)`, "info", 1800);
+      if (!target) return;
+      target.rotation = ((target.rotation || 0) + 90) % 360;
+      applyTransform(target.id);
+      saveNVRChannels();
+      showToast(`📐 ${target.name} rotated to ${target.rotation}°`, "info", 1800);
     }
 
     function rotateTile(id) {
       const target = nvrChannels.find(c => c.id === id);
       if (!target) return;
       target.rotation = ((target.rotation || 0) + 90) % 360;
-      const vid = document.getElementById(`tileVideo_${id}`);
-      if (vid) {
-        const isSideways = (target.rotation === 90 || target.rotation === 270);
-        const fitScale = isSideways ? 0.5625 : 1.0;
-        vid.style.transform = `scale(${fitScale}) rotate(${target.rotation}deg)`;
-      }
+      applyTransform(id);
       saveNVRChannels();
       showToast(`📐 ${target.name} rotated to ${target.rotation}°`, "info", 1800);
     }
 
-    function setZoom(val) {
-      zoomLevel = Math.max(1, Math.min(100, parseFloat(val)));
-      if (zoomLevel === 1) { panX = 0; panY = 0; }
-      document.getElementById('zoomSlider').value = zoomLevel;
-      document.getElementById('zoomReadout').textContent = zoomLevel.toFixed(1) + 'x';
-      applyTransform();
+    // Attach wheel zoom & mouse drag pan to any container (Stage or Tile)
+    function attachPTZControls(containerEl, channelId) {
+      if (!containerEl || containerEl._ptzAttached) return;
+      containerEl._ptzAttached = true;
+
+      containerEl.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const ch = nvrChannels.find(c => c.id === channelId);
+        if (!ch) return;
+
+        // Focus this camera
+        if (activeChannelId !== channelId) {
+          focusCameraTile(channelId, false);
+        }
+
+        const curZ = ch.zoom || 1;
+        const step = curZ >= 10 ? 2 : 0.5;
+        const delta = e.deltaY < 0 ? step : -step;
+        setZoom(curZ + delta, channelId);
+      }, { passive: false });
+
+      let isDraggingTile = false;
+      let startMouseX = 0;
+      let startMouseY = 0;
+
+      containerEl.addEventListener('mousedown', (e) => {
+        const ch = nvrChannels.find(c => c.id === channelId);
+        if (!ch || (ch.zoom || 1) <= 1) return;
+        isDraggingTile = true;
+        startMouseX = e.clientX - (ch.panX || 0);
+        startMouseY = e.clientY - (ch.panY || 0);
+        containerEl.style.cursor = 'grabbing';
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDraggingTile) return;
+        const ch = nvrChannels.find(c => c.id === channelId);
+        if (!ch) return;
+        ch.panX = e.clientX - startMouseX;
+        ch.panY = e.clientY - startMouseY;
+        applyTransform(channelId);
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDraggingTile) {
+          isDraggingTile = false;
+          if (containerEl) containerEl.style.cursor = '';
+        }
+      });
     }
 
-    const stage = document.getElementById('stageViewport');
-    stage.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const step = zoomLevel >= 10 ? 2 : 0.5;
-      const delta = e.deltaY < 0 ? step : -step;
-      setZoom(zoomLevel + delta);
-    }, { passive: false });
-
-    stage.addEventListener('mousedown', (e) => {
-      if (zoomLevel <= 1) return;
-      isDragging = true;
-      startX = e.clientX - panX;
-      startY = e.clientY - panY;
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      panX = e.clientX - startX;
-      panY = e.clientY - startY;
-      applyTransform();
-    });
-
-    window.addEventListener('mouseup', () => { isDragging = false; });
+    // Attach to single focus stage
+    const stageEl = document.getElementById('stageViewport');
+    if (stageEl) {
+      stageEl.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const ch = getActiveNVRChannel();
+        if (!ch) return;
+        const curZ = ch.zoom || 1;
+        const step = curZ >= 10 ? 2 : 0.5;
+        const delta = e.deltaY < 0 ? step : -step;
+        setZoom(curZ + delta, ch.id);
+      }, { passive: false });
+    }
 
     function captureZoomedSnapshot() {
       const video = document.getElementById('officeFeedVideo');
