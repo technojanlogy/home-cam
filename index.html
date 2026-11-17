@@ -776,134 +776,6 @@
       display: none !important;
     }
 
-    /* PURE NVR WALL FULLSCREEN RULES */
-    #officeConsoleSection:fullscreen,
-    #officeConsoleSection:-webkit-full-screen,
-    #officeConsoleSection.nvr-fullscreen-active {
-      width: 100vw !important;
-      height: 100vh !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      background: #000 !important;
-      overflow: hidden !important;
-      display: flex !important;
-      flex-direction: column !important;
-      border-radius: 0 !important;
-      border: none !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      z-index: 999990 !important;
-    }
-
-    #officeConsoleSection:fullscreen .top-bar,
-    #officeConsoleSection:-webkit-full-screen .top-bar,
-    #officeConsoleSection.nvr-fullscreen-active .top-bar,
-    #officeConsoleSection:fullscreen .nvr-channels-bar,
-    #officeConsoleSection:-webkit-full-screen .nvr-channels-bar,
-    #officeConsoleSection.nvr-fullscreen-active .nvr-channels-bar,
-    #officeConsoleSection:fullscreen .office-dock,
-    #officeConsoleSection:-webkit-full-screen .office-dock,
-    #officeConsoleSection.nvr-fullscreen-active .office-dock,
-    #officeConsoleSection:fullscreen #officeDockControls,
-    #officeConsoleSection:-webkit-full-screen #officeDockControls,
-    #officeConsoleSection.nvr-fullscreen-active #officeDockControls,
-    #officeConsoleSection:fullscreen #nvrPlaybackConsole,
-    #officeConsoleSection:-webkit-full-screen #nvrPlaybackConsole,
-    #officeConsoleSection.nvr-fullscreen-active #nvrPlaybackConsole {
-      display: none !important;
-    }
-
-    #officeConsoleSection:fullscreen #multiCameraGrid,
-    #officeConsoleSection:-webkit-full-screen #multiCameraGrid,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid {
-      width: 100vw !important;
-      height: 100vh !important;
-      max-height: 100vh !important;
-      padding: 4px !important;
-      margin: 0 !important;
-      gap: 4px !important;
-      background: #000 !important;
-      overflow: hidden !important;
-      border-radius: 0 !important;
-      border: none !important;
-      flex: 1 1 100% !important;
-      box-sizing: border-box !important;
-    }
-
-    #officeConsoleSection:fullscreen #multiCameraGrid.grid-layout-1,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid.grid-layout-1 {
-      grid-template-columns: 1fr !important;
-      grid-template-rows: 1fr !important;
-    }
-    #officeConsoleSection:fullscreen #multiCameraGrid.grid-layout-2,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid.grid-layout-2 {
-      grid-template-columns: repeat(2, 1fr) !important;
-      grid-template-rows: 1fr !important;
-    }
-    #officeConsoleSection:fullscreen #multiCameraGrid.grid-layout-4,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid.grid-layout-4 {
-      grid-template-columns: repeat(2, 1fr) !important;
-      grid-template-rows: repeat(2, 1fr) !important;
-    }
-    #officeConsoleSection:fullscreen #multiCameraGrid.grid-layout-6,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid.grid-layout-6 {
-      grid-template-columns: repeat(3, 1fr) !important;
-      grid-template-rows: repeat(2, 1fr) !important;
-    }
-    #officeConsoleSection:fullscreen #multiCameraGrid.grid-layout-8,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid.grid-layout-8 {
-      grid-template-columns: repeat(4, 1fr) !important;
-      grid-template-rows: repeat(2, 1fr) !important;
-    }
-    #officeConsoleSection:fullscreen #multiCameraGrid.grid-layout-9,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid.grid-layout-9 {
-      grid-template-columns: repeat(3, 1fr) !important;
-      grid-template-rows: repeat(3, 1fr) !important;
-    }
-    #officeConsoleSection:fullscreen #multiCameraGrid.grid-layout-16,
-    #officeConsoleSection.nvr-fullscreen-active #multiCameraGrid.grid-layout-16 {
-      grid-template-columns: repeat(4, 1fr) !important;
-      grid-template-rows: repeat(4, 1fr) !important;
-    }
-
-    #officeConsoleSection:fullscreen #fullscreenNVRWallExitBtn,
-    #officeConsoleSection:-webkit-full-screen #fullscreenNVRWallExitBtn,
-    #officeConsoleSection.nvr-fullscreen-active #fullscreenNVRWallExitBtn {
-      display: flex !important;
-      position: fixed !important;
-      top: 14px !important;
-      right: 18px !important;
-      z-index: 999999 !important;
-    }
-
-    .cam-grid-tile.tile-fullscreen-mode {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      z-index: 999999 !important;
-      border-radius: 0 !important;
-      border: none !important;
-      background: #000 !important;
-    }
-    .cam-grid-tile.tile-fullscreen-mode .cam-tile-video {
-      height: calc(100vh - 45px) !important;
-      object-fit: contain !important;
-    }
-    .cam-grid-tile.tile-fullscreen-mode .btn-fullscreen-exit {
-      display: flex !important;
-      position: fixed !important;
-      top: 14px !important;
-      right: 18px !important;
-      z-index: 999999 !important;
-    }
-
     .cctv-stage:fullscreen,
     .cctv-stage:-webkit-full-screen,
     .nvr-player-box:fullscreen,
@@ -1456,9 +1328,9 @@
       min-height: 0;
       height: 100%;
       width: 100%;
-      padding: 6px;
+      padding: 8px;
       display: grid;
-      gap: 6px;
+      gap: 8px;
       background: #040810;
       overflow-y: auto !important;
       overflow-x: hidden;
@@ -1481,258 +1353,47 @@
     }
 
     .cctv-multi-grid.grid-layout-1 {
-      grid-template-columns: minmax(0, 1fr);
-      grid-auto-rows: minmax(0, 1fr);
+      grid-template-columns: 1fr;
+      grid-auto-rows: 1fr;
     }
     .cctv-multi-grid.grid-layout-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-auto-rows: minmax(200px, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: minmax(260px, 1fr);
     }
     .cctv-multi-grid.grid-layout-4 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-auto-rows: minmax(175px, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: minmax(200px, 1fr);
     }
     .cctv-multi-grid.grid-layout-6 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-auto-rows: minmax(150px, 1fr);
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(180px, 1fr);
     }
     .cctv-multi-grid.grid-layout-8 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      grid-auto-rows: minmax(130px, 1fr);
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: minmax(160px, 1fr);
     }
     .cctv-multi-grid.grid-layout-9 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-auto-rows: minmax(160px, auto);
-      gap: 6px;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(160px, 1fr);
     }
     .cctv-multi-grid.grid-layout-16 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      grid-auto-rows: minmax(135px, auto);
-      gap: 4px;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: minmax(140px, 1fr);
     }
 
     .cam-grid-tile {
       background: #000;
       border: 1px solid var(--card-border);
-      border-radius: 6px;
-      overflow: hidden !important;
+      border-radius: 10px;
+      overflow: hidden;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
       position: relative;
       height: 100%;
       width: 100%;
-      min-width: 0;
       min-height: 0;
-      box-sizing: border-box;
-      contain: paint;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .cam-grid-tile.active-focus {
-      border: 2px solid var(--cyan) !important;
-      box-shadow: 0 0 14px rgba(0, 245, 255, 0.45);
-    }
-    .cam-tile-video {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      object-fit: contain;
-      transform-origin: center center;
-    }
-
-    /* Professional CCTV OSD Top & Bottom Bars (Zero-Overlap Guaranteed) */
-    .cam-tile-osd-top {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 26px;
-      padding: 2px 5px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 65%, transparent 100%);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: nowrap !important;
-      overflow: hidden !important;
-      z-index: 10;
-      pointer-events: none;
-      gap: 3px;
       min-width: 0;
-      box-sizing: border-box;
-    }
-    .cam-tile-osd-top .osd-left {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      pointer-events: auto;
-      min-width: 0;
-      flex: 0 1 auto;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-    .osd-title {
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 72px;
-      flex-shrink: 1;
-    }
-    .chip-status {
-      font-size: 0.56rem;
-      font-weight: 800;
-      padding: 1px 4px;
-      border-radius: 3px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      line-height: 1.2;
-    }
-    .chip-status.live {
-      background: rgba(16, 185, 129, 0.25);
-      color: var(--emerald);
-      border: 1px solid rgba(16, 185, 129, 0.5);
-    }
-    .chip-status.offline {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--danger);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-    .chip-status.connecting {
-      background: rgba(0, 245, 255, 0.2);
-      color: var(--cyan);
-      border: 1px solid rgba(0, 245, 255, 0.4);
-    }
-
-    .cam-tile-osd-top .osd-actions {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      pointer-events: auto;
-      flex-shrink: 0;
-      flex-wrap: nowrap !important;
-      overflow: hidden !important;
-    }
-    .btn-osd {
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: #fff;
-      border-radius: 3px;
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      font-size: 0.58rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-    .btn-osd:hover {
-      background: var(--cyan);
-      color: #000;
-      border-color: var(--cyan);
-      transform: scale(1.1);
-    }
-    .btn-osd.cyan {
-      background: rgba(0, 245, 255, 0.35);
-      border-color: var(--cyan);
-      color: var(--cyan);
-    }
-    .btn-osd.danger:hover {
-      background: #ef4444;
-      color: #fff;
-      border-color: #ef4444;
-    }
-    .btn-osd.rec-active {
-      background: #ef4444 !important;
-      color: #fff !important;
-      border-color: #ef4444 !important;
-      animation: pulse-dot-anim 1s infinite alternate;
-    }
-
-    /* Compact scaling specifically for 9 and 16 high-density grids */
-    .cctv-multi-grid.grid-layout-9 .btn-osd {
-      width: 17px;
-      height: 17px;
-      font-size: 0.54rem;
-    }
-    .cctv-multi-grid.grid-layout-9 .osd-title {
-      max-width: 55px;
-      font-size: 0.62rem;
-    }
-    .cctv-multi-grid.grid-layout-9 .chip-status {
-      font-size: 0.52rem;
-      padding: 0 2px;
-    }
-
-    .cctv-multi-grid.grid-layout-16 .btn-osd {
-      width: 15px;
-      height: 15px;
-      font-size: 0.48rem;
-    }
-    .cctv-multi-grid.grid-layout-16 .osd-title {
-      max-width: 40px;
-      font-size: 0.52rem;
-    }
-    .cctv-multi-grid.grid-layout-16 .chip-status {
-      font-size: 0.46rem;
-      padding: 0 2px;
-    }
-    .cctv-multi-grid.grid-layout-16 .cam-tile-osd-top {
-      padding: 1px 3px;
-      height: 22px;
-    }
-    .cctv-multi-grid.grid-layout-16 .cam-tile-osd-bottom {
-      padding: 1px 3px;
-      height: 20px;
-    }
-    .cctv-multi-grid.grid-layout-16 .btn-micro-chip {
-      font-size: 0.48rem;
-      padding: 0 2px;
-    }
-
-    .cam-tile-osd-bottom {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 24px;
-      padding: 2px 5px;
-      background: linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 65%, transparent 100%);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: nowrap !important;
-      overflow: hidden !important;
-      z-index: 10;
-      pointer-events: none;
-      box-sizing: border-box;
-    }
-    .cam-tile-osd-bottom * {
-      pointer-events: auto;
-    }
-    .btn-micro-chip {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #e2e8f0;
-      font-size: 0.58rem;
-      font-weight: 600;
-      border-radius: 3px;
-      padding: 1px 4px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .btn-micro-chip:hover {
-      border-color: var(--cyan);
-      color: var(--cyan);
-    }
-    .btn-micro-chip.cyan {
-      border-color: rgba(0, 245, 255, 0.4);
-      color: var(--cyan);
+      transition: border-color 0.2s;
     }
 
     @media (max-width: 768px) {
@@ -1750,30 +1411,25 @@
       .cctv-multi-grid.grid-layout-8,
       .cctv-multi-grid.grid-layout-9,
       .cctv-multi-grid.grid-layout-16 {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        grid-template-columns: repeat(2, 1fr) !important;
         grid-template-rows: auto !important;
         gap: 6px !important;
       }
       .cam-grid-tile {
-        min-height: 140px !important;
+        min-height: 160px !important;
       }
     }
 
-    /* Standby Empty Slot Tile (Proportional Scaling & Zero Overlap) */
+    /* Standby Empty Slot Tile */
     .cam-grid-tile.standby-tile {
       background: rgba(10, 16, 28, 0.55);
       border: 1px dashed rgba(255, 255, 255, 0.16);
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 0 !important;
-      height: 100%;
-      position: relative;
-      overflow: hidden !important;
+      min-height: 220px;
       transition: all 0.2s ease;
-      box-sizing: border-box;
     }
     .cam-grid-tile.standby-tile:hover {
       border-color: var(--cyan);
@@ -1784,29 +1440,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
-      gap: 3px;
-      padding: 6px 4px;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      pointer-events: auto;
-    }
-    .cctv-multi-grid.grid-layout-9 .standby-tile-body span,
-    .cctv-multi-grid.grid-layout-16 .standby-tile-body span {
-      font-size: 1.2rem !important;
-    }
-    .cctv-multi-grid.grid-layout-9 .standby-tile-body div,
-    .cctv-multi-grid.grid-layout-16 .standby-tile-body div {
-      font-size: 0.62rem !important;
-      line-height: 1.1;
-    }
-    .cctv-multi-grid.grid-layout-9 .standby-tile-body button,
-    .cctv-multi-grid.grid-layout-16 .standby-tile-body button {
-      font-size: 0.56rem !important;
-      padding: 2px 6px !important;
-      margin-top: 2px !important;
+      gap: 6px;
+      padding: 16px;
     }
 
     /* Locked Tile (PIN Required) */
@@ -2252,9 +1888,6 @@
        SECTION 2: VIEWER CONSOLE (MOBILE & LAPTOP RESPONSIVE)
        ======================================================== -->
   <div class="laptop-console hidden" id="officeConsoleSection">
-
-    <!-- FLOATING EXIT BUTTON FOR NVR FULLSCREEN WALL -->
-    <button class="btn-fullscreen-exit hidden" id="fullscreenNVRWallExitBtn" onclick="exitGridFullscreen()" title="Exit Fullscreen Wall">✕ Exit Fullscreen Wall</button>
 
     <!-- TOP BAR -->
     <div class="top-bar">
@@ -3786,8 +3419,8 @@
       const status = document.getElementById(`tileStatus_${id}`);
       const video = document.getElementById(`tileVideo_${id}`);
       if (status) {
-        status.textContent = "● OFF";
-        status.className = "chip-status offline";
+        status.textContent = "OFFLINE";
+        status.style.color = "var(--danger)";
       }
       if (video) video.srcObject = null;
 
@@ -3818,8 +3451,8 @@
       }
       const status = document.getElementById(`tileStatus_${id}`);
       if (status) {
-        status.textContent = "● CONN";
-        status.className = "chip-status connecting";
+        status.textContent = "RECONNECTING...";
+        status.style.color = "var(--cyan)";
       }
       connectSingleGridTile(target);
       showToast(`Reconnecting to ${target.name}...`, "info", 1800);
@@ -3881,51 +3514,29 @@
       let tilesHtml = nvrChannels.map(ch => {
         const isFocused = ch.id === activeChannelId;
         const rot = ch.rotation || 0;
-        const z = ch.zoom || 1;
-        const px = ch.panX || 0;
-        const py = ch.panY || 0;
-        const isSideways = (rot === 90 || rot === 270);
-        const fitScale = isSideways ? 0.5625 : 1.0;
-        const effScale = z * fitScale;
-        const isLive = !!(multiGridPeers[ch.id] && multiGridPeers[ch.id].stream);
-        const isRecordingThis = !!(channelRecorders[ch.id] && channelRecorders[ch.id].recorder && channelRecorders[ch.id].recorder.state === 'recording');
-
         return `
           <div class="cam-grid-tile ${isFocused ? 'active-focus' : ''}" id="tile_${escapeHTML(ch.id)}" onclick="focusCameraTile('${escapeHTML(ch.id)}')" ondblclick="fullscreenTile('${escapeHTML(ch.id)}')">
-            <!-- CCTV OSD TOP OVERLAY -->
-            <div class="cam-tile-osd-top">
-              <div class="osd-left">
-                <span class="osd-title" title="${escapeHTML(ch.name)}">📹 ${escapeHTML(ch.name)}</span>
-                <span class="chip-status ${isLive ? 'live' : 'offline'}" id="tileStatus_${escapeHTML(ch.id)}">${isLive ? '● LIVE' : '● OFF'}</span>
-                <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.55rem; padding:0 3px;">🔋</span>
+            <div class="cam-tile-header">
+              <div style="display:flex; align-items:center; gap:4px; overflow:hidden;">
+                <span style="font-weight:700; font-size:0.72rem; text-overflow:ellipsis; white-space:nowrap;">📹 ${escapeHTML(ch.name)}</span>
+                <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.62rem; padding:2px 4px;">🔋 --% • 📶 --</span>
               </div>
-              <div class="osd-actions" onclick="event.stopPropagation();">
-                <button class="btn-osd" onclick="remoteFlipChannel('${escapeHTML(ch.id)}')" title="Flip Camera Lens (Front/Back) - ${escapeHTML(ch.name)}">🔄</button>
-                <button class="btn-osd" onclick="toggleChannelIntercom('${escapeHTML(ch.id)}')" title="Two-Way Talk / Intercom - ${escapeHTML(ch.name)}">🎙️</button>
-                <button class="btn-osd ${ch.isMuted === false ? 'cyan' : ''}" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')" title="${ch.isMuted === false ? 'Listening (Click to Mute)' : 'Listen / Audio'}">${ch.isMuted === false ? '🔊' : '🔇'}</button>
-                <button class="btn-osd" onclick="captureChannelSnapshot('${escapeHTML(ch.id)}')" title="Snapshot Frame - ${escapeHTML(ch.name)}">📸</button>
-                <button class="btn-osd ${isRecordingThis ? 'rec-active' : ''}" id="tileRecBtn_${escapeHTML(ch.id)}" onclick="toggleChannelRecording('${escapeHTML(ch.id)}')" title="${isRecordingThis ? 'Stop Recording' : 'Record Feed'}">${isRecordingThis ? '⏹️' : '🔴'}</button>
-                <button class="btn-osd" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera - ${escapeHTML(ch.name)}">⛶</button>
-                <button class="btn-osd danger" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera">✕</button>
+              <div style="display:flex; align-items:center; gap:4px;">
+                <span class="chip" id="tileStatus_${escapeHTML(ch.id)}" style="font-size:0.62rem; padding:2px 5px;">OFFLINE</span>
+                <button class="btn-act" style="padding:2px 5px; font-size:0.62rem;" onclick="event.stopPropagation(); rotateTile('${escapeHTML(ch.id)}')" title="Rotate Tile 90°">📐</button>
+                <button class="btn-act" style="padding:2px 5px; font-size:0.62rem;" onclick="event.stopPropagation(); openEditCameraModal('${escapeHTML(ch.id)}')" title="Edit Camera Channel">✏️</button>
+                <button class="btn-act" style="padding:2px 5px; font-size:0.62rem;" onclick="event.stopPropagation(); fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera Tile">⛶</button>
+                <button class="btn-act danger" style="padding:2px 5px; font-size:0.62rem;" onclick="event.stopPropagation(); removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera Channel">✕</button>
               </div>
             </div>
-
-            <!-- FLOATING EXIT FULLSCREEN BUTTON (FOR TILE FULLSCREEN) -->
             <button class="btn-fullscreen-exit hidden" id="tileExitBtn_${escapeHTML(ch.id)}" onclick="event.stopPropagation(); exitFullscreenTile()" title="Exit Fullscreen">✕ Exit Fullscreen</button>
-
-            <!-- CAMERA VIDEO STREAM -->
-            <video class="cam-tile-video" id="tileVideo_${escapeHTML(ch.id)}" style="transform:scale(${effScale}) translate(${px}px, ${py}px) rotate(${rot}deg); object-fit:${videoFitMode};" autoplay playsinline muted></video>
-
-            <!-- CCTV OSD BOTTOM OVERLAY -->
-            <div class="cam-tile-osd-bottom" onclick="event.stopPropagation();">
-              <div style="display:flex; align-items:center; gap:3px;">
-                <button class="btn-micro-chip cyan" onclick="focusCameraTile('${escapeHTML(ch.id)}', true)" title="1x1 Stage View">🔍 Focus</button>
-                <button class="btn-micro-chip" onclick="retryConnectTile('${escapeHTML(ch.id)}')" title="Connect / Reconnect Feed">⚡ Connect</button>
-              </div>
-              <div style="display:flex; align-items:center; gap:3px;">
-                <button class="btn-micro-chip" onclick="rotateTile('${escapeHTML(ch.id)}')" title="Rotate 90°">📐 90°</button>
-                <button class="btn-micro-chip" onclick="openEditCameraModal('${escapeHTML(ch.id)}')" title="Edit Camera Name / PIN">✏️ Edit</button>
-              </div>
+            <video class="cam-tile-video" id="tileVideo_${escapeHTML(ch.id)}" style="transform:scale(${rot === 90 || rot === 270 ? 0.5625 : 1.0}) rotate(${rot}deg); object-fit:${videoFitMode};" autoplay playsinline muted></video>
+            <div class="cam-tile-controls" onclick="event.stopPropagation();">
+              <button class="btn-act cyan" style="font-size:0.68rem; padding:3px 8px;" onclick="focusCameraTile('${escapeHTML(ch.id)}', true)">🔍 Focus 1x1</button>
+              <button class="btn-act" style="font-size:0.68rem; padding:3px 8px;" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')">🔊 Hear</button>
+              <button class="btn-act" style="font-size:0.68rem; padding:3px 8px;" onclick="rotateTile('${escapeHTML(ch.id)}')" title="Rotate 90°">📐 90°</button>
+              <button class="btn-act" style="font-size:0.68rem; padding:3px 8px;" onclick="retryConnectTile('${escapeHTML(ch.id)}')" title="Reconnect Camera">🔄 Retry</button>
+              <button class="btn-act" style="font-size:0.68rem; padding:3px 8px;" onclick="fullscreenTile('${escapeHTML(ch.id)}')">⛶ Fullscreen</button>
             </div>
           </div>
         `;
@@ -3937,20 +3548,11 @@
         const slotNumber = nvrChannels.length + i;
         tilesHtml += `
           <div class="cam-grid-tile standby-tile" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Click to Connect Camera to Slot ${slotNumber}">
-            <div class="cam-tile-osd-top">
-              <div class="osd-left">
-                <span class="osd-title">📹 CAM ${slotNumber}</span>
-                <span class="chip-status offline">● STANDBY</span>
-              </div>
-              <div class="osd-actions" onclick="event.stopPropagation();">
-                <button class="btn-osd" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Add / Connect Camera">➕</button>
-              </div>
-            </div>
             <div class="standby-tile-body">
-              <span style="font-size:1.4rem; opacity:0.35;">📹</span>
-              <div style="font-weight:800; font-size:0.72rem; color:var(--text-dim);">Slot ${slotNumber} (Empty)</div>
-              <div style="font-size:0.58rem; color:rgba(255,255,255,0.4);">Click to connect feed</div>
-              <button class="btn-act cyan" style="font-size:0.62rem; padding:2px 8px; margin-top:3px;">➕ Add CAM ${slotNumber}</button>
+              <span style="font-size:2.2rem; opacity:0.35;">📹</span>
+              <div style="font-weight:800; font-size:0.85rem; color:var(--text-dim);">Slot ${slotNumber} (Empty)</div>
+              <div style="font-size:0.72rem; color:rgba(255,255,255,0.4);">No camera connected</div>
+              <button class="btn-act cyan" style="font-size:0.72rem; padding:5px 12px; margin-top:8px;">➕ Add CAM ${slotNumber}</button>
             </div>
           </div>
         `;
@@ -3973,8 +3575,8 @@
         video.srcObject = multiGridPeers[ch.id].stream;
         video.muted = true;
         video.play().catch(() => {});
-        status.textContent = "● LIVE";
-        status.className = "chip-status live";
+        status.textContent = "LIVE";
+        status.style.color = "var(--emerald)";
         ch.isLive = true;
         renderNVRChannelChips();
         updateConnectButtonState(true);
@@ -4123,64 +3725,6 @@
       }
     }
 
-    // CAMERA-WISE INDEPENDENT RECORDING ENGINE
-    const channelRecorders = {}; // { [channelId]: { recorder, blobs, startTime } }
-
-    function toggleChannelRecording(channelId) {
-      const vid = document.getElementById(`tileVideo_${channelId}`) || document.getElementById('officeFeedVideo');
-      const btn = document.getElementById(`tileRecBtn_${channelId}`);
-      const ch = nvrChannels.find(c => c.id === channelId) || { name: 'CAM', id: channelId };
-
-      if (!vid || !vid.srcObject) {
-        return showToast(`Connect feed on ${ch.name} before recording!`, "warning", 2000);
-      }
-
-      const existing = channelRecorders[channelId];
-      if (existing && existing.recorder && existing.recorder.state === 'recording') {
-        try { existing.recorder.stop(); } catch (e) { }
-        return;
-      }
-
-      const recordedBlobs = [];
-      const mime = getBestMimeType();
-      const options = mime ? { mimeType: mime } : {};
-      let rec;
-      try {
-        rec = new MediaRecorder(vid.srcObject, options);
-      } catch (e) {
-        return showToast("Record error: " + e.message, "error");
-      }
-
-      const startTime = Date.now();
-      if (btn) {
-        btn.innerHTML = "⏹️";
-        btn.classList.add('rec-active');
-        btn.title = `Stop Recording ${ch.name}`;
-      }
-      showToast(`🔴 Recording started on ${ch.name}`, "info", 1800);
-
-      rec.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) recordedBlobs.push(e.data);
-      };
-      rec.onstop = async () => {
-        const durationSec = Math.max(1, Math.round((Date.now() - startTime) / 1000));
-        if (recordedBlobs.length > 0) {
-          const blob = new Blob(recordedBlobs, { type: rec.mimeType || 'video/mp4' });
-          await saveRecordingToVault(blob, durationSec, officeRequestedQuality, ch.name || 'CAM');
-          showToast(`📼 Saved clip for ${ch.name} (${formatSeconds(durationSec)}) to NVR Vault!`, "success", 3000);
-        }
-        if (btn) {
-          btn.innerHTML = "🔴";
-          btn.classList.remove('rec-active');
-          btn.title = `Record ${ch.name} Feed`;
-        }
-        delete channelRecorders[channelId];
-      };
-
-      channelRecorders[channelId] = { recorder: rec, blobs: recordedBlobs, startTime };
-      rec.start(1000);
-    }
-
     function toggleTileAudio(id) {
       const video = document.getElementById(`tileVideo_${id}`);
       const btn = document.getElementById(`tileAudioBtn_${id}`);
@@ -4194,8 +3738,7 @@
         const b = document.getElementById(`tileAudioBtn_${c.id}`);
         if (v) v.muted = true;
         if (b) {
-          b.textContent = "🔇";
-          b.title = "Click to Listen / Unmute";
+          b.textContent = "🔇 Muted";
           b.classList.remove('cyan');
         }
         c.isMuted = true;
@@ -4206,20 +3749,117 @@
 
       if (willHear) {
         video.muted = false;
-        btn.textContent = "🔊";
-        btn.title = "Listening (Click to Mute)";
+        btn.textContent = "🔊 Hear: ON";
         btn.classList.add('cyan');
         const target = nvrChannels.find(c => c.id === id);
         if (target) target.isMuted = false;
         focusCameraTile(id, false);
         showToast(`🔊 Listening to ${target ? target.name : id}`, "info", 1800);
       } else {
-        video.muted = true;
-        btn.textContent = "🔇";
-        btn.title = "Click to Listen / Unmute";
-        btn.classList.remove('cyan');
         showToast("Audio muted.", "info", 1400);
       }
+    }
+
+    function switchIntercomToTarget(newId) {
+      if (!isVideoIntercomActive || !viewerIntercomStream) return;
+      const target = nvrChannels.find(c => c.id === newId);
+      if (!target) return;
+
+      // Close previous intercom call
+      if (activeIntercomCall) {
+        try { activeIntercomCall.close(); } catch(e){}
+        activeIntercomCall = null;
+      }
+
+      // Notify previous connection
+      if (dataChannel && dataChannel.open) {
+        try { dataChannel.send({ type: 'intercom_state', active: false, hasVideo: false }); } catch(e){}
+      }
+
+      // Establish new call to new target
+      const callerPeer = (multiGridPeers[newId] && multiGridPeers[newId].peer) || peer;
+      const targetConn = (multiGridPeers[newId] && multiGridPeers[newId].conn) || dataChannel;
+
+      if (callerPeer) {
+        activeIntercomCall = callerPeer.call(newId, viewerIntercomStream);
+      }
+      if (targetConn && targetConn.open) {
+        targetConn.send({ type: 'intercom_state', active: true, hasVideo: true });
+        targetConn.send({ type: 'laptop_mic_state', active: true });
+      }
+
+      const btn = document.getElementById('videoIntercomBtn');
+      if (btn) {
+        btn.textContent = `📹 Intercom: LIVE ➔ ${target.name}`;
+      }
+      showToast(`📹 Video Intercom switched to ${target.name}!`, "info", 3000);
+    }
+
+    function fullscreenTile(id) {
+      const tile = document.getElementById(`tile_${id}`);
+      if (!tile) return;
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        exitFullscreenTile();
+        return;
+      }
+      if (tile.requestFullscreen) tile.requestFullscreen();
+      else if (tile.webkitRequestFullscreen) tile.webkitRequestFullscreen();
+      else if (tile.mozRequestFullScreen) tile.mozRequestFullScreen();
+      else if (tile.msRequestFullscreen) tile.msRequestFullscreen();
+    }
+
+    function exitFullscreenTile() {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    }
+
+    function toggleGridFullscreen() {
+      const grid = document.getElementById('multiCameraGrid');
+      if (!grid) return;
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        exitFullscreenTile();
+      } else {
+        if (grid.requestFullscreen) grid.requestFullscreen();
+        else if (grid.webkitRequestFullscreen) grid.webkitRequestFullscreen();
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      const fullEl = document.fullscreenElement || document.webkitFullscreenElement;
+      const stageExitBtn = document.getElementById('stageFullscreenExitBtn');
+      if (stageExitBtn) {
+        if (fullEl && fullEl === document.getElementById('stageViewport')) {
+          stageExitBtn.classList.remove('hidden');
+        } else {
+          stageExitBtn.classList.add('hidden');
+        }
+      }
+
+      nvrChannels.forEach(ch => {
+        const tileExitBtn = document.getElementById(`tileExitBtn_${ch.id}`);
+        if (tileExitBtn) {
+          if (fullEl && fullEl === document.getElementById(`tile_${ch.id}`)) {
+            tileExitBtn.classList.remove('hidden');
+          } else {
+            tileExitBtn.classList.add('hidden');
+          }
+        }
+      });
+    });
+
+    function cleanupMultiGridPeers(keepChannelId = null) {
+      Object.keys(multiGridPeers).forEach(id => {
+        if (keepChannelId && id === keepChannelId) return;
+        try {
+          const obj = multiGridPeers[id];
+          if (obj.video) obj.video.srcObject = null;
+          if (obj.peer) obj.peer.destroy();
+        } catch (e) { }
+        delete multiGridPeers[id];
+      });
+      if (!keepChannelId) multiGridPeers = {};
     }
 
     function focusCameraTile(id, switchView = false) {
@@ -5016,7 +4656,8 @@
                 if (incCont) incCont.classList.add('hidden');
               }
             } else if (cmd.type === 'remote_flip') {
-              await flipPhoneCamera();
+              currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
+              await updateCameraStream();
             } else if (cmd.type === 'remote_quality') {
               currentQuality = cmd.quality;
               const sel = document.getElementById('phoneResSelect');
@@ -5827,76 +5468,10 @@
       showToast("📐 Rotated all grid cameras by 90°", "info", 1800);
     }
 
-    // ========================================================
-    // PER-CAMERA ACTIONS: FLIP, SNAPSHOT, INTERCOM, LISTEN
-    // ========================================================
-    function remoteFlipChannel(channelId) {
-      let conn = null;
-      if (multiGridPeers[channelId] && multiGridPeers[channelId].conn && multiGridPeers[channelId].conn.open) {
-        conn = multiGridPeers[channelId].conn;
-      } else if (channelId === activeChannelId && dataChannel && dataChannel.open) {
-        conn = dataChannel;
-      } else if (dataChannel && dataChannel.open && nvrChannels.length === 1) {
-        conn = dataChannel;
-      }
-
-      if (conn) {
-        conn.send({ type: 'remote_flip' });
-        const ch = nvrChannels.find(c => c.id === channelId);
-        showToast(`🔄 Switching camera lens on ${ch ? ch.name : channelId}...`, "info", 1800);
-      } else {
-        const ch = nvrChannels.find(c => c.id === channelId);
-        showToast(`⚠️ ${ch ? ch.name : channelId} is offline. Connecting...`, "warning", 2000);
-        retryConnectTile(channelId);
-      }
-    }
-
-    function captureChannelSnapshot(channelId) {
-      const vid = document.getElementById(`tileVideo_${channelId}`) || document.getElementById('officeFeedVideo');
-      if (!vid || !vid.videoWidth) {
-        return showToast("No active video feed to capture!", "warning", 2000);
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width = vid.videoWidth || 1920;
-      canvas.height = vid.videoHeight || 1080;
-      const ctx = canvas.getContext('2d');
-      const ch = nvrChannels.find(c => c.id === channelId) || { name: 'CAM', zoom: 1, panX: 0, panY: 0, rotation: 0 };
-      const z = ch.zoom || 1;
-      const px = ch.panX || 0;
-      const py = ch.panY || 0;
-      const rot = ch.rotation || 0;
-
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate((rot * Math.PI) / 180);
-      ctx.scale(z, z);
-      ctx.translate(px, py);
-      ctx.drawImage(vid, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
-      ctx.restore();
-
-      const link = document.createElement('a');
-      const safeName = (ch.name || 'CAM').replace(/[^a-zA-Z0-9_-]/g, '_');
-      link.download = `PRScam_${safeName}_Snap_${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      showToast(`📸 Snapshot saved for ${ch.name}!`, "success", 2000);
-    }
-
-    function toggleChannelIntercom(channelId) {
-      focusCameraTile(channelId, false);
-      const ch = nvrChannels.find(c => c.id === channelId);
-      showToast(`🎙️ Intercom connected to ${ch ? ch.name : channelId}`, "info", 1800);
-      toggleVideoIntercom();
-    }
-
     function remoteFlipCamera() {
-      if (activeChannelId) {
-        remoteFlipChannel(activeChannelId);
-      } else if (dataChannel && dataChannel.open) {
+      if (dataChannel && dataChannel.open) {
         dataChannel.send({ type: 'remote_flip' });
-      } else {
-        showToast("Live feed not connected! Click Connect Live first.", "warning");
-      }
+      } else showToast("Live feed not connected! Click Connect Live first.", "warning");
     }
 
     // ==========================================
@@ -6104,119 +5679,6 @@
         if (document.exitFullscreen) document.exitFullscreen();
       }
     }
-
-    // ==========================================
-    // NVR WALL FULLSCREEN & TILE FULLSCREEN CONTROLS
-    // ==========================================
-    function toggleGridFullscreen() {
-      const section = document.getElementById('officeConsoleSection');
-      if (!section) return;
-
-      const isFs = !!(document.fullscreenElement || section.classList.contains('nvr-fullscreen-active'));
-      if (!isFs) {
-        section.classList.add('nvr-fullscreen-active');
-        const exitBtn = document.getElementById('fullscreenNVRWallExitBtn');
-        if (exitBtn) {
-          exitBtn.classList.remove('hidden');
-          exitBtn.style.display = 'flex';
-        }
-
-        if (section.requestFullscreen) {
-          section.requestFullscreen().catch(() => {});
-        } else if (section.webkitRequestFullscreen) {
-          section.webkitRequestFullscreen().catch(() => {});
-        }
-        showToast("🖥️ NVR Wall Fullscreen Active (Double-click or click Exit)", "info", 2000);
-      } else {
-        exitGridFullscreen();
-      }
-    }
-
-    function exitGridFullscreen() {
-      const section = document.getElementById('officeConsoleSection');
-      if (section) section.classList.remove('nvr-fullscreen-active');
-      const exitBtn = document.getElementById('fullscreenNVRWallExitBtn');
-      if (exitBtn) {
-        exitBtn.classList.add('hidden');
-        exitBtn.style.display = 'none';
-      }
-
-      if (document.fullscreenElement) {
-        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {});
-      }
-      showToast("Exited Fullscreen Wall", "info", 1400);
-    }
-
-    function fullscreenTile(channelId) {
-      const tile = document.getElementById(`tile_${channelId}`);
-      if (!tile) return;
-
-      const isAlready = tile.classList.contains('tile-fullscreen-mode') || document.fullscreenElement === tile;
-      if (!isAlready) {
-        exitFullscreenTile();
-
-        if (tile.requestFullscreen) {
-          tile.requestFullscreen().catch(() => {
-            tile.classList.add('tile-fullscreen-mode');
-          });
-        } else if (tile.webkitRequestFullscreen) {
-          tile.webkitRequestFullscreen().catch(() => {
-            tile.classList.add('tile-fullscreen-mode');
-          });
-        } else {
-          tile.classList.add('tile-fullscreen-mode');
-        }
-
-        const exitBtn = document.getElementById(`tileExitBtn_${channelId}`);
-        if (exitBtn) {
-          exitBtn.classList.remove('hidden');
-          exitBtn.style.display = 'flex';
-        }
-        const ch = nvrChannels.find(c => c.id === channelId);
-        showToast(`⛶ Fullscreen: ${ch ? ch.name : channelId} (Double-click or click Exit)`, "info", 1800);
-      } else {
-        exitFullscreenTile();
-      }
-    }
-
-    function exitFullscreenTile() {
-      if (document.fullscreenElement) {
-        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {});
-      }
-      document.querySelectorAll('.cam-grid-tile.tile-fullscreen-mode').forEach(el => {
-        el.classList.remove('tile-fullscreen-mode');
-      });
-      document.querySelectorAll('.cam-grid-tile .btn-fullscreen-exit').forEach(btn => {
-        btn.classList.add('hidden');
-        btn.style.display = 'none';
-      });
-      const stageExit = document.getElementById('stageFullscreenExitBtn');
-      if (stageExit) stageExit.style.display = 'none';
-    }
-
-    function onGlobalFullscreenChange() {
-      if (!document.fullscreenElement) {
-        const section = document.getElementById('officeConsoleSection');
-        if (section) section.classList.remove('nvr-fullscreen-active');
-        const exitBtn = document.getElementById('fullscreenNVRWallExitBtn');
-        if (exitBtn) {
-          exitBtn.classList.add('hidden');
-          exitBtn.style.display = 'none';
-        }
-        document.querySelectorAll('.cam-grid-tile.tile-fullscreen-mode').forEach(el => {
-          el.classList.remove('tile-fullscreen-mode');
-        });
-        document.querySelectorAll('.cam-grid-tile .btn-fullscreen-exit').forEach(btn => {
-          btn.classList.add('hidden');
-          btn.style.display = 'none';
-        });
-      }
-    }
-
-    document.addEventListener('fullscreenchange', onGlobalFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', onGlobalFullscreenChange);
 
     // ========================================================
     // 3. UNIFIED INDEXEDDB VAULT & STORAGE
