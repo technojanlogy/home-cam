@@ -9,20 +9,19 @@
   <style>
     :root {
       --bg: #070a10;
-      --card-bg: rgba(18, 25, 40, 0.85);
-      --border: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(18, 25, 40, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
       --cyan: #00f5ff;
       --cyan-glow: 0 0 16px rgba(0, 245, 255, 0.35);
       --emerald: #00e676;
       --emerald-glow: 0 0 16px rgba(0, 230, 118, 0.35);
       --danger: #ff1744;
       --danger-glow: 0 0 16px rgba(255, 23, 68, 0.35);
-      --warning: #ffab00;
       --text: #ffffff;
       --text-dim: #94a3b8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif; -webkit-tap-highlight-color: transparent; }
 
     body {
       background: #070a10;
@@ -33,273 +32,187 @@
     }
 
     /* ========================================================
-       DESKTOP & LAPTOP INTERFACE (Widescreen Zero-Scroll)
+       1. PHONE APP VIEW (CLEAN, MINIMAL, NATIVE MOBILE APP)
        ======================================================== */
-    @media (min-width: 900px) {
-      body {
-        height: 100vh;
-        max-height: 100vh;
-        overflow: hidden;
-        padding: 12px 18px;
-      }
-      .app-shell {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-      .top-nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 10px 16px;
-        margin-bottom: 10px;
-      }
-      .main-stage {
-        flex: 1;
-        min-height: 0;
-      }
-      .controls-dock {
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 10px 16px;
-        margin-top: 10px;
-      }
-      .action-row {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-    }
-
-    /* ========================================================
-       MOBILE NATIVE APP INTERFACE (< 900px)
-       ======================================================== */
-    @media (max-width: 899px) {
-      body {
-        height: auto;
-        overflow-y: auto;
-        padding: 10px;
-        background: #05070c;
-      }
-      .app-shell {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .top-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background: rgba(18, 25, 40, 0.95);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 12px;
-      }
-      .brand-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-      .telemetry-row {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-        width: 100%;
-      }
-      .telemetry-row .pill {
-        justify-content: center;
-        font-size: 0.7rem;
-        padding: 6px;
-      }
-      .header-controls {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-      }
-      .header-controls input {
-        width: 100% !important;
-      }
-      .mode-toggle {
-        width: 100%;
-      }
-      .mode-toggle button {
-        flex: 1;
-        padding: 11px;
-        font-size: 0.85rem;
-      }
-      .main-stage {
-        height: 48vh;
-        min-height: 250px;
-        border-radius: 16px;
-      }
-      .controls-dock {
-        background: rgba(18, 25, 40, 0.95);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .action-row {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        width: 100%;
-      }
-      .btn-app {
-        width: 100%;
-        padding: 14px 10px;
-        font-size: 0.85rem;
-      }
-      select.app-select {
-        width: 100%;
-        padding: 13px 10px;
-        font-size: 0.85rem;
-      }
-      .zoom-deck {
-        flex-wrap: wrap;
-      }
-    }
-
-    /* ========================================================
-       PREMIUM SHARED COMPONENTS
-       ======================================================== */
-    .brand-title {
-      font-size: 1.25rem;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ffffff 40%, var(--cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .phone-app-container {
+      max-width: 440px;
+      margin: 0 auto;
+      width: 100%;
+      min-height: 100dvh;
       display: flex;
+      flex-direction: column;
+      padding: 16px;
+      gap: 14px;
+    }
+
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-    }
-    .pulse-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--emerald);
-      box-shadow: var(--emerald-glow); animation: livePulse 2s infinite;
-    }
-    @keyframes livePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.85); } }
-
-    .pill {
-      background: rgba(0,0,0,0.45);
-      border: 1px solid var(--border);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 0.72rem;
-      font-family: monospace;
-      color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .pill b { color: var(--cyan); }
-
-    .mode-toggle {
-      display: flex;
-      background: rgba(0,0,0,0.5);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 3px;
-    }
-    .mode-toggle button {
-      border: none;
-      border-radius: 8px;
-      background: transparent;
-      color: var(--text-dim);
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .mode-toggle button.active {
-      background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: #fff;
-      box-shadow: 0 2px 10px rgba(37,99,235,0.4);
+      padding: 6px 0;
     }
 
-    /* VIEWPORT STAGE */
-    .main-stage {
+    .phone-viewfinder {
       position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
       background: #000;
-      border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 20px;
       overflow: hidden;
+      border: 1px solid var(--card-border);
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
-    .video-canvas {
+
+    .phone-preview-video {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      transform-origin: center center;
-      cursor: grab;
+      object-fit: cover;
     }
-    .video-canvas:active { cursor: grabbing; }
 
-    .hud-osd {
-      position: absolute; top: 12px; left: 12px; right: 12px;
-      display: flex; justify-content: space-between; align-items: center;
-      z-index: 10; pointer-events: none;
+    .phone-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
-    .badge {
-      background: rgba(7, 10, 16, 0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-family: monospace;
+
+    .phone-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
     }
-    .rec-box { color: var(--danger); font-weight: 800; display: flex; align-items: center; gap: 6px; }
-    .rec-circle { width: 7px; height: 7px; background: var(--danger); border-radius: 50%; animation: blink 1s infinite; }
+
+    .btn-large {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-large:active { transform: scale(0.98); }
+    .btn-large.emerald { background: linear-gradient(135deg, #00e676, #00b34d); color: #000; box-shadow: var(--emerald-glow); }
+    .btn-large.stealth { background: #000; border: 1px solid #333; color: #aaa; }
+    .btn-large.muted-btn { background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: #fff; }
+
+    /* ========================================================
+       2. OFFICE LAPTOP CONSOLE (WIDESCREEN MASTER COCKPIT)
+       ======================================================== */
+    .laptop-console {
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 18px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 16px;
+      margin-bottom: 8px;
+    }
+
+    .brand-logo {
+      font-size: 1.25rem; font-weight: 900;
+      background: linear-gradient(135deg, #ffffff 40%, var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); box-shadow: var(--emerald-glow); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.85); } }
+
+    .chip {
+      background: rgba(0,0,0,0.4); border: 1px solid var(--card-border);
+      padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-family: monospace; color: var(--text-dim);
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .chip b { color: var(--cyan); }
+
+    .cctv-stage {
+      flex: 1; min-height: 0; position: relative; background: #000;
+      border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .cctv-video {
+      width: 100%; height: 100%; object-fit: contain; transform-origin: center center; cursor: grab;
+    }
+    .cctv-video:active { cursor: grabbing; }
+
+    .osd-hud { position: absolute; top: 12px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+    .rec-flag { color: var(--danger); font-weight: 800; display: flex; align-items: center; gap: 6px; }
+    .rec-dot { width: 7px; height: 7px; background: var(--danger); border-radius: 50%; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity: 0; } }
 
-    .cc-banner {
-      position: absolute; bottom: 12px; left: 10px; right: 10px;
-      background: rgba(7, 10, 16, 0.92); backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 240, 0, 0.35); padding: 8px 14px;
-      border-radius: 10px; color: #ffe600; font-size: 0.88rem; font-weight: 700;
-      text-align: center; z-index: 15; pointer-events: none;
+    .cc-ticker {
+      position: absolute; bottom: 12px; left: 10%; right: 10%;
+      background: rgba(7, 10, 16, 0.92); backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 240, 0, 0.35); padding: 8px 16px; border-radius: 10px;
+      color: #ffe600; font-size: 0.9rem; font-weight: 700; text-align: center; pointer-events: none;
     }
 
-    /* BUTTONS & SELECTS */
-    .btn-app {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 9px 15px; border-radius: 10px; border: 1px solid var(--border);
-      background: rgba(255,255,255,0.06); color: #fff; font-size: 0.8rem; font-weight: 700;
-      cursor: pointer; transition: all 0.2s; white-space: nowrap;
-    }
-    .btn-app:active { transform: scale(0.97); }
-    .btn-cyan { background: linear-gradient(135deg, #00f5ff, #0099ff); color: #000; font-weight: 800; border: none; box-shadow: var(--cyan-glow); }
-    .btn-emerald { background: linear-gradient(135deg, #00e676, #00b34d); color: #000; font-weight: 800; border: none; box-shadow: var(--emerald-glow); }
-    .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); border: none; box-shadow: var(--danger-glow); }
-    .btn-muted { background: rgba(255,255,255,0.08); border: 1px solid var(--border); }
-
-    select.app-select {
-      background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--border);
-      padding: 9px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; outline: none; cursor: pointer;
+    .office-dock {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px;
+      padding: 10px 16px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;
     }
 
     .zoom-deck {
       display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4);
-      padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border); width: 100%;
+      padding: 6px 12px; border-radius: 10px; border: 1px solid var(--card-border);
     }
     .zoom-deck input[type=range] { flex: 1; accent-color: var(--cyan); cursor: pointer; }
-    .zoom-pill {
-      background: rgba(255,255,255,0.08); border: 1px solid var(--border);
-      color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer;
+    .zoom-chip {
+      background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: #fff;
+      padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer;
     }
-    .zoom-pill:hover { color: var(--cyan); border-color: var(--cyan); }
+    .zoom-chip:hover { color: var(--cyan); border-color: var(--cyan); }
 
-    /* PITCH BLACK FULLSCREEN */
+    .office-actions {
+      display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: nowrap;
+    }
+    .action-group {
+      display: flex; gap: 6px; align-items: center;
+    }
+
+    .btn-act {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 8px;
+      border: 1px solid var(--card-border); background: rgba(255,255,255,0.06); color: #fff;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-act:hover { background: rgba(255,255,255,0.12); }
+    .btn-act:active { transform: scale(0.97); }
+    .btn-act.cyan { background: linear-gradient(135deg, #00f5ff, #0099ff); color: #000; font-weight: 800; border: none; }
+    .btn-act.danger { background: linear-gradient(135deg, #ff1744, #d50000); border: none; }
+
+    select.dock-select {
+      background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--cyan);
+      padding: 7px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; outline: none; cursor: pointer;
+    }
+
+    /* PITCH BLACK FULLSCREEN (PHONE) */
     #stealthCover {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: #000000 !important; z-index: 2147483647; display: flex;
@@ -307,136 +220,173 @@
       padding-bottom: 30px; cursor: pointer;
     }
     #stealthCover p { color: #1e1e1e; font-size: 0.8rem; user-select: none; }
-    .hidden { display: none !important; }
 
-    .main-stage:fullscreen { width: 100vw; height: 100vh; border-radius: 0; border: none; }
+    .mode-switch {
+      display: flex; background: rgba(0,0,0,0.5); border: 1px solid var(--card-border);
+      border-radius: 10px; padding: 3px;
+    }
+    .mode-btn {
+      padding: 5px 12px; border: none; border-radius: 7px; background: transparent;
+      color: var(--text-dim); font-size: 0.78rem; font-weight: 700; cursor: pointer;
+    }
+    .mode-btn.active { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; }
+
+    .hidden { display: none !important; }
+    .cctv-stage:fullscreen { width: 100vw; height: 100vh; border-radius: 0; border: none; }
   </style>
 </head>
 <body>
 
-  <!-- PITCH BLACK FULLSCREEN -->
+  <!-- PITCH BLACK FULLSCREEN (PHONE) -->
   <div id="stealthCover" class="hidden" onclick="exitStealth()">
     <p>⚡ PRScam Stealth Active • Tap anywhere to wake</p>
   </div>
 
-  <div class="app-shell">
+  <!-- ========================================================
+       SECTION 1: HOME PHONE (CLEAN NATIVE APP INTERFACE)
+       ======================================================== -->
+  <div class="phone-app-container" id="phoneAppSection">
     
-    <!-- TOP NAVIGATION -->
-    <div class="top-nav">
-      <div class="brand-row">
-        <div class="brand-title"><span class="pulse-dot"></span> PRScam</div>
-        <div class="telemetry-row">
-          <span class="pill">FEED: <b id="statRes">360p ECO</b></span>
-          <span class="pill">ZOOM: <b id="statZoom">1.0x</b></span>
-          <span class="pill">TIME: <b id="statClock">00:00</b></span>
-        </div>
-      </div>
-
-      <div class="header-controls">
-        <input type="text" id="secretKey" value="prs-secure-cam-782" style="background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color:#fff; font-size: 0.82rem; width: 160px;" placeholder="Secret Key" />
-        <div class="mode-toggle">
-          <button id="tabCam" onclick="switchMode('camera')">📱 Home Phone</button>
-          <button class="active" id="tabView" onclick="switchMode('viewer')">💻 Office Command</button>
-        </div>
+    <div class="phone-header">
+      <div class="brand-logo"><span class="pulse-dot"></span> PRScam</div>
+      <div class="mode-switch">
+        <button class="mode-btn active" onclick="showPhoneMode()">📱 Phone</button>
+        <button class="mode-btn" onclick="showOfficeMode()">💻 Office</button>
       </div>
     </div>
 
-    <!-- MAIN VIEWPORT -->
-    <div class="main-stage" id="stageViewport" ondblclick="toggleFullscreen()">
-      <div class="hud-osd">
-        <span class="badge" id="hudStatus">STANDBY</span>
-        <span class="badge hidden rec-box" id="recBadge"><span class="rec-circle"></span> REC <span id="recTimer">00:00</span></span>
+    <!-- Phone Viewfinder (HARD MUTED - NEVER LOOPS AUDIO) -->
+    <div class="phone-viewfinder">
+      <video class="phone-preview-video" id="phonePreviewVideo" autoplay muted playsinline></video>
+      <div style="position: absolute; top: 12px; left: 14px;" class="chip">
+        STATUS: <b id="phoneStatusBadge">STANDBY</b>
       </div>
-
-      <div class="cc-banner hidden" id="ccBanner">💬 Listening for speech...</div>
-      <video class="video-canvas" id="liveVideo" autoplay playsinline></video>
+      <div style="position: absolute; bottom: 12px; right: 14px;" class="chip">
+        QUALITY: <b id="phoneActiveRes">360p (ECO)</b>
+      </div>
     </div>
 
-    <!-- BOTTOM CONTROLS DOCK -->
-    <div class="controls-dock">
-      
-      <!-- ZOOM DECK -->
-      <div class="zoom-deck">
-        <span style="font-size: 0.75rem; font-weight: 800; min-width: 65px; color:var(--cyan);">🔍 <span id="zoomReadout">1.0x</span></span>
-        <button class="zoom-pill" onclick="setZoom(1)">1x</button>
-        <button class="zoom-pill" onclick="setZoom(5)">5x</button>
-        <button class="zoom-pill" onclick="setZoom(10)">10x</button>
-        <button class="zoom-pill" onclick="setZoom(25)">25x</button>
-        <button class="zoom-pill" onclick="setZoom(50)">50x</button>
-        <button class="zoom-pill" onclick="setZoom(100)">100x</button>
-        <input type="range" id="zoomSlider" min="1" max="100" step="0.5" value="1" oninput="setZoom(this.value)" />
+    <!-- Clean Simple Controls Card -->
+    <div class="phone-card">
+      <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Secret Camera Key</label>
+      <input type="text" class="phone-input" id="phoneSecretKey" value="prs-secure-cam-782" />
+
+      <!-- BIG MAIN BROADCAST BUTTON -->
+      <button class="btn-large emerald" id="phoneStartBtn" onclick="startPhoneCamera()">
+        🚀 1. Start Camera
+      </button>
+
+      <!-- PHONE MIC TOGGLE -->
+      <button class="btn-large muted-btn" id="phoneMicToggleBtn" onclick="togglePhoneMic()">
+        🎙️ Phone Mic: ON
+      </button>
+
+      <!-- 100% BLACK SCREEN -->
+      <button class="btn-large stealth" onclick="enterStealth()">
+        🔋 100% Black Screen (Battery Saver)
+      </button>
+
+      <div style="font-size: 0.78rem; color: var(--text-dim); text-align: center;" id="phoneMsg">
+        Camera is ready. Tap Start Camera.
       </div>
-
-      <!-- OFFICE VIEWER BUTTONS -->
-      <div class="action-row" id="viewerActions">
-        <button class="btn-app btn-cyan" onclick="connectViewer()">⚡ Connect Live</button>
-        <button class="btn-app btn-danger" id="recBtn" onclick="toggleRecording()">🔴 Record</button>
-        <button class="btn-app btn-muted" onclick="captureZoomedSnapshot()">📸 Zoom Snap</button>
-        <button class="btn-app btn-muted" id="muteHearBtn" onclick="toggleHear()">🔊 Hear: ON</button>
-        
-        <!-- HARDWARE TALK TOGGLE (DEFAULT OFF & MUTED) -->
-        <button class="btn-app btn-muted" id="talkBtn" onclick="toggleTalk()">🎙️ Speak: OFF</button>
-        
-        <button class="btn-app btn-muted" onclick="remoteFlipCamera()">🔄 Flip Lens</button>
-        
-        <select class="app-select" id="remoteResSelect" onchange="remoteChangeQuality(this.value)">
-          <optgroup label="❄️ Thermal Guard (Phone Cool Rahega)">
-            <option value="240">240p (Zero-Heat)</option>
-            <option value="360" selected>360p (Battery Saver)</option>
-            <option value="480">480p (SD Balanced)</option>
-          </optgroup>
-          <optgroup label="🔥 Ultra Clarity (Inspect)">
-            <option value="720">720p HD</option>
-            <option value="1080">1080p Full HD</option>
-            <option value="4k">4K UHD (3840x2160)</option>
-            <option value="8k">8K Cinema (7680x4320)</option>
-          </optgroup>
-        </select>
-
-        <button class="btn-app btn-muted" onclick="toggleFullscreen()">⛶ Fullscreen</button>
-      </div>
-
-      <!-- PHONE BROADCASTER BUTTONS -->
-      <div class="action-row hidden" id="cameraActions">
-        <select class="app-select" id="phoneFacing">
-          <option value="environment">Back Camera (Main)</option>
-          <option value="user">Front Camera</option>
-        </select>
-        
-        <select class="app-select" id="initialQuality">
-          <option value="360" selected>❄️ 360p (Cool Mode)</option>
-          <option value="240">❄️ 240p (Zero-Heat)</option>
-          <option value="480">480p (Standard)</option>
-          <option value="720">720p (HD)</option>
-          <option value="1080">1080p (Full HD)</option>
-          <option value="4k">4K UHD (If Supported)</option>
-          <option value="8k">8K Cinema (If Supported)</option>
-        </select>
-
-        <select class="app-select" id="speechLang">
-          <option value="hi-IN" selected>Hindi (हिन्दी STT)</option>
-          <option value="en-IN">English (India)</option>
-          <option value="en-US">English (US)</option>
-        </select>
-
-        <button class="btn-app btn-emerald" onclick="startBroadcasting()">🚀 Start Camera</button>
-        
-        <!-- PHONE MIC MUTE BUTTON -->
-        <button class="btn-app btn-muted" id="phoneMicBtn" onclick="togglePhoneMic()">🎙️ Phone Mic: ON</button>
-        
-        <button class="btn-app btn-muted" onclick="enterStealth()">🔋 100% Black Screen</button>
-      </div>
-
-      <div style="font-size: 0.75rem; color: var(--text-dim); text-align: center; width: 100%;" id="systemMsg">Ready</div>
     </div>
   </div>
 
-  <!-- INCOMING AUDIO (DEFAULT MUTED TO PREVENT LEAKAGE) -->
-  <audio id="officeAudioSpeaker" autoplay muted></audio>
+  <!-- ========================================================
+       SECTION 2: OFFICE COMMAND CENTER (ALL MASTER FEATURES)
+       ======================================================== -->
+  <div class="laptop-console hidden" id="officeConsoleSection">
+    
+    <div class="top-bar">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="brand-logo"><span class="pulse-dot"></span> PRScam Command</div>
+        <span class="chip">FEED: <b id="statRes">360p (640x360)</b></span>
+        <span class="chip">ZOOM: <b id="statZoom">1.0x</b></span>
+        <span class="chip">CLOCK: <b id="statClock">00:00:00</b></span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <input type="text" id="officeSecretKey" value="prs-secure-cam-782" style="background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); padding: 6px 10px; border-radius: 8px; color:#fff; font-size: 0.8rem; width: 140px;" />
+        <div class="mode-switch">
+          <button class="mode-btn" onclick="showPhoneMode()">📱 Phone</button>
+          <button class="mode-btn active" onclick="showOfficeMode()">💻 Office</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CCTV VIEWPORT -->
+    <div class="cctv-stage" id="stageViewport" ondblclick="toggleFullscreen()">
+      <div class="osd-hud">
+        <span class="chip" id="hudOfficeStatus">STANDBY</span>
+        <span class="chip hidden rec-flag" id="recBadge"><span class="rec-dot"></span> REC <span id="recTimer">00:00</span></span>
+      </div>
+
+      <div class="cc-ticker hidden" id="ccTicker">💬 Listening for speech...</div>
+      <video class="cctv-video" id="officeFeedVideo" autoplay playsinline></video>
+    </div>
+
+    <!-- MASTER CONTROLS DOCK (CLEAN & NON-DISTURBING) -->
+    <div class="office-dock">
+      
+      <!-- 100x ZOOM SLIDER -->
+      <div class="zoom-deck">
+        <span style="font-size: 0.75rem; font-weight: 800; min-width: 65px; color:var(--cyan);">🔍 <span id="zoomReadout">1.0x</span></span>
+        <button class="zoom-chip" onclick="setZoom(1)">1x</button>
+        <button class="zoom-chip" onclick="setZoom(5)">5x</button>
+        <button class="zoom-chip" onclick="setZoom(10)">10x</button>
+        <button class="zoom-chip" onclick="setZoom(25)">25x</button>
+        <button class="zoom-chip" onclick="setZoom(50)">50x</button>
+        <button class="zoom-chip" onclick="setZoom(100)">100x</button>
+        <input type="range" id="zoomSlider" min="1" max="100" step="0.5" value="1" oninput="setZoom(this.value)" />
+      </div>
+
+      <!-- MASTER ACTION BUTTONS (ORGANIZED IN COMPACT GROUPS) -->
+      <div class="office-actions">
+        
+        <div class="action-group">
+          <button class="btn-act cyan" onclick="connectOfficeViewer()">⚡ Connect Live</button>
+          <button class="btn-act danger" id="recBtn" onclick="toggleRecording()">🔴 Record</button>
+          <button class="btn-act" onclick="captureZoomedSnapshot()">📸 Zoom Snap</button>
+        </div>
+
+        <div class="action-group">
+          <button class="btn-act" id="muteHearBtn" onclick="toggleHear()">🔊 Hear: ON</button>
+          <button class="btn-act" id="talkBtn" onclick="toggleTalk()">🎙️ Speak: OFF</button>
+          <button class="btn-act" onclick="remoteFlipCamera()">🔄 Flip Lens</button>
+        </div>
+        
+        <!-- REMOTE RESOLUTION SELECTOR (STAYS IN SYNC WITH TOP FEED CHIP) -->
+        <div class="action-group">
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">QUALITY:</span>
+          <select class="dock-select" id="remoteResSelect" onchange="remoteChangeQuality(this.value)">
+            <optgroup label="❄️ Thermal Guard (Phone Cool Rahega)">
+              <option value="240">240p (Zero-Heat 15fps)</option>
+              <option value="360" selected>360p (Battery Saver)</option>
+              <option value="480">480p (SD Balanced)</option>
+            </optgroup>
+            <optgroup label="🔥 High Definition">
+              <option value="720">720p HD</option>
+              <option value="1080">1080p Full HD</option>
+              <option value="4k">4K UHD (3840x2160)</option>
+              <option value="8k">8K Cinema (7680x4320)</option>
+            </optgroup>
+          </select>
+          <button class="btn-act" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE SPEAKER (ONLY PLAYS WHEN LAPTOP TALKS) -->
+  <audio id="phoneSpeaker" autoplay muted></audio>
 
   <script>
+    // Live Clock
     setInterval(() => {
-      document.getElementById('statClock').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const statClock = document.getElementById('statClock');
+      if (statClock) statClock.textContent = timeStr;
     }, 1000);
 
     const peerConfig = {
@@ -474,14 +424,25 @@
     let ccTimeout = null;
 
     let currentFacing = 'environment';
-    let currentQuality = '360';
+    let currentQuality = '360'; // Default is 360p Battery Saver
 
-    function switchMode(mode) {
-      const isCam = mode === 'camera';
-      document.getElementById('tabCam').classList.toggle('active', isCam);
-      document.getElementById('tabView').classList.toggle('active', !isCam);
-      document.getElementById('cameraActions').classList.toggle('hidden', !isCam);
-      document.getElementById('viewerActions').classList.toggle('hidden', isCam);
+    // Auto-detect screen size on load
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.innerWidth >= 900) {
+        showOfficeMode();
+      } else {
+        showPhoneMode();
+      }
+    });
+
+    function showPhoneMode() {
+      document.getElementById('phoneAppSection').classList.remove('hidden');
+      document.getElementById('officeConsoleSection').classList.add('hidden');
+    }
+
+    function showOfficeMode() {
+      document.getElementById('phoneAppSection').classList.add('hidden');
+      document.getElementById('officeConsoleSection').classList.remove('hidden');
     }
 
     async function enterStealth() {
@@ -491,7 +452,7 @@
         else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
       } catch (e) {}
 
-      document.getElementById('liveVideo').style.visibility = 'hidden';
+      document.getElementById('phonePreviewVideo').style.visibility = 'hidden';
       document.getElementById('stealthCover').classList.remove('hidden');
     }
 
@@ -501,47 +462,47 @@
         else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
       } catch (e) {}
       
-      document.getElementById('liveVideo').style.visibility = 'visible';
+      document.getElementById('phonePreviewVideo').style.visibility = 'visible';
       document.getElementById('stealthCover').classList.add('hidden');
     }
 
-    function getConstraints(facing, quality) {
-      let width = 640, height = 360, fps = 15;
+    // ==========================================
+    // HARDWARE RESOLUTION & BITRATE PROFILES
+    // ==========================================
+    function getQualityParams(quality) {
+      let width = 640, height = 360, fps = 15, bitrate = 450000;
+      if (quality === '240') { width = 426; height = 240; fps = 15; bitrate = 220000; }
+      else if (quality === '360') { width = 640; height = 360; fps = 15; bitrate = 450000; }
+      else if (quality === '480') { width = 854; height = 480; fps = 20; bitrate = 850000; }
+      else if (quality === '720') { width = 1280; height = 720; fps = 24; bitrate = 2200000; }
+      else if (quality === '1080') { width = 1920; height = 1080; fps = 30; bitrate = 5000000; }
+      else if (quality === '4k') { width = 3840; height = 2160; fps = 30; bitrate = 15000000; }
+      else if (quality === '8k') { width = 7680; height = 4320; fps = 30; bitrate = 30000000; }
 
-      if (quality === '240') { width = 426; height = 240; fps = 15; }
-      else if (quality === '360') { width = 640; height = 360; fps = 15; }
-      else if (quality === '480') { width = 854; height = 480; fps = 20; }
-      else if (quality === '720') { width = 1280; height = 720; fps = 24; }
-      else if (quality === '1080') { width = 1920; height = 1080; fps = 30; }
-      else if (quality === '4k') { width = 3840; height = 2160; fps = 30; }
-      else if (quality === '8k') { width = 7680; height = 4320; fps = 30; }
-
-      return {
-        video: {
-          facingMode: facing,
-          width: { ideal: width },
-          height: { ideal: height },
-          frameRate: { ideal: fps, max: fps }
-        },
-        audio: { echoCancellation: true, noiseSuppression: true }
-      };
+      return { width, height, fps, bitrate };
     }
 
     // ==========================================
     // 1. HOME PHONE BROADCASTER
     // ==========================================
-    async function startBroadcasting() {
-      const key = document.getElementById('secretKey').value.trim();
-      const statusEl = document.getElementById('systemMsg');
-      currentFacing = document.getElementById('phoneFacing').value;
-      currentQuality = document.getElementById('initialQuality').value;
+    async function startPhoneCamera() {
+      const key = document.getElementById('phoneSecretKey').value.trim();
+      const msg = document.getElementById('phoneMsg');
+      const badge = document.getElementById('phoneStatusBadge');
 
-      statusEl.textContent = `Booting ${currentQuality.toUpperCase()} Camera...`;
+      msg.textContent = "Starting camera...";
       try {
-        localStream = await navigator.mediaDevices.getUserMedia(getConstraints(currentFacing, currentQuality));
+        const p = getQualityParams(currentQuality);
+        localStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: currentFacing, width: { ideal: p.width }, height: { ideal: p.height }, frameRate: { ideal: p.fps, max: p.fps } },
+          audio: { echoCancellation: true, noiseSuppression: true }
+        });
         
-        const video = document.getElementById('liveVideo');
-        video.srcObject = localStream;
+        // HARD-MUTE LOCAL PREVIEW (PREVENTS FEEDBACK/ECHO)
+        const preview = document.getElementById('phonePreviewVideo');
+        preview.muted = true;
+        preview.volume = 0;
+        preview.srcObject = localStream;
 
         if ('wakeLock' in navigator) {
           try { await navigator.wakeLock.request('screen'); } catch(e){}
@@ -553,14 +514,26 @@
         peer = new Peer(key, peerConfig);
 
         peer.on('open', () => {
-          statusEl.textContent = `🟢 Live! Tap 100% Black Screen and place phone.`;
-          document.getElementById('hudStatus').textContent = `LIVE (${currentQuality.toUpperCase()})`;
+          badge.textContent = "LIVE";
+          badge.style.color = "var(--emerald)";
+          msg.textContent = "🟢 Camera Live! Ready for office connection.";
         });
 
         peer.on('connection', (conn) => {
           dataChannel = conn;
-          statusEl.textContent = "🔵 Office Connected!";
+          msg.textContent = "🔵 Office Connected. Streaming...";
           
+          // Send initial quality to office so dropdown syncs immediately!
+          conn.on('open', () => {
+            const track = localStream.getVideoTracks()[0];
+            const s = track.getSettings();
+            conn.send({
+              type: 'quality_ack',
+              res: `${s.width || p.width}x${s.height || p.height}`,
+              quality: currentQuality
+            });
+          });
+
           conn.on('data', async (cmd) => {
             if (cmd.type === 'remote_flip') {
               currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
@@ -569,8 +542,7 @@
               currentQuality = cmd.quality;
               await updateCameraStream();
             } else if (cmd.type === 'laptop_mic_state') {
-              // DUAL LAYER AUDIO MUTE: Phone un-mutes speaker ONLY when laptop is actively speaking!
-              const speaker = document.getElementById('officeAudioSpeaker');
+              const speaker = document.getElementById('phoneSpeaker');
               speaker.muted = !cmd.active;
             }
           });
@@ -578,54 +550,103 @@
           conn.on('open', () => {
             const call = peer.call(conn.peer, localStream);
             call.on('stream', (officeAudio) => {
-              const audioTag = document.getElementById('officeAudioSpeaker');
-              audioTag.srcObject = officeAudio;
-              audioTag.muted = true; // Stay strictly muted until command received!
-              audioTag.play();
+              const speaker = document.getElementById('phoneSpeaker');
+              speaker.srcObject = officeAudio;
+              speaker.muted = true;
+              speaker.play();
             });
           });
         });
 
       } catch (err) {
-        statusEl.textContent = `Error: ${err.message}`;
+        msg.textContent = `Error: ${err.message}`;
       }
     }
 
-    // PHONE MIC MUTE TOGGLE
     function togglePhoneMic() {
-      if (!localStream) return;
+      if (!localStream) return alert("Start camera first!");
       phoneMicActive = !phoneMicActive;
       localStream.getAudioTracks().forEach(t => t.enabled = phoneMicActive);
-      const btn = document.getElementById('phoneMicBtn');
+      const btn = document.getElementById('phoneMicToggleBtn');
       btn.textContent = phoneMicActive ? "🎙️ Phone Mic: ON" : "🔇 Phone Mic: MUTED";
-      btn.classList.toggle('btn-danger', !phoneMicActive);
+      btn.style.color = phoneMicActive ? "#fff" : "var(--danger)";
     }
 
+    // ========================================================
+    // BULLETPROOF RESOLUTION SWITCHER (RELEASES SENSOR LOCK)
+    // ========================================================
     async function updateCameraStream() {
-      const statusEl = document.getElementById('systemMsg');
+      const p = getQualityParams(currentQuality);
+      const msg = document.getElementById('phoneMsg');
       try {
-        const newStream = await navigator.mediaDevices.getUserMedia(getConstraints(currentFacing, currentQuality));
-        const newVideoTrack = newStream.getVideoTracks()[0];
+        const oldTrack = localStream.getVideoTracks()[0];
         
+        // Android Camera Lock Fix: MUST STOP OLD TRACK TO RE-OPEN SENSOR AT NEW RESOLUTION!
+        oldTrack.stop();
+
+        // Brief delay to allow Android hardware to release device lock
+        await new Promise(r => setTimeout(r, 120));
+
+        // Request clean sensor stream with requested resolution
+        const newStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: currentFacing,
+            width: { ideal: p.width, min: Math.min(p.width, 640) },
+            height: { ideal: p.height, min: Math.min(p.height, 360) },
+            frameRate: { ideal: p.fps, max: p.fps }
+          },
+          audio: false
+        });
+
+        const newVideoTrack = newStream.getVideoTracks()[0];
+
+        // Replace track on WebRTC peer connections
         if (peer) {
           for (let callId in peer.connections) {
             const connArr = peer.connections[callId];
             connArr.forEach(c => {
               if (c.peerConnection) {
                 const sender = c.peerConnection.getSenders().find(s => s.track && s.track.kind === 'video');
-                if (sender) sender.replaceTrack(newVideoTrack);
+                if (sender) {
+                  sender.replaceTrack(newVideoTrack);
+                  // Adjust bitrate parameters
+                  try {
+                    const params = sender.getParameters();
+                    if (params.encodings && params.encodings.length > 0) {
+                      params.encodings[0].maxBitrate = p.bitrate;
+                      sender.setParameters(params);
+                    }
+                  } catch (e) {}
+                }
               }
             });
           }
         }
 
-        localStream.getVideoTracks()[0].stop();
-        localStream.removeTrack(localStream.getVideoTracks()[0]);
+        localStream.removeTrack(oldTrack);
         localStream.addTrack(newVideoTrack);
-        document.getElementById('liveVideo').srcObject = localStream;
-        statusEl.textContent = `Quality switched: ${currentQuality.toUpperCase()}`;
+
+        const preview = document.getElementById('phonePreviewVideo');
+        preview.muted = true;
+        preview.srcObject = localStream;
+
+        // Verify actual negotiated resolution
+        const s = newVideoTrack.getSettings();
+        const actualRes = `${s.width || p.width}x${s.height || p.height}`;
+        document.getElementById('phoneActiveRes').textContent = `${currentQuality.toUpperCase()} (${actualRes})`;
+
+        // Send confirm ACK to Office
+        if (dataChannel && dataChannel.open) {
+          dataChannel.send({
+            type: 'quality_ack',
+            res: actualRes,
+            quality: currentQuality
+          });
+        }
+
+        msg.textContent = `Switched to: ${actualRes}`;
       } catch (e) {
-        statusEl.textContent = "Switch error: " + e.message;
+        msg.textContent = "Switch error: " + e.message;
       }
     }
 
@@ -633,11 +654,10 @@
       const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!Speech) return;
 
-      const lang = document.getElementById('speechLang').value;
       recognition = new Speech();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = lang;
+      recognition.lang = 'hi-IN';
 
       recognition.onresult = (event) => {
         let text = '';
@@ -662,16 +682,14 @@
     // ==========================================
     // 2. OFFICE COMMAND VIEWER
     // ==========================================
-    async function connectViewer() {
-      const key = document.getElementById('secretKey').value.trim();
-      const statusEl = document.getElementById('systemMsg');
-      const video = document.getElementById('liveVideo');
-      const hud = document.getElementById('hudStatus');
+    async function connectOfficeViewer() {
+      const key = document.getElementById('officeSecretKey').value.trim();
+      const video = document.getElementById('officeFeedVideo');
+      const hud = document.getElementById('hudOfficeStatus');
 
-      statusEl.textContent = "Connecting to P2P...";
+      hud.textContent = "CONNECTING...";
       try {
         officeMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        // HARD MUTE BY DEFAULT ON STARTUP
         officeMicStream.getAudioTracks().forEach(t => t.enabled = false);
       } catch (e) {}
 
@@ -683,15 +701,21 @@
         dataChannel = peer.connect(key);
 
         dataChannel.on('open', () => {
-          hud.textContent = "SECURE P2P LIVE";
+          hud.textContent = "LIVE P2P";
           hud.style.color = "var(--cyan)";
-          statusEl.textContent = "🟢 Live Stream Connected";
 
-          // Send initial hard mute state to home phone
           dataChannel.send({ type: 'laptop_mic_state', active: false });
 
+          // Synchronize resolution when dataChannel messages arrive
           dataChannel.on('data', (msg) => {
-            if (msg.type === 'subtitle') displaySubtitle(msg.text);
+            if (msg.type === 'subtitle') {
+              displaySubtitle(msg.text);
+            } else if (msg.type === 'quality_ack') {
+              // SYNC TOP CHIP & DROPDOWN SELECTION
+              document.getElementById('statRes').textContent = `${msg.quality.toUpperCase()} (${msg.res})`;
+              const sel = document.getElementById('remoteResSelect');
+              if (sel && msg.quality) sel.value = msg.quality;
+            }
           });
         });
 
@@ -700,12 +724,17 @@
           call.on('stream', (stream) => {
             video.srcObject = stream;
             video.play();
+            
+            // Listen for native video resize events
+            video.addEventListener('resize', () => {
+              if (video.videoWidth) {
+                document.getElementById('statRes').textContent = `${video.videoWidth}x${video.videoHeight}`;
+              }
+            });
+
             setTimeout(() => {
-              const resText = `${video.videoWidth}x${video.videoHeight}`;
-              document.getElementById('statRes').textContent = resText;
-              // Detect if true 4K
-              if (video.videoWidth >= 3840) {
-                document.getElementById('statRes').innerHTML = `<span style="color:var(--emerald)">4K (${resText})</span>`;
+              if (video.videoWidth) {
+                document.getElementById('statRes').textContent = `${video.videoWidth}x${video.videoHeight}`;
               }
             }, 1000);
           });
@@ -713,13 +742,12 @@
       });
 
       peer.on('error', (err) => {
-        statusEl.textContent = `Peer Error: ${err.type || err}`;
-        hud.textContent = "ERROR";
+        hud.textContent = "ERROR: " + err.type;
       });
     }
 
     function displaySubtitle(text) {
-      const banner = document.getElementById('ccBanner');
+      const banner = document.getElementById('ccTicker');
       banner.textContent = "💬 " + text;
       banner.classList.remove('hidden');
 
@@ -730,27 +758,21 @@
     function remoteFlipCamera() {
       if (dataChannel && dataChannel.open) {
         dataChannel.send({ type: 'remote_flip' });
-        document.getElementById('systemMsg').textContent = "Flipping lens...";
       } else alert("Live feed not connected!");
     }
 
     function remoteChangeQuality(val) {
       if (dataChannel && dataChannel.open) {
         dataChannel.send({ type: 'remote_quality', quality: val });
-        document.getElementById('systemMsg').textContent = `Requesting ${val.toUpperCase()}...`;
+        document.getElementById('statRes').textContent = `Switching to ${val.toUpperCase()}...`;
       } else alert("Live feed not connected!");
     }
 
-    // ==========================================
-    // BULLETPROOF TWO-WAY AUDIO CONTROLS
-    // ==========================================
     function toggleHear() {
-      const video = document.getElementById('liveVideo');
+      const video = document.getElementById('officeFeedVideo');
       isHearActive = !isHearActive;
       video.muted = !isHearActive;
-      const btn = document.getElementById('muteHearBtn');
-      btn.textContent = isHearActive ? "🔊 Hear: ON" : "🔇 Hear: OFF";
-      btn.classList.toggle('btn-danger', !isHearActive);
+      document.getElementById('muteHearBtn').textContent = isHearActive ? "🔊 Hear: ON" : "🔇 Hear: OFF";
     }
 
     function toggleTalk() {
@@ -758,23 +780,18 @@
       if (!officeMicStream) return alert("Microphone not detected.");
 
       isTalkActive = !isTalkActive;
-
-      // 1. Enable/Disable Laptop Hardware Track
       officeMicStream.getAudioTracks().forEach(t => t.enabled = isTalkActive);
 
-      // 2. Send Command to Phone to Unmute/Mute Speaker
       if (dataChannel && dataChannel.open) {
         dataChannel.send({ type: 'laptop_mic_state', active: isTalkActive });
       }
 
       if (isTalkActive) {
         btn.textContent = "📢 Speak: LIVE";
-        btn.classList.remove('btn-muted');
-        btn.classList.add('btn-cyan');
+        btn.classList.add('cyan');
       } else {
         btn.textContent = "🎙️ Speak: OFF";
-        btn.classList.remove('btn-cyan');
-        btn.classList.add('btn-muted');
+        btn.classList.remove('cyan');
       }
     }
 
@@ -782,7 +799,7 @@
     // 100x ZOOM & PAN ENGINE
     // ==========================================
     function applyTransform() {
-      const video = document.getElementById('liveVideo');
+      const video = document.getElementById('officeFeedVideo');
       video.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
     }
 
@@ -803,37 +820,27 @@
       setZoom(zoomLevel + delta);
     }, { passive: false });
 
-    function handleDragStart(x, y) {
+    stage.addEventListener('mousedown', (e) => {
       if (zoomLevel <= 1) return;
       isDragging = true;
-      startX = x - panX;
-      startY = y - panY;
-    }
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+    });
 
-    function handleDragMove(x, y) {
+    window.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-      panX = x - startX;
-      panY = y - startY;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
       applyTransform();
-    }
+    });
 
-    stage.addEventListener('mousedown', (e) => handleDragStart(e.clientX, e.clientY));
-    window.addEventListener('mousemove', (e) => handleDragMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', () => { isDragging = false; });
-
-    stage.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1) handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
-    window.addEventListener('touchend', () => { isDragging = false; });
 
     // ==========================================
     // ZOOMED SNAPSHOT & RECORDING
     // ==========================================
     function renderZoomedCanvas() {
-      const video = document.getElementById('liveVideo');
+      const video = document.getElementById('officeFeedVideo');
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth || 1280;
       canvas.height = video.videoHeight || 720;
@@ -849,7 +856,7 @@
     }
 
     function captureZoomedSnapshot() {
-      const video = document.getElementById('liveVideo');
+      const video = document.getElementById('officeFeedVideo');
       if (!video.videoWidth) return alert("No active video feed!");
       
       const canvas = renderZoomedCanvas();
@@ -860,7 +867,7 @@
     }
 
     function toggleRecording() {
-      const video = document.getElementById('liveVideo');
+      const video = document.getElementById('officeFeedVideo');
       const btn = document.getElementById('recBtn');
       const badge = document.getElementById('recBadge');
 
@@ -868,12 +875,10 @@
 
       if (!isRecording) {
         recordedBlobs = [];
-        let streamToRecord = video.srcObject;
-
         let options = { mimeType: 'video/webm;codecs=vp8,opus' };
         if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/mp4' };
 
-        try { mediaRecorder = new MediaRecorder(streamToRecord, options); }
+        try { mediaRecorder = new MediaRecorder(video.srcObject, options); }
         catch (e) { return alert("Record error: " + e.message); }
 
         mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedBlobs.push(e.data); };
