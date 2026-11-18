@@ -26,6 +26,8 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='cg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f5ff'/%3E%3Cstop offset='100%25' stop-color='%230077ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23070a10'/%3E%3Crect x='3' y='3' width='58' height='58' rx='12' fill='none' stroke='%2300f5ff' stroke-width='2' stroke-opacity='0.5'/%3E%3Cpath d='M14 24h24a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V28a4 4 0 0 1 4-4z' fill='url(%23cg)'/%3E%3Cpath d='M42 31l12-8v22l-12-8v-6z' fill='url(%23cg)'/%3E%3Ccircle cx='26' cy='36' r='6.5' fill='%23070a10'/%3E%3Ccircle cx='26' cy='36' r='3.5' fill='%2300f5ff'/%3E%3Ccircle cx='48' cy='16' r='4' fill='%23ef4444'/%3E%3C/svg%3E" />
   <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070a10'/%3E%3Cpath d='M14 24h24a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V28a4 4 0 0 1 4-4z' fill='%2300f5ff'/%3E%3Cpath d='M42 31l12-8v22l-12-8v-6z' fill='%2300f5ff'/%3E%3Ccircle cx='26' cy='36' r='6.5' fill='%23070a10'/%3E%3Ccircle cx='26' cy='36' r='3.5' fill='%2300f5ff'/%3E%3Ccircle cx='48' cy='16' r='4' fill='%23ef4444'/%3E%3C/svg%3E" />
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- FONT AWESOME 6 PRO-GRADE ICONS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
       --bg: #070a10;
@@ -226,13 +228,156 @@
       width: 100%;
       aspect-ratio: 4 / 3;
       background: #000;
-      border-radius: 16px;
+      border-radius: 18px;
       overflow: hidden;
       border: 1px solid var(--card-border);
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .phone-viewfinder.cam-active {
+      aspect-ratio: unset;
+      height: 64dvh;
+      min-height: 360px;
+      border-radius: 20px;
+    }
+
+    .phone-viewfinder.cam-active.cam-portrait {
+      aspect-ratio: 9 / 16;
+      max-height: 74dvh;
+    }
+
+    .phone-viewfinder.cam-active.cam-landscape {
+      aspect-ratio: 16 / 9;
+      max-height: 68dvh;
+    }
+
+    .phone-osd-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px;
+      transition: opacity 0.35s ease;
+      z-index: 10;
+    }
+
+    .phone-osd-overlay > * {
+      pointer-events: auto;
+    }
+
+    .camera-app-deck {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 18px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 36px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transition: opacity 0.35s ease;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 4px;
+    }
+
+    .cam-deck-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .cam-deck-btn:hover {
+      background: rgba(0, 245, 255, 0.2);
+      border-color: var(--cyan);
+      transform: scale(1.08);
+    }
+
+    .cam-deck-btn:active {
+      transform: scale(0.95);
+    }
+
+    .cam-shutter-btn {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      border: 3.5px solid rgba(255, 255, 255, 0.85);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 3px;
+      flex-shrink: 0;
+    }
+
+    .cam-shutter-btn .shutter-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--emerald);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 1.3rem;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+    }
+
+    .cam-shutter-btn.recording {
+      border-color: #ef4444;
+      animation: shutterPulse 1.8s infinite;
+    }
+
+    .cam-shutter-btn.recording .shutter-inner {
+      border-radius: 12px;
+      width: 32px;
+      height: 32px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 1.1rem;
+      box-shadow: 0 0 18px rgba(239, 68, 68, 0.8);
+    }
+
+    @keyframes shutterPulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+      70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .autohide-faded {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    @media (max-width: 640px) {
+      .hide-on-mobile {
+        display: none !important;
+      }
+      .phone-header, .top-bar {
+        padding: 5px 8px !important;
+        gap: 5px !important;
+      }
     }
 
     .phone-preview-video {
@@ -356,7 +501,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap !important;
+      overflow-x: auto;
+      overflow-y: hidden;
       gap: 6px 10px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -364,14 +511,20 @@
       padding: 6px 10px;
       margin-bottom: 6px;
       flex-shrink: 0;
+      scrollbar-width: none;
+    }
+
+    .top-bar::-webkit-scrollbar {
+      display: none;
     }
 
     .top-bar-left,
     .top-bar-right {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap !important;
       gap: 6px 8px;
+      flex-shrink: 0;
     }
 
     /* LIVE CCTV VIEWPORT */
@@ -1940,10 +2093,8 @@
       </div>
 
       <div class="auth-tabs">
-        <button class="auth-tab active" id="authTabLoginBtn" type="button" onclick="switchAuthTab('login')">🔑 Sign
-          In</button>
-        <button class="auth-tab" id="authTabRegisterBtn" type="button" onclick="switchAuthTab('register')">📝
-          Register</button>
+        <button class="auth-tab active" id="authTabLoginBtn" type="button" onclick="switchAuthTab('login')"><i class="fa-solid fa-key text-cyan-400"></i> Sign In</button>
+        <button class="auth-tab" id="authTabRegisterBtn" type="button" onclick="switchAuthTab('register')"><i class="fa-solid fa-user-plus text-emerald-400"></i> Register</button>
       </div>
 
       <!-- LOGIN FORM -->
@@ -1965,7 +2116,7 @@
             <input type="checkbox" id="authRememberMe" checked /> Remember session
           </label>
         </div>
-        <button type="submit" class="auth-btn-submit">🔓 Access CCTV Console</button>
+        <button type="submit" class="auth-btn-submit"><i class="fa-solid fa-shield-halved"></i> Access CCTV Console</button>
         <div class="auth-hint">
           Default Credentials: <b>admin</b> / <b>admin123</b> (or Register a new user)
         </div>
@@ -2001,7 +2152,7 @@
           <input type="password" id="authRegConfirm" class="auth-input" placeholder="••••••••" required
             autocomplete="new-password" />
         </div>
-        <button type="submit" class="auth-btn-submit">✨ Create Account & Login</button>
+        <button type="submit" class="auth-btn-submit"><i class="fa-solid fa-user-check"></i> Create Account & Login</button>
       </form>
     </div>
   </div>
@@ -2017,15 +2168,13 @@
   <div class="phone-app-container" id="phoneAppSection">
 
     <div class="phone-header">
-      <div class="brand-logo"><span class="pulse-dot"></span> PRScam Phone</div>
+      <div class="brand-logo"><span class="pulse-dot"></span> <span class="phone-brand-title">PRScam</span></div>
       <div style="display:flex; align-items:center; gap:6px;">
-        <span class="chip" id="phoneUserBadge" style="font-size:0.68rem; padding:3px 7px;">👤 <b
-            id="phoneUserName">admin</b></span>
-        <button class="btn-act danger" style="padding:3px 7px; font-size:0.68rem;" onclick="handleAuthLogout()"
-          title="Logout">🚪</button>
+        <span class="chip" id="phoneUserBadge" style="font-size:0.7rem; padding:3px 7px;"><i class="fa-solid fa-user-shield text-cyan-400"></i> <b id="phoneUserName" class="hide-on-mobile">admin</b></span>
+        <button class="btn-act danger" style="padding:4px 8px; font-size:0.7rem;" onclick="handleAuthLogout()" title="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         <div class="mode-switch">
-          <button class="mode-btn active" onclick="showPhoneMode()">📱 Phone</button>
-          <button class="mode-btn" onclick="showViewerMode()">💻 Viewer</button>
+          <button class="mode-btn active" onclick="showPhoneMode()" title="Phone Broadcaster"><i class="fa-solid fa-mobile-screen"></i> <span class="hide-on-mobile">Phone</span></button>
+          <button class="mode-btn" onclick="showViewerMode()" title="Viewer Console"><i class="fa-solid fa-desktop"></i> <span class="hide-on-mobile">Viewer</span></button>
         </div>
       </div>
     </div>
@@ -2033,155 +2182,186 @@
     <!-- DEDICATED PHONE TABS: CAMERA vs PLAYBACK -->
     <div class="tabs-bar">
       <button class="tab-btn active" id="phoneTabCameraBtn" onclick="switchPhoneTab('camera')">
-        📷 Camera & Live
+        <i class="fa-solid fa-video text-cyan-400"></i> Camera & Live
       </button>
       <button class="tab-btn" id="phoneTabPlaybackBtn" onclick="switchPhoneTab('playback')">
-        📼 Playback (<span id="phoneTabCount">0</span>)
+        <i class="fa-solid fa-film text-purple-400"></i> Vault (<span id="phoneTabCount">0</span>)
       </button>
     </div>
 
     <!-- SUB-VIEW 1A: PHONE CAMERA VIEW -->
-    <div id="phoneCameraSubView" style="display: flex; flex-direction: column; gap: 10px;">
+    <div id="phoneCameraSubView" style="display: flex; flex-direction: column; gap: 8px;">
       <!-- Phone Viewfinder (HARD MUTED) -->
-      <div class="phone-viewfinder">
+      <div class="phone-viewfinder" onclick="handleViewfinderTap(event)">
         <video class="phone-preview-video" id="phonePreviewVideo" autoplay muted playsinline></video>
 
         <!-- INCOMING OPERATOR VIDEO INTERCOM PiP -->
         <div id="phoneIncomingIntercomContainer" class="hidden intercom-pip-phone">
           <div class="intercom-pip-header">
-            <span>👤 Operator Live</span>
+            <span><i class="fa-solid fa-user-tie text-cyan-400"></i> Operator Live</span>
             <button onclick="togglePhoneIntercomAudio()" id="phoneIntercomAudioToggleBtn"
-              style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.75rem;">🔊</button>
+              style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.75rem;"><i class="fa-solid fa-volume-high"></i></button>
           </div>
           <video id="phoneIncomingIntercomVideo" autoplay playsinline></video>
         </div>
 
-        <div style="position: absolute; top: 10px; left: 10px;" class="chip">
-          STATUS: <b id="phoneStatusBadge">STANDBY</b>
-        </div>
-        <div style="position: absolute; top: 10px; right: 10px;" class="chip" id="phoneTelemetryChip">
-          <span id="phoneBatText">🔋 100%</span> • <span id="phoneNetText">📶 4G</span>
-        </div>
-        <div style="position: absolute; bottom: 10px; right: 10px;" class="chip">
-          QUALITY: <b id="phoneActiveRes">1080p FHD</b>
-        </div>
-        <!-- PHONE RECORDING TIMER BADGE -->
-        <div style="position: absolute; bottom: 10px; left: 10px;" class="chip hidden rec-flag" id="phoneRecBadge">
-          <span class="rec-dot"></span> <span id="phoneRecText">REC [AUTO] 00:00</span>
+        <!-- CAMERA OSD OVERLAY (HUD) -->
+        <div class="phone-osd-overlay" id="phoneOSDOverlay">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div class="chip" style="font-size:0.72rem; padding:4px 8px;">
+              <i class="fa-solid fa-circle text-emerald-400 animate-pulse"></i> <b id="phoneStatusBadge">STANDBY</b>
+            </div>
+            <div class="chip" id="phoneTelemetryChip" style="font-size:0.72rem; padding:4px 8px;">
+              <span id="phoneBatText"><i class="fa-solid fa-battery-three-quarters text-emerald-400"></i> 100%</span> &bull; <span id="phoneNetText"><i class="fa-solid fa-wifi text-cyan-400"></i> 4G</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div class="chip hidden rec-flag" id="phoneRecBadge" style="font-size:0.72rem; padding:4px 8px;">
+              <span class="rec-dot"></span> <span id="phoneRecText">REC [AUTO] 00:00</span>
+            </div>
+            <div class="chip" style="font-size:0.72rem; padding:4px 8px; margin-left:auto;">
+              <i class="fa-solid fa-sliders text-cyan-400"></i> <b id="phoneActiveRes">1080p FHD</b>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Phone Controls Card -->
-      <div class="phone-card">
-        <div style="display:flex; flex-direction:column; gap:4px;">
-          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Camera
-            Name / Channel Label</label>
-          <input type="text" class="phone-input" id="phoneCameraName" value="CAM 1 (Living Room)"
-            placeholder="e.g. CAM 1 (Living Room)" />
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top:4px;">
-          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Secret
-            Camera Key / ID</label>
-          <button class="mode-btn" style="padding: 2px 6px; font-size: 0.7rem;" onclick="copySecretKey()">📋 Copy
-            Key</button>
-        </div>
-        <input type="text" class="phone-input" id="phoneSecretKey" value="prs-secure-cam-782" />
-
-        <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
-          <label style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Camera
-            Access PIN / Password (Optional)</label>
-          <input type="password" class="phone-input" id="phoneCameraPin"
-            placeholder="Optional PIN (e.g. 1234) for NVR authorization" />
-        </div>
-
-        <!-- ORIENTATION SELECTOR (PORTRAIT vs LANDSCAPE) -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top:4px;">
-          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">ORIENTATION MODE:</span>
-          <select class="dock-select" id="phoneOrientationModeSelect" onchange="setPhoneOrientationMode(this.value)">
-            <option value="auto" selected>🔄 Auto (Sensor Rotate)</option>
-            <option value="portrait">📱 Portrait (9:16 Upright)</option>
-            <option value="landscape">🖥️ Landscape (16:9 Widescreen)</option>
-          </select>
-        </div>
-
-        <!-- QUALITY SELECTOR -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">CAMERA SENSOR:</span>
-          <select class="dock-select" id="phoneResSelect" onchange="onPhoneQualitySelect(this.value)">
-            <option value="240">240p (Zero-Heat 15fps)</option>
-            <option value="360">360p (Battery Saver)</option>
-            <option value="480">480p (SD Balanced)</option>
-            <option value="720">720p HD</option>
-            <option value="1080" selected>1080p Full HD</option>
-            <option value="4k">4K UHD (3840x2160)</option>
-            <option value="8k">8K Cinema (Max Sensor)</option>
-          </select>
-        </div>
-
-        <!-- AUTO-RECORD SETTING -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-RECORD (24/7 NVR):</span>
-          <select class="dock-select" id="phoneAutoRecSetting" onchange="onPhoneAutoRecChange(this.value)">
-            <option value="true" selected>ON (Record in Background)</option>
-            <option value="false">OFF (Only Stream Live)</option>
-          </select>
-        </div>
-
-        <!-- ROLLING CLIP DURATION -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">ROLLING CLIP LENGTH:</span>
-          <select class="dock-select" id="phoneSegmentSelect" onchange="onSegmentDurationChange(this.value)">
-            <option value="5" selected>5 Minutes (Standard NVR)</option>
-            <option value="10">10 Minutes</option>
-            <option value="15">15 Minutes</option>
-            <option value="30">30 Minutes</option>
-            <option value="60">60 Minutes (1 Hour)</option>
-            <option value="2">2 Minutes (Quick Testing)</option>
-            <option value="1">1 Minute (Rapid)</option>
-          </select>
-        </div>
-
-        <!-- AUTO-DELETE RETENTION SELECTOR -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">AUTO-DELETE OLDER THAN:</span>
-          <select class="dock-select" id="phoneRetentionDays" onchange="onRetentionChange(this.value)">
-            <option value="1">1 Day (24 Hours)</option>
-            <option value="2" selected>2 Days (48 Hours)</option>
-            <option value="3">3 Days</option>
-            <option value="7">7 Days (1 Week)</option>
-            <option value="custom">Custom Days...</option>
-            <option value="0">Never (Manual Delete)</option>
-          </select>
-        </div>
-
-        <!-- CAMERA FLIP BUTTON (FRONT ⇄ BACK) -->
-        <button class="btn-large muted-btn" id="phoneFlipCamBtn" onclick="flipPhoneCamera()">
-          🔄 Switch / Flip Camera (Back ⇄ Front)
+      <!-- CAMERA APP SHUTTER DECK (ROUND ICON CONTROLS) -->
+      <div class="camera-app-deck" id="cameraAppDeck" onclick="event.stopPropagation(); resetOSDAutoHide();">
+        <!-- FLIP CAMERA -->
+        <button class="cam-deck-btn" id="phoneFlipCamBtn" onclick="flipPhoneCamera()" title="Switch Camera (Back ⇄ Front)">
+          <i class="fa-solid fa-camera-rotate"></i>
         </button>
 
-        <!-- MAIN START/STOP CAMERA BUTTON -->
-        <button class="btn-large emerald" id="phoneStartBtn" onclick="togglePhoneCamera()">
-          🚀 Start Camera
+        <!-- MIC MUTE TOGGLE -->
+        <button class="cam-deck-btn" id="phoneMicToggleBtn" onclick="togglePhoneMic()" title="Phone Mic (ON/MUTE)">
+          <i class="fa-solid fa-microphone"></i>
         </button>
 
-        <!-- CUT / SAVE ACTIVE CLIP BUTTON -->
-        <button class="btn-large cyan" id="phoneCutClipBtn" onclick="cutPhoneSegmentNow()">
-          ✂️ Save / Cut Clip Now
+        <!-- CENTER SHUTTER BUTTON -->
+        <button class="cam-shutter-btn" id="phoneStartBtn" onclick="togglePhoneCamera()" title="Start / Stop Camera">
+          <div class="shutter-inner">
+            <i class="fa-solid fa-play"></i>
+          </div>
         </button>
 
-        <!-- PHONE MIC TOGGLE -->
-        <button class="btn-large muted-btn" id="phoneMicToggleBtn" onclick="togglePhoneMic()">
-          🎙️ Phone Mic: ON
+        <!-- CUT CLIP NOW -->
+        <button class="cam-deck-btn" id="phoneCutClipBtn" onclick="cutPhoneSegmentNow()" title="Cut / Save Clip Now">
+          <i class="fa-solid fa-scissors"></i>
         </button>
 
-        <!-- 100% BLACK SCREEN STEALTH -->
-        <button class="btn-large stealth" onclick="enterStealth()">
-          🔋 100% Black Screen (Battery Saver)
+        <!-- STEALTH BLACK SCREEN -->
+        <button class="cam-deck-btn" id="phoneStealthBtn" onclick="enterStealth()" title="100% Black Screen (Stealth Mode)">
+          <i class="fa-solid fa-moon"></i>
         </button>
 
-        <div style="font-size: 0.76rem; color: var(--text-dim); text-align: center;" id="phoneMsg">
-          Camera is ready. Tap Start Camera to begin.
+        <!-- SETTINGS SHEET TRIGGER -->
+        <button class="cam-deck-btn" id="phoneSettingsOpenBtn" onclick="openPhoneSettingsModal()" title="Camera Settings">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+
+      <div style="font-size: 0.74rem; color: var(--text-dim); text-align: center; margin-top:2px;" id="phoneMsg">
+        Camera ready. Tap green shutter button to begin.
+      </div>
+    </div>
+
+    <!-- SLIDE-UP PHONE SETTINGS MODAL -->
+    <div id="phoneSettingsModal" class="custom-modal-backdrop hidden" onclick="if(event.target===this) closePhoneSettingsModal()">
+      <div class="custom-modal-card" style="max-height:88vh; overflow-y:auto; border-radius:22px 22px 14px 14px;">
+        <div class="custom-modal-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-gear text-cyan-400" style="font-size:1.2rem;"></i>
+            <div class="custom-modal-title">Camera Settings</div>
+          </div>
+          <button class="btn-act" style="border-radius:50%; width:30px; height:30px; padding:0; display:flex; align-items:center; justify-content:center;" onclick="closePhoneSettingsModal()" title="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="custom-modal-body" style="display:flex; flex-direction:column; gap:12px;">
+          <!-- Camera Name -->
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <label class="auth-label"><i class="fa-solid fa-tag text-cyan-400"></i> Camera Name / Channel Label</label>
+            <input type="text" class="phone-input" id="phoneCameraName" value="CAM 1 (Living Room)" placeholder="e.g. CAM 1 (Living Room)" oninput="localStorage.setItem('prscam_phone_cam_name', this.value)" />
+          </div>
+
+          <!-- Secret Key -->
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="auth-label"><i class="fa-solid fa-key text-cyan-400"></i> Secret Camera Key / ID</label>
+              <button class="mode-btn" style="padding: 2px 8px; font-size: 0.7rem;" onclick="copySecretKey()"><i class="fa-regular fa-copy"></i> Copy Key</button>
+            </div>
+            <input type="text" class="phone-input font-mono" id="phoneSecretKey" value="prs-secure-cam-782" oninput="localStorage.setItem('prscam_phone_secret_key', this.value.trim())" />
+          </div>
+
+          <!-- PIN -->
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <label class="auth-label"><i class="fa-solid fa-lock text-cyan-400"></i> Camera Access PIN / Password (Optional)</label>
+            <input type="password" class="phone-input font-mono" id="phoneCameraPin" placeholder="Optional PIN (e.g. 1234)" oninput="localStorage.setItem('prscam_phone_cam_pin', this.value.trim())" />
+          </div>
+
+          <!-- Orientation Mode -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <label class="auth-label" style="margin:0;"><i class="fa-solid fa-mobile-screen-button text-cyan-400"></i> Orientation Mode:</label>
+            <select class="dock-select" id="phoneOrientationModeSelect" onchange="setPhoneOrientationMode(this.value)">
+              <option value="auto" selected>🔄 Auto (Sensor Rotate)</option>
+              <option value="portrait">📱 Portrait (9:16 Upright)</option>
+              <option value="landscape">🖥️ Landscape (16:9 Wide)</option>
+            </select>
+          </div>
+
+          <!-- Quality -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <label class="auth-label" style="margin:0;"><i class="fa-solid fa-sliders text-cyan-400"></i> Camera Sensor:</label>
+            <select class="dock-select" id="phoneResSelect" onchange="onPhoneQualitySelect(this.value)">
+              <option value="240">240p (Zero-Heat 15fps)</option>
+              <option value="360">360p (Battery Saver)</option>
+              <option value="480">480p (SD Balanced)</option>
+              <option value="720">720p HD</option>
+              <option value="1080" selected>1080p Full HD</option>
+              <option value="4k">4K UHD (3840x2160)</option>
+              <option value="8k">8K Cinema (Max Sensor)</option>
+            </select>
+          </div>
+
+          <!-- Auto-Record -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <label class="auth-label" style="margin:0;"><i class="fa-solid fa-arrows-rotate text-cyan-400"></i> 24/7 Auto-Record:</label>
+            <select class="dock-select" id="phoneAutoRecSetting" onchange="onPhoneAutoRecChange(this.value)">
+              <option value="true" selected>ON (Record in Background)</option>
+              <option value="false">OFF (Only Stream Live)</option>
+            </select>
+          </div>
+
+          <!-- Rolling Clip Length -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <label class="auth-label" style="margin:0;"><i class="fa-solid fa-film text-cyan-400"></i> Rolling Clip Length:</label>
+            <select class="dock-select" id="phoneSegmentSelect" onchange="onSegmentDurationChange(this.value)">
+              <option value="5" selected>5 Minutes (Standard NVR)</option>
+              <option value="10">10 Minutes</option>
+              <option value="15">15 Minutes</option>
+              <option value="30">30 Minutes</option>
+              <option value="60">60 Minutes (1 Hour)</option>
+              <option value="2">2 Minutes (Testing)</option>
+              <option value="1">1 Minute (Rapid)</option>
+            </select>
+          </div>
+
+          <!-- Retention -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <label class="auth-label" style="margin:0;"><i class="fa-solid fa-trash-can text-cyan-400"></i> Auto-Delete Older Than:</label>
+            <select class="dock-select" id="phoneRetentionDays" onchange="onRetentionChange(this.value)">
+              <option value="1">1 Day (24 Hours)</option>
+              <option value="2" selected>2 Days (48 Hours)</option>
+              <option value="3">3 Days</option>
+              <option value="7">7 Days (1 Week)</option>
+              <option value="custom">Custom Days...</option>
+              <option value="0">Never (Manual Delete)</option>
+            </select>
+          </div>
+
+          <button class="btn-large cyan" style="margin-top:8px; border-radius:12px; font-weight:700;" onclick="closePhoneSettingsModal()">
+            <i class="fa-solid fa-check"></i> Done & Save
+          </button>
         </div>
       </div>
     </div>
@@ -2259,23 +2439,19 @@
     <!-- TOP BAR -->
     <div class="top-bar">
       <div class="top-bar-left">
-        <div class="brand-logo"><span class="pulse-dot"></span> PRScam Monitor</div>
+        <div class="brand-logo"><span class="pulse-dot"></span> <span class="hide-on-mobile">PRScam </span>Monitor</div>
 
         <!-- LIVE VIEW vs PLAYBACK TABS -->
         <div class="tabs-bar">
           <button class="tab-btn active" id="tabLiveBtn" onclick="switchViewerTab('live')">
-            🔴 Live View
+            <i class="fa-solid fa-tower-broadcast text-red-500"></i> <span class="hide-on-mobile">Live View</span>
           </button>
           <button class="tab-btn" id="tabPlaybackBtn" onclick="switchViewerTab('playback')">
-            📼 Playback (<span id="topVaultCount">0</span>)
+            <i class="fa-solid fa-film text-purple-400"></i> <span class="hide-on-mobile">Playback</span> (<span id="topVaultCount">0</span>)
           </button>
         </div>
 
-        <span class="chip" id="feedChipWrapper">FEED: <b id="statRes">STANDBY</b></span>
-
-        <!-- PHONE TELEMETRY BADGES IN OFFICE VIEWER TOP BAR -->
-        <span class="chip hidden" id="officePhoneBatChip">🔋 <b id="officeBatVal">--%</b></span>
-        <span class="chip hidden" id="officePhoneNetChip">📶 <b id="officeNetVal">NET OK</b></span>
+        <span class="chip" id="feedChipWrapper"><i class="fa-solid fa-signal text-cyan-400"></i> <b id="statRes">STANDBY</b></span>
 
         <!-- PROMINENT RECORDING TIMER IN TOP BAR (SYNCED WITH PHONE!) -->
         <span class="chip hidden rec-flag" id="topRecBadge">
@@ -2283,17 +2459,19 @@
           <span id="topRecLabel">REC 00:00</span>
         </span>
 
-        <span class="chip" id="clockChipWrapper">CLOCK: <b id="statClock">00:00:00</b></span>
+        <span class="chip" id="clockChipWrapper"><i class="fa-regular fa-clock text-cyan-400"></i> <b id="statClock">00:00:00</b></span>
       </div>
 
       <div class="top-bar-right">
-        <span class="chip" id="topUserBadge" style="font-size:0.72rem; padding:4px 8px;">👤 <b
-            id="topUserName">admin</b></span>
-        <button class="btn-act danger" style="padding:4px 7px; font-size:0.7rem;" onclick="handleAuthLogout()"
-          title="Logout">🚪</button>
+        <span class="chip" id="topUserBadge" style="font-size:0.72rem; padding:4px 8px;">
+          <i class="fa-solid fa-user-shield text-cyan-400"></i> <b id="topUserName" class="hide-on-mobile">admin</b>
+        </span>
+        <button class="btn-act danger" style="padding:4px 8px; font-size:0.72rem;" onclick="handleAuthLogout()" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
         <div class="mode-switch">
-          <button class="mode-btn" onclick="showPhoneMode()">📱 Phone</button>
-          <button class="mode-btn active" onclick="showViewerMode()">💻 Viewer</button>
+          <button class="mode-btn" onclick="showPhoneMode()" title="Switch to Phone Broadcaster"><i class="fa-solid fa-mobile-screen"></i> <span class="hide-on-mobile">Phone</span></button>
+          <button class="mode-btn active" onclick="showViewerMode()" title="Switch to Viewer NVR"><i class="fa-solid fa-desktop"></i> <span class="hide-on-mobile">Viewer</span></button>
         </div>
       </div>
     </div>
@@ -2315,10 +2493,10 @@
         <button class="grid-layout-btn" id="gridBtn_16" onclick="setNVRGridLayout(16)" title="16 Screens (4x4)">16</button>
       </div>
       <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-        <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" id="gridFitCoverToggleBtn" onclick="toggleVideoFit()" title="Toggle Fit vs Fill Screen">⛶ Fit/Fill</button>
-        <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" onclick="rotateAllGridTiles()" title="Rotate All Grid Feeds 90°">📐 Rotate All</button>
-        <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="openAddCameraModal()">➕ Add Camera</button>
-        <button class="btn-act" id="gridFullscreenAllBtn" style="padding:4px 8px; font-size:0.72rem;" onclick="toggleGridFullscreen()" title="Fullscreen Multi-Grid">⛶ Fullscreen Grid</button>
+        <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" id="gridFitCoverToggleBtn" onclick="toggleVideoFit()" title="Toggle Fit vs Fill Screen"><i class="fa-solid fa-expand"></i> Fit/Fill</button>
+        <button class="btn-act" style="padding:4px 8px; font-size:0.72rem;" onclick="rotateAllGridTiles()" title="Rotate All Grid Feeds 90°"><i class="fa-solid fa-rotate-right"></i> Rotate All</button>
+        <button class="btn-act cyan" style="padding:4px 8px; font-size:0.72rem;" onclick="openAddCameraModal()"><i class="fa-solid fa-plus"></i> Add Camera</button>
+        <button class="btn-act" id="gridFullscreenAllBtn" style="padding:4px 8px; font-size:0.72rem;" onclick="toggleGridFullscreen()" title="Fullscreen Multi-Grid"><i class="fa-solid fa-table-cells"></i> Fullscreen Wall</button>
       </div>
     </div>
 
@@ -2473,43 +2651,43 @@
 
         <!-- GROUP 1: CONNECTION & RECORDING -->
         <div class="action-group">
-          <button class="btn-act cyan" id="officeConnectBtn" onclick="toggleOfficeConnection()">⚡ Connect Live</button>
+          <button class="btn-act cyan" id="officeConnectBtn" onclick="toggleOfficeConnection()"><i class="fa-solid fa-bolt"></i> Connect Live</button>
           <!-- PROMINENT RECORD BUTTON WITH LIVE TIMER TEXT -->
-          <button class="btn-act danger" id="recBtn" onclick="toggleManualRecording()">🔴 Record</button>
-          <button class="btn-act" id="autoRecToggleBtn" onclick="toggleAutoRecord()">🔄 Auto-Rec: ON</button>
-          <button class="btn-act" onclick="switchViewerTab('playback')">📼 Playback (<span
+          <button class="btn-act danger" id="recBtn" onclick="toggleManualRecording()"><i class="fa-solid fa-circle text-red-500"></i> Record</button>
+          <button class="btn-act" id="autoRecToggleBtn" onclick="toggleAutoRecord()"><i class="fa-solid fa-arrows-rotate"></i> Auto-Rec: ON</button>
+          <button class="btn-act" onclick="switchViewerTab('playback')"><i class="fa-solid fa-film text-purple-400"></i> Playback (<span
               id="dockVaultCount">0</span>)</button>
         </div>
 
         <!-- GROUP 2: AUDIO & CAMERA CONTROLS -->
         <div class="action-group">
-          <span class="chip" id="dockActiveCamIndicator" style="color:var(--cyan); font-weight:800; font-size:0.68rem; padding:4px 8px;">Target: CAM 1</span>
-          <button class="btn-act active-toggle" id="muteHearBtn" onclick="toggleHear()">🔊 Hear: ON</button>
-          <button class="btn-act" id="talkBtn" onclick="toggleTalk()">🎙️ Speak: OFF</button>
-          <button class="btn-act" id="videoIntercomBtn" onclick="toggleVideoIntercom()">📹 Video Intercom: OFF</button>
-          <button class="btn-act" onclick="remoteFlipCamera()">🔄 Flip</button>
-          <button class="btn-act" onclick="rotateFeedSingle()" title="Rotate Video 90°">📐 Rotate 90°</button>
-          <button class="btn-act" onclick="captureZoomedSnapshot()">📸 Snap</button>
+          <span class="chip" id="dockActiveCamIndicator" style="color:var(--cyan); font-weight:800; font-size:0.68rem; padding:4px 8px;"><i class="fa-solid fa-bullseye text-cyan-400"></i> Target: CAM 1</span>
+          <button class="btn-act active-toggle" id="muteHearBtn" onclick="toggleHear()"><i class="fa-solid fa-volume-high"></i> Hear: ON</button>
+          <button class="btn-act" id="talkBtn" onclick="toggleTalk()"><i class="fa-solid fa-microphone"></i> Speak: OFF</button>
+          <button class="btn-act" id="videoIntercomBtn" onclick="toggleVideoIntercom()"><i class="fa-solid fa-video"></i> Video Intercom: OFF</button>
+          <button class="btn-act" onclick="remoteFlipCamera()"><i class="fa-solid fa-camera-rotate"></i> Flip</button>
+          <button class="btn-act" onclick="rotateFeedSingle()" title="Rotate Video 90°"><i class="fa-solid fa-rotate-right"></i> Rotate 90°</button>
+          <button class="btn-act" onclick="captureZoomedSnapshot()"><i class="fa-solid fa-camera"></i> Snap</button>
         </div>
 
         <!-- GROUP 3: QUALITY & FULLSCREEN -->
         <div class="action-group">
           <span style="font-size: 0.72rem; color: var(--text-dim); font-weight: 700;">QUALITY:</span>
           <select class="dock-select" id="remoteResSelect" onchange="remoteChangeQuality(this.value)">
-            <optgroup label="❄️ Thermal Guard (Phone Cool)">
+            <optgroup label="Thermal Guard (Phone Cool)">
               <option value="240">240p (Zero-Heat 15fps)</option>
               <option value="360">360p (Battery Saver)</option>
               <option value="480">480p (SD Balanced)</option>
             </optgroup>
-            <optgroup label="🔥 High Definition">
+            <optgroup label="High Definition">
               <option value="720">720p HD</option>
               <option value="1080" selected>1080p Full HD</option>
               <option value="4k">4K UHD (3840x2160)</option>
               <option value="8k">8K Cinema (Max Sensor)</option>
             </optgroup>
           </select>
-          <button class="btn-act" id="fitCoverToggleBtn" onclick="toggleVideoFit()">⛶ Fit Frame</button>
-          <button class="btn-act" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+          <button class="btn-act" id="fitCoverToggleBtn" onclick="toggleVideoFit()"><i class="fa-solid fa-expand"></i> Fit Frame</button>
+          <button class="btn-act" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i> Fullscreen</button>
         </div>
 
       </div>
@@ -3203,11 +3381,11 @@
         if (connected) {
           connBtn.disabled = false;
           connBtn.className = "btn-act danger";
-          connBtn.textContent = "🔌 Disconnect";
+          connBtn.innerHTML = '<i class="fa-solid fa-power-off"></i> Disconnect';
         } else {
           connBtn.disabled = false;
           connBtn.className = "btn-act cyan";
-          connBtn.textContent = "⚡ Connect Live";
+          connBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Connect Live';
         }
       }
       if (hud) {
@@ -3795,6 +3973,13 @@
       }
       if (video) video.srcObject = null;
 
+      const btn = document.getElementById(`tileConnBtn_${id}`);
+      if (btn) {
+        btn.className = "btn-micro-chip cyan";
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Connect';
+        btn.title = "Connect Feed";
+      }
+
       const target = nvrChannels.find(c => c.id === id);
       if (target) target.isLive = false;
       renderNVRChannelChips();
@@ -3827,6 +4012,21 @@
       }
       connectSingleGridTile(target);
       showToast(`Reconnecting to ${target.name}...`, "info", 1800);
+    }
+
+    function toggleTileConnection(id) {
+      const p = multiGridPeers[id];
+      const target = nvrChannels.find(c => c.id === id);
+      if (p && p.stream) {
+        disconnectSingleGridTile(id);
+        showToast(`Disconnected ${target ? target.name : id}`, "info", 1800);
+      } else {
+        retryConnectTile(id);
+      }
+    }
+
+    function disconnectSingleGridTile(id) {
+      handleGridTileDisconnect(id, "User disconnected");
     }
 
     // ==========================================
@@ -3918,18 +4118,18 @@
             <!-- CCTV OSD TOP OVERLAY -->
             <div class="cam-tile-osd-top">
               <div class="osd-left">
-                <span class="osd-title" title="${escapeHTML(ch.name)}">📹 ${escapeHTML(ch.name)}</span>
+                <span class="osd-title" title="${escapeHTML(ch.name)}"><i class="fa-solid fa-video text-cyan-400"></i> ${escapeHTML(ch.name)}</span>
                 <span class="chip-status ${isLive ? 'live' : 'offline'}" id="tileStatus_${escapeHTML(ch.id)}">${isLive ? '● LIVE' : '● OFF'}</span>
-                <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.55rem; padding:0 3px;">🔋</span>
+                <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.6rem; padding:1px 5px;"></span>
               </div>
               <div class="osd-actions" onclick="event.stopPropagation();">
-                <button class="btn-osd" onclick="remoteFlipChannel('${escapeHTML(ch.id)}')" title="Flip Camera Lens (Front/Back) - ${escapeHTML(ch.name)}">🔄</button>
-                <button class="btn-osd" onclick="toggleChannelIntercom('${escapeHTML(ch.id)}')" title="Two-Way Talk / Intercom - ${escapeHTML(ch.name)}">🎙️</button>
-                <button class="btn-osd ${ch.isMuted === false ? 'cyan' : ''}" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')" title="${ch.isMuted === false ? 'Listening (Click to Mute)' : 'Listen / Audio'}">${ch.isMuted === false ? '🔊' : '🔇'}</button>
-                <button class="btn-osd" onclick="captureChannelSnapshot('${escapeHTML(ch.id)}')" title="Snapshot Frame - ${escapeHTML(ch.name)}">📸</button>
-                <button class="btn-osd ${isRecordingThis ? 'rec-active' : ''}" id="tileRecBtn_${escapeHTML(ch.id)}" onclick="toggleChannelRecording('${escapeHTML(ch.id)}')" title="${isRecordingThis ? 'Stop Recording' : 'Record Feed'}">${isRecordingThis ? '⏹️' : '🔴'}</button>
-                <button class="btn-osd" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera - ${escapeHTML(ch.name)}">⛶</button>
-                <button class="btn-osd danger" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera">✕</button>
+                <button class="btn-osd" onclick="remoteFlipChannel('${escapeHTML(ch.id)}')" title="Flip Camera Lens (Front/Back) - ${escapeHTML(ch.name)}"><i class="fa-solid fa-camera-rotate"></i></button>
+                <button class="btn-osd" onclick="toggleChannelIntercom('${escapeHTML(ch.id)}')" title="Two-Way Talk / Intercom - ${escapeHTML(ch.name)}"><i class="fa-solid fa-microphone"></i></button>
+                <button class="btn-osd ${ch.isMuted === false ? 'cyan' : ''}" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')" title="${ch.isMuted === false ? 'Listening (Click to Mute)' : 'Listen / Audio'}"><i class="fa-solid ${ch.isMuted === false ? 'fa-volume-high' : 'fa-volume-xmark'}"></i></button>
+                <button class="btn-osd" onclick="captureChannelSnapshot('${escapeHTML(ch.id)}')" title="Snapshot Frame - ${escapeHTML(ch.name)}"><i class="fa-solid fa-camera"></i></button>
+                <button class="btn-osd ${isRecordingThis ? 'rec-active' : ''}" id="tileRecBtn_${escapeHTML(ch.id)}" onclick="toggleChannelRecording('${escapeHTML(ch.id)}')" title="${isRecordingThis ? 'Stop Recording' : 'Record Feed'}"><i class="fa-solid ${isRecordingThis ? 'fa-stop text-red-500' : 'fa-circle-dot text-red-500'}"></i></button>
+                <button class="btn-osd" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera - ${escapeHTML(ch.name)}"><i class="fa-solid fa-expand"></i></button>
+                <button class="btn-osd danger" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera"><i class="fa-solid fa-xmark"></i></button>
               </div>
             </div>
 
@@ -3941,13 +4141,13 @@
 
             <!-- CCTV OSD BOTTOM OVERLAY -->
             <div class="cam-tile-osd-bottom" onclick="event.stopPropagation();">
-              <div style="display:flex; align-items:center; gap:3px;">
-                <button class="btn-micro-chip cyan" onclick="focusCameraTile('${escapeHTML(ch.id)}', true)" title="1x1 Stage View">🔍 Focus</button>
-                <button class="btn-micro-chip" onclick="retryConnectTile('${escapeHTML(ch.id)}')" title="Connect / Reconnect Feed">⚡ Connect</button>
+              <div style="display:flex; align-items:center; gap:4px;">
+                <button class="btn-micro-chip cyan" onclick="focusCameraTile('${escapeHTML(ch.id)}', true)" title="1x1 Stage View"><i class="fa-solid fa-magnifying-glass"></i> Focus</button>
+                <button class="btn-micro-chip ${isLive ? 'danger' : 'cyan'}" id="tileConnBtn_${escapeHTML(ch.id)}" onclick="toggleTileConnection('${escapeHTML(ch.id)}')" title="${isLive ? 'Disconnect Feed' : 'Connect Feed'}"><i class="fa-solid ${isLive ? 'fa-power-off' : 'fa-bolt'}"></i> ${isLive ? 'Disconnect' : 'Connect'}</button>
               </div>
-              <div style="display:flex; align-items:center; gap:3px;">
-                <button class="btn-micro-chip" onclick="rotateTile('${escapeHTML(ch.id)}')" title="Rotate 90°">📐 90°</button>
-                <button class="btn-micro-chip" onclick="openEditCameraModal('${escapeHTML(ch.id)}')" title="Edit Camera Name / PIN">✏️ Edit</button>
+              <div style="display:flex; align-items:center; gap:4px;">
+                <button class="btn-micro-chip" onclick="rotateTile('${escapeHTML(ch.id)}')" title="Rotate 90°"><i class="fa-solid fa-rotate-right"></i> 90°</button>
+                <button class="btn-micro-chip" onclick="openEditCameraModal('${escapeHTML(ch.id)}')" title="Edit Camera Name / PIN"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
               </div>
             </div>
           </div>
@@ -3962,18 +4162,18 @@
           <div class="cam-grid-tile standby-tile" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Click to Connect Camera to Slot ${slotNumber}">
             <div class="cam-tile-osd-top">
               <div class="osd-left">
-                <span class="osd-title">📹 CAM ${slotNumber}</span>
+                <span class="osd-title"><i class="fa-solid fa-video text-gray-400"></i> CAM ${slotNumber}</span>
                 <span class="chip-status offline">● STANDBY</span>
               </div>
               <div class="osd-actions" onclick="event.stopPropagation();">
-                <button class="btn-osd" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Add / Connect Camera">➕</button>
+                <button class="btn-osd" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Add / Connect Camera"><i class="fa-solid fa-plus"></i></button>
               </div>
             </div>
             <div class="standby-tile-body">
-              <span style="font-size:1.4rem; opacity:0.35;">📹</span>
-              <div style="font-weight:800; font-size:0.72rem; color:var(--text-dim);">Slot ${slotNumber} (Empty)</div>
-              <div style="font-size:0.58rem; color:rgba(255,255,255,0.4);">Click to connect feed</div>
-              <button class="btn-act cyan" style="font-size:0.62rem; padding:2px 8px; margin-top:3px;">➕ Add CAM ${slotNumber}</button>
+              <i class="fa-solid fa-video text-gray-500" style="font-size:1.8rem; margin-bottom:4px; opacity:0.4;"></i>
+              <div style="font-weight:800; font-size:0.75rem; color:var(--text-dim);">Slot ${slotNumber} (Empty)</div>
+              <div style="font-size:0.6rem; color:rgba(255,255,255,0.4);">Click to connect feed</div>
+              <button class="btn-act cyan" style="font-size:0.65rem; padding:3px 10px; margin-top:4px;"><i class="fa-solid fa-plus"></i> Add CAM ${slotNumber}</button>
             </div>
           </div>
         `;
@@ -3999,6 +4199,12 @@
         status.textContent = "● LIVE";
         status.className = "chip-status live";
         ch.isLive = true;
+        const btn = document.getElementById(`tileConnBtn_${ch.id}`);
+        if (btn) {
+          btn.className = "btn-micro-chip danger";
+          btn.innerHTML = '<i class="fa-solid fa-power-off"></i> Disconnect';
+          btn.title = "Disconnect Feed";
+        }
         renderNVRChannelChips();
         updateConnectButtonState(true);
         return;
@@ -4072,7 +4278,8 @@
               }
               const tileTelem = document.getElementById(`tileTelem_${ch.id}`);
               if (tileTelem && cmd.battery && cmd.network) {
-                tileTelem.innerHTML = `🔋 ${cmd.battery.level}% • 📶 ${cmd.network.type}`;
+                const batIcon = cmd.battery.charging ? 'fa-bolt text-amber-400' : 'fa-battery-three-quarters text-emerald-400';
+                tileTelem.innerHTML = `<i class="fa-solid ${batIcon}"></i> ${cmd.battery.level}% &bull; <i class="fa-solid fa-wifi text-cyan-400"></i> ${cmd.network.type || 'NET'}`;
                 tileTelem.classList.remove('hidden');
               }
             }
@@ -4093,9 +4300,16 @@
               video.srcObject = stream;
               video.muted = true;
               video.play().catch(() => { });
-              status.textContent = "LIVE";
+              status.textContent = "● LIVE";
+              status.className = "chip-status live";
               status.style.color = "var(--emerald)";
               ch.isLive = true;
+              const connBtn = document.getElementById(`tileConnBtn_${ch.id}`);
+              if (connBtn) {
+                connBtn.className = "btn-micro-chip danger";
+                connBtn.innerHTML = '<i class="fa-solid fa-power-off"></i> Disconnect';
+                connBtn.title = "Disconnect Feed";
+              }
               renderNVRChannelChips();
               multiGridPeers[ch.id].stream = stream;
 
@@ -4176,7 +4390,7 @@
 
       const startTime = Date.now();
       if (btn) {
-        btn.innerHTML = "⏹️";
+        btn.innerHTML = '<i class="fa-solid fa-stop text-red-500"></i>';
         btn.classList.add('rec-active');
         btn.title = `Stop Recording ${ch.name}`;
       }
@@ -4193,7 +4407,7 @@
           showToast(`📼 Saved clip for ${ch.name} (${formatSeconds(durationSec)}) to NVR Vault!`, "success", 3000);
         }
         if (btn) {
-          btn.innerHTML = "🔴";
+          btn.innerHTML = '<i class="fa-solid fa-circle-dot text-red-500"></i>';
           btn.classList.remove('rec-active');
           btn.title = `Record ${ch.name} Feed`;
         }
@@ -4217,7 +4431,7 @@
         const b = document.getElementById(`tileAudioBtn_${c.id}`);
         if (v) v.muted = true;
         if (b) {
-          b.textContent = "🔇";
+          b.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
           b.title = "Click to Listen / Unmute";
           b.classList.remove('cyan');
         }
@@ -4229,7 +4443,7 @@
 
       if (willHear) {
         video.muted = false;
-        btn.textContent = "🔊";
+        btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
         btn.title = "Listening (Click to Mute)";
         btn.classList.add('cyan');
         const target = nvrChannels.find(c => c.id === id);
@@ -4238,7 +4452,7 @@
         showToast(`🔊 Listening to ${target ? target.name : id}`, "info", 1800);
       } else {
         video.muted = true;
-        btn.textContent = "🔇";
+        btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
         btn.title = "Click to Listen / Unmute";
         btn.classList.remove('cyan');
         showToast("Audio muted.", "info", 1400);
@@ -4381,6 +4595,16 @@
       if (savedCamPin) {
         const el = document.getElementById('phoneCameraPin');
         if (el) el.value = savedCamPin;
+      }
+      const savedPhoneKey = localStorage.getItem('prscam_phone_secret_key');
+      if (savedPhoneKey && savedPhoneKey.trim()) {
+        const el = document.getElementById('phoneSecretKey');
+        if (el) el.value = savedPhoneKey.trim();
+      } else {
+        const el = document.getElementById('phoneSecretKey');
+        if (el && el.value.trim()) {
+          localStorage.setItem('prscam_phone_secret_key', el.value.trim());
+        }
       }
 
       // Synchronize active grid layout on startup (Default 4 screens)
@@ -4654,8 +4878,76 @@
     // BROADCASTER ORIENTATION STATE
     let phoneOrientationMode = 'auto'; // 'auto' | 'portrait' | 'landscape'
 
+
+    // ==========================================
+    // AUTO-HIDE HUD & PHONE CONTROLS DECK
+    // ==========================================
+    let osdAutoHideTimer = null;
+    let isOSDVisible = true;
+
+    function resetOSDAutoHide() {
+      if (!isPhoneCameraRunning) return;
+      showCameraOSD();
+      if (osdAutoHideTimer) clearTimeout(osdAutoHideTimer);
+      osdAutoHideTimer = setTimeout(() => {
+        if (isPhoneCameraRunning) {
+          hideCameraOSD();
+        }
+      }, 3500);
+    }
+
+    function showCameraOSD() {
+      isOSDVisible = true;
+      const overlay = document.getElementById('phoneOSDOverlay');
+      const deck = document.getElementById('cameraAppDeck');
+      if (overlay) overlay.classList.remove('autohide-faded');
+      if (deck) deck.classList.remove('autohide-faded');
+    }
+
+    function hideCameraOSD() {
+      isOSDVisible = false;
+      const overlay = document.getElementById('phoneOSDOverlay');
+      const deck = document.getElementById('cameraAppDeck');
+      if (overlay) overlay.classList.add('autohide-faded');
+      if (deck) deck.classList.add('autohide-faded');
+    }
+
+    function toggleCameraOSD() {
+      if (!isPhoneCameraRunning) return;
+      if (isOSDVisible) {
+        hideCameraOSD();
+      } else {
+        resetOSDAutoHide();
+      }
+    }
+
+    function handleViewfinderTap(e) {
+      if (e.target.closest('button') || e.target.closest('select') || e.target.closest('input')) return;
+      if (!isPhoneCameraRunning) return;
+      toggleCameraOSD();
+    }
+
+    function openPhoneSettingsModal() {
+      const m = document.getElementById('phoneSettingsModal');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function closePhoneSettingsModal() {
+      const m = document.getElementById('phoneSettingsModal');
+      if (m) m.classList.add('hidden');
+    }
+
     function setPhoneOrientationMode(mode) {
       phoneOrientationMode = mode || 'auto';
+      const vf = document.querySelector('.phone-viewfinder');
+      if (vf && isPhoneCameraRunning) {
+        let isPort = false;
+        if (phoneOrientationMode === 'portrait') isPort = true;
+        else if (phoneOrientationMode === 'landscape') isPort = false;
+        else isPort = window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
+        vf.classList.toggle('cam-portrait', isPort);
+        vf.classList.toggle('cam-landscape', !isPort);
+      }
       if (isPhoneCameraRunning && localStream) {
         updateCameraStream();
         showToast(`Orientation Mode: ${phoneOrientationMode.toUpperCase()}`, 'info', 1800);
@@ -4810,8 +5102,9 @@
 
       if (!key) return showToast("Please enter a Secret Camera Key!", "warning");
 
+      localStorage.setItem('prscam_phone_secret_key', key);
       startBtn.disabled = true;
-      startBtn.textContent = "⏳ Starting Camera...";
+      startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
       msg.textContent = "Opening camera sensor and microphone...";
 
       try {
@@ -4848,11 +5141,24 @@
         peer.on('open', () => {
           isPhoneCameraRunning = true;
           startBtn.disabled = false;
-          startBtn.className = "btn-large danger";
-          startBtn.innerHTML = "🛑 Stop Camera";
+          startBtn.className = "cam-shutter-btn recording";
+          startBtn.title = "Stop Camera";
+          startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-stop"></i></div>';
           badge.textContent = "LIVE";
           badge.style.color = "var(--emerald)";
           msg.textContent = `🟢 ${camName} Live (${actW}x${actH})! Streaming & recording active.`;
+
+          const vf = document.querySelector('.phone-viewfinder');
+          if (vf) {
+            vf.classList.add('cam-active');
+            let isPort = false;
+            if (phoneOrientationMode === 'portrait') isPort = true;
+            else if (phoneOrientationMode === 'landscape') isPort = false;
+            else isPort = window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
+            vf.classList.toggle('cam-portrait', isPort);
+            vf.classList.toggle('cam-landscape', !isPort);
+          }
+          resetOSDAutoHide();
 
           // START CONTINUOUS 24/7 BACKGROUND RECORDING ON PHONE
           if (phoneAutoRecordEnabled) {
@@ -5064,16 +5370,18 @@
           msg.textContent = `Peer Error: ${err.type}`;
           startBtn.disabled = false;
           if (!isPhoneCameraRunning) {
-            startBtn.className = "btn-large emerald";
-            startBtn.innerHTML = "🚀 Start Camera";
+            startBtn.className = "cam-shutter-btn";
+            startBtn.title = "Start Camera";
+            startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-play"></i></div>';
           }
         });
 
       } catch (err) {
         msg.textContent = `Camera Error: ${err.message}`;
         startBtn.disabled = false;
-        startBtn.className = "btn-large emerald";
-        startBtn.innerHTML = "🚀 Start Camera";
+        startBtn.className = "cam-shutter-btn";
+        startBtn.title = "Start Camera";
+        startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-play"></i></div>';
         showToast("Camera start failed: " + err.message, "error", 5000);
       }
     }
@@ -5084,8 +5392,18 @@
       const startBtn = document.getElementById('phoneStartBtn');
 
       isPhoneCameraRunning = false;
+      if (osdAutoHideTimer) {
+        clearTimeout(osdAutoHideTimer);
+        osdAutoHideTimer = null;
+      }
+      showCameraOSD();
+      const vf = document.querySelector('.phone-viewfinder');
+      if (vf) {
+        vf.classList.remove('cam-active', 'cam-portrait', 'cam-landscape');
+      }
+
       startBtn.disabled = true;
-      startBtn.textContent = "⏳ Saving recording...";
+      startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
       msg.textContent = "Finalizing active recording clip...";
 
       // 1. Await saving active clip to IndexedDB
@@ -5125,8 +5443,9 @@
       badge.textContent = "STANDBY";
       badge.style.color = "var(--text-dim)";
       startBtn.disabled = false;
-      startBtn.className = "btn-large emerald";
-      startBtn.innerHTML = "🚀 Start Camera";
+      startBtn.className = "cam-shutter-btn";
+      startBtn.title = "Start Camera";
+      startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-play"></i></div>';
       msg.textContent = "Camera stopped. Recordings saved in Playback.";
     }
 
@@ -5135,8 +5454,12 @@
       phoneMicActive = !phoneMicActive;
       localStream.getAudioTracks().forEach(t => t.enabled = phoneMicActive);
       const btn = document.getElementById('phoneMicToggleBtn');
-      btn.textContent = phoneMicActive ? "🎙️ Phone Mic: ON" : "🔇 Phone Mic: MUTED";
-      btn.style.color = phoneMicActive ? "#fff" : "var(--danger)";
+      if (btn) {
+        btn.innerHTML = phoneMicActive ? '<i class="fa-solid fa-microphone"></i>' : '<i class="fa-solid fa-microphone-slash text-red-400"></i>';
+        btn.title = phoneMicActive ? "Phone Mic: ON" : "Phone Mic: MUTED";
+      }
+      showToast(phoneMicActive ? "🎙️ Mic Unmuted" : "🔇 Mic Muted", "info", 1500);
+      resetOSDAutoHide();
     }
 
     async function flipPhoneCamera() {
