@@ -272,21 +272,73 @@
       pointer-events: auto;
     }
 
+    .phone-app-container {
+      max-width: 520px;
+      margin: 0 auto;
+      width: 100%;
+      min-height: 100dvh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px 16px;
+      gap: 8px;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #phoneCameraSubView {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      width: 100%;
+    }
+
+    .phone-viewfinder {
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-preview-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+
     .camera-app-deck {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: calc(100% - 24px);
+      max-width: 420px;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 12px 18px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 36px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 40px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
       transition: opacity 0.35s ease;
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: 4px;
+      margin-top: 0;
     }
 
     .cam-deck-btn {
@@ -568,16 +620,9 @@
     }
 
     /* DOCK CONTROLS (LIVE VIEW) */
-    .office-dock {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 6px 10px;
-      margin-top: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      flex-shrink: 0;
+    .office-dock,
+    #officeDockControls {
+      display: none !important;
     }
 
     .zoom-deck {
@@ -743,13 +788,42 @@
     }
 
     @media (max-width: 860px) {
+      .nvr-playback-console {
+        flex: none !important;
+        height: auto !important;
+        min-height: calc(100vh - 130px) !important;
+        overflow: visible !important;
+        padding-bottom: 90px !important;
+      }
+
       .nvr-main-layout {
-        flex-direction: column;
+        flex: none !important;
+        height: auto !important;
+        min-height: 0 !important;
+        flex-direction: column !important;
+        overflow: visible !important;
       }
 
       .nvr-player-box {
-        min-height: 200px !important;
-        max-height: 230px !important;
+        flex: none !important;
+        height: 220px !important;
+        min-height: 220px !important;
+        max-height: 240px !important;
+        width: 100% !important;
+      }
+
+      .nvr-timeline-box {
+        flex: none !important;
+        height: auto !important;
+        min-height: 300px !important;
+        overflow: visible !important;
+      }
+
+      .nvr-clips-list {
+        flex: none !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
       }
     }
 
@@ -1137,6 +1211,56 @@
     }
     .cam-grid-tile {
       aspect-ratio: 16 / 9;
+      transition: aspect-ratio 0.25s ease;
+    }
+
+    .cam-grid-tile.tile-portrait {
+      aspect-ratio: 9 / 16 !important;
+      max-height: 540px;
+    }
+
+    .cam-grid-tile.tile-landscape {
+      aspect-ratio: 16 / 9 !important;
+    }
+
+    .empty-cameras-state {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 24px;
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 20px;
+      text-align: center;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .empty-cam-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(0, 245, 255, 0.1);
+      border: 1px solid rgba(0, 245, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: var(--cyan);
+    }
+
+    .empty-cam-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .empty-cam-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      max-width: 320px;
     }
     .cam-grid-tile .cam-tile-video {
       width: 100%;
@@ -2029,11 +2153,23 @@
         display: none !important;
       }
 
+      /* When Phone Broadcaster is active, hide viewer mobile nav bar */
+      body.phone-mode-active .mobile-bottom-nav,
+      #phoneAppSection:not(.hidden) ~ .mobile-bottom-nav {
+        display: none !important;
+      }
+
       /* Camera Deck responsiveness on small screens so buttons never overflow */
       .camera-app-deck {
-        padding: 8px 12px !important;
+        position: fixed !important;
+        bottom: 16px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 9999 !important;
+        padding: 8px 14px !important;
         gap: 6px !important;
-        max-width: 100% !important;
+        width: calc(100% - 24px) !important;
+        max-width: 420px !important;
         box-sizing: border-box !important;
         justify-content: space-around !important;
       }
@@ -2438,9 +2574,14 @@
     </div>
 
     <!-- SUB-VIEW 1A: PHONE CAMERA VIEW -->
-    <div id="phoneCameraSubView" style="display: flex; flex-direction: column; gap: 8px;">
+    <div id="phoneCameraSubView" style="display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative;">
       <!-- Phone Viewfinder (HARD MUTED) -->
       <div class="phone-viewfinder" onclick="handleViewfinderTap(event)">
+        <!-- RETURN TO CAMERAS BUTTON -->
+        <button onclick="event.stopPropagation(); showViewerMode()" class="btn-act cyan" style="position:absolute; top:12px; left:12px; z-index:90; border-radius:20px; font-size:0.75rem; padding:5px 14px; backdrop-filter:blur(12px); background:rgba(0,245,255,0.18); border:1px solid rgba(0,245,255,0.4);" title="Return to Cameras">
+          <i class="fa-solid fa-arrow-left"></i> Cameras
+        </button>
+
         <video class="phone-preview-video" id="phonePreviewVideo" autoplay muted playsinline></video>
 
         <!-- INCOMING OPERATOR VIDEO INTERCOM PiP -->
@@ -2455,7 +2596,7 @@
 
         <!-- CAMERA OSD OVERLAY (HUD) -->
         <div class="phone-osd-overlay" id="phoneOSDOverlay">
-          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-left:85px;">
             <div class="chip" style="font-size:0.72rem; padding:4px 8px;">
               <i class="fa-solid fa-circle text-emerald-400 animate-pulse"></i> <b id="phoneStatusBadge">STANDBY</b>
             </div>
@@ -2474,7 +2615,7 @@
         </div>
       </div>
 
-      <!-- CAMERA APP SHUTTER DECK (ROUND ICON CONTROLS) -->
+      <!-- CAMERA APP SHUTTER DECK (PINNED AT BOTTOM) -->
       <div class="camera-app-deck" id="cameraAppDeck" onclick="event.stopPropagation(); resetOSDAutoHide();">
         <!-- FLIP CAMERA -->
         <button class="cam-deck-btn" id="phoneFlipCamBtn" onclick="flipPhoneCamera()" title="Switch Camera (Back ⇄ Front)">
@@ -2507,10 +2648,6 @@
         <button class="cam-deck-btn" id="phoneSettingsOpenBtn" onclick="openPhoneSettingsModal()" title="Camera Settings">
           <i class="fa-solid fa-gear"></i>
         </button>
-      </div>
-
-      <div style="font-size: 0.74rem; color: var(--text-dim); text-align: center; margin-top:2px;" id="phoneMsg">
-        Camera ready. Tap green shutter button to begin.
       </div>
     </div>
 
@@ -2695,19 +2832,13 @@
             <i class="fa-solid fa-tower-broadcast text-red-500"></i> <span class="hide-on-mobile">Live View</span>
           </button>
           <button class="tab-btn" id="tabPlaybackBtn" onclick="switchViewerTab('playback')">
-            <i class="fa-solid fa-film text-purple-400"></i> <span class="hide-on-mobile">Playback</span> (<span id="topVaultCount">0</span>)
+            <i class="fa-solid fa-film text-purple-400"></i> <span class="hide-on-mobile">Vault</span> (<span id="topVaultCount">0</span>)
           </button>
         </div>
 
-        <span class="chip" id="feedChipWrapper"><i class="fa-solid fa-signal text-cyan-400"></i> <b id="statRes">STANDBY</b></span>
-
-        <!-- PROMINENT RECORDING TIMER IN TOP BAR (SYNCED WITH PHONE!) -->
-        <span class="chip hidden rec-flag" id="topRecBadge">
-          <span class="rec-dot"></span>
-          <span id="topRecLabel">REC 00:00</span>
+        <span class="chip" id="clockChipWrapper" style="font-size:0.75rem; padding:4px 9px;">
+          <i class="fa-regular fa-clock text-cyan-400"></i> <b id="statClock">00:00:00</b>
         </span>
-
-        <span class="chip" id="clockChipWrapper"><i class="fa-regular fa-clock text-cyan-400"></i> <b id="statClock">00:00:00</b></span>
       </div>
 
       <div class="top-bar-right">
@@ -2764,9 +2895,9 @@
       <!-- VIEWER OWN INTERCOM WEBCAM PREVIEW PiP -->
       <div id="viewerIntercomPiP" class="hidden intercom-pip-viewer">
         <div
-          style="background:rgba(0,0,0,0.85); padding:3px 6px; font-size:0.65rem; font-weight:800; color:var(--emerald); display:flex; justify-content:space-between;">
+          style="background:rgba(0,0,0,0.88); padding:4px 8px; font-size:0.68rem; font-weight:800; color:var(--emerald); display:flex; justify-content:space-between; align-items:center;">
           <span>📹 You (Live Intercom)</span>
-          <span style="color:var(--emerald);">● LIVE</span>
+          <button onclick="stopChannelVideoCall()" style="background:none; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer;" title="End Video Call"><i class="fa-solid fa-phone-slash"></i></button>
         </div>
         <video id="viewerIntercomPreview" autoplay muted playsinline></video>
       </div>
@@ -3156,6 +3287,7 @@
     let nvrChannels = [];
     let activeChannelId = 'prs-secure-cam-782';
     let nvrViewMode = 'grid'; // Default 'grid' (matches button 4 active)
+    let viewerActiveTab = 'live'; // 'live' | 'playback'
     let multiGridPeers = {};
     let selectedPlaybackCamera = 'all';
 
@@ -4349,6 +4481,24 @@
       // Keep active channel peer if already live to avoid flicker
       cleanupMultiGridPeers(activeChannelId);
 
+      const isMobile = window.innerWidth <= 768;
+
+      // Clean empty state if no cameras configured
+      if (nvrChannels.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-cameras-state" onclick="openAddCameraModal('CAM 1')">
+            <div class="empty-cam-icon"><i class="fa-solid fa-video-slash"></i></div>
+            <div class="empty-cam-title">No Cameras Connected</div>
+            <div class="empty-cam-subtitle">Add a remote camera or use this phone as a live CCTV camera.</div>
+            <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; justify-content:center;">
+              <button class="btn-act cyan" onclick="event.stopPropagation(); openAddCameraModal('CAM 1')" style="padding:6px 16px; border-radius:20px;"><i class="fa-solid fa-circle-plus"></i> Add Camera</button>
+              <button class="btn-act purple" onclick="event.stopPropagation(); mobileNavSwitch('broadcast')" style="padding:6px 16px; border-radius:20px;"><i class="fa-solid fa-camera"></i> Broadcast This Phone</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
       let tilesHtml = nvrChannels.map(ch => {
         const isFocused = ch.id === activeChannelId;
         const rot = ch.rotation || 0;
@@ -4368,12 +4518,16 @@
               <div class="osd-left">
                 <span class="osd-title" title="${escapeHTML(ch.name)}"><i class="fa-solid fa-video text-cyan-400"></i> ${escapeHTML(ch.name)}</span>
                 <span class="chip-status ${isLive ? 'live' : 'offline'}" id="tileStatus_${escapeHTML(ch.id)}">${isLive ? '● LIVE' : '● OFF'}</span>
+                <!-- Independent Per-Camera Recording Badge -->
+                <span class="chip rec-flag ${isRecordingThis ? '' : 'hidden'}" id="tileRecBadge_${escapeHTML(ch.id)}" style="font-size:0.64rem; padding:2px 7px;">
+                  <span class="rec-dot"></span> <span id="tileRecLabel_${escapeHTML(ch.id)}">REC 00:00</span>
+                </span>
                 <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.6rem; padding:1px 5px;"></span>
               </div>
-              <div class="osd-actions desktop-only-actions" onclick="event.stopPropagation();">
+              <div class="osd-actions" onclick="event.stopPropagation();">
                 <button class="btn-osd" onclick="remoteFlipChannel('${escapeHTML(ch.id)}')" title="Flip Camera Lens - ${escapeHTML(ch.name)}"><i class="fa-solid fa-camera-rotate"></i></button>
                 <button class="btn-osd" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera - ${escapeHTML(ch.name)}"><i class="fa-solid fa-expand"></i></button>
-                <button class="btn-osd danger" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera"><i class="fa-solid fa-xmark"></i></button>
+                <button class="btn-osd danger" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera"><i class="fa-solid fa-trash-can"></i></button>
               </div>
             </div>
 
@@ -4385,8 +4539,9 @@
 
             <!-- FLOATING FROSTED GLASS DOCK (DRIBBBLE SMART HOME PILL) -->
             <div class="cam-tile-dock-pill" onclick="event.stopPropagation();">
-              <button class="tile-dock-btn" onclick="toggleChannelIntercom('${escapeHTML(ch.id)}')" title="Two-Way Talk / Speak"><i class="fa-solid fa-microphone"></i></button>
-              <button class="tile-dock-btn ${ch.isMuted === false ? 'cyan' : ''}" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')" title="${ch.isMuted === false ? 'Listening (Click to Mute)' : 'Listen / Audio'}"><i class="fa-solid ${ch.isMuted === false ? 'fa-volume-high' : 'fa-volume-xmark'}"></i></button>
+              <button class="tile-dock-btn" id="tileMicBtn_${escapeHTML(ch.id)}" onclick="toggleChannelAudioTalk('${escapeHTML(ch.id)}')" title="Voice Speak / Mic Talk"><i class="fa-solid fa-microphone"></i></button>
+              <button class="tile-dock-btn" id="tileVideoCallBtn_${escapeHTML(ch.id)}" onclick="toggleChannelVideoCall('${escapeHTML(ch.id)}')" title="Two-Way Video Call"><i class="fa-solid fa-video"></i></button>
+              <button class="tile-dock-btn ${ch.isMuted === false ? 'cyan' : ''}" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')" title="${ch.isMuted === false ? 'Listening (Click to Mute)' : 'Listen Sound'}"><i class="fa-solid ${ch.isMuted === false ? 'fa-volume-high' : 'fa-volume-xmark'}"></i></button>
               <button class="tile-dock-btn" onclick="captureChannelSnapshot('${escapeHTML(ch.id)}')" title="Snapshot Frame"><i class="fa-solid fa-camera"></i></button>
               <button class="tile-dock-btn ${isRecordingThis ? 'rec-active' : ''}" id="tileRecBtn_${escapeHTML(ch.id)}" onclick="toggleChannelRecording('${escapeHTML(ch.id)}')" title="${isRecordingThis ? 'Stop Recording' : 'Record Feed'}"><i class="fa-solid ${isRecordingThis ? 'fa-stop text-red-500' : 'fa-circle-dot text-red-500'}"></i></button>
               <button class="tile-dock-btn" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen / Expand"><i class="fa-solid fa-expand"></i></button>
@@ -4397,31 +4552,33 @@
         `;
       }).join('');
 
-      // Add standby empty slots up to selected grid size
-      const emptySlotsNeeded = Math.max(0, size - nvrChannels.length);
-      for (let i = 1; i <= emptySlotsNeeded; i++) {
-        const slotNumber = nvrChannels.length + i;
-        tilesHtml += `
-          <div class="cam-grid-tile standby-tile" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Click to Connect Camera to Slot ${slotNumber}">
-            <div class="cam-tile-osd-top">
-              <div class="osd-left">
-                <span class="osd-title"><i class="fa-solid fa-video text-gray-400"></i> CAM ${slotNumber}</span>
-                <span class="chip-status offline">● STANDBY</span>
+      // On desktop only: add standby empty slots up to selected grid size
+      if (!isMobile && size > nvrChannels.length) {
+        const emptySlotsNeeded = size - nvrChannels.length;
+        for (let i = 1; i <= emptySlotsNeeded; i++) {
+          const slotNumber = nvrChannels.length + i;
+          tilesHtml += `
+            <div class="cam-grid-tile standby-tile" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Click to Connect Camera to Slot ${slotNumber}">
+              <div class="cam-tile-osd-top">
+                <div class="osd-left">
+                  <span class="osd-title"><i class="fa-solid fa-video text-gray-400"></i> CAM ${slotNumber}</span>
+                  <span class="chip-status offline">● STANDBY</span>
+                </div>
+                <div class="osd-actions" onclick="event.stopPropagation();">
+                  <button class="btn-osd" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Add / Connect Camera"><i class="fa-solid fa-plus"></i></button>
+                </div>
               </div>
-              <div class="osd-actions" onclick="event.stopPropagation();">
-                <button class="btn-osd" onclick="openAddCameraModal('CAM ${slotNumber}')" title="Add / Connect Camera"><i class="fa-solid fa-plus"></i></button>
+              <div class="standby-tile-body">
+                <div style="width:48px; height:48px; border-radius:50%; background:rgba(0,245,255,0.1); border:1px solid rgba(0,245,255,0.3); display:flex; align-items:center; justify-content:center; margin-bottom:8px;">
+                  <i class="fa-solid fa-plus text-cyan-400" style="font-size:1.2rem;"></i>
+                </div>
+                <div style="font-weight:800; font-size:0.9rem; color:#fff;">Slot ${slotNumber} Available</div>
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-bottom:6px;">Tap to pair a new camera</div>
+                <button class="btn-act cyan" style="font-size:0.72rem; padding:4px 12px; border-radius:20px;"><i class="fa-solid fa-link"></i> Connect Camera</button>
               </div>
             </div>
-            <div class="standby-tile-body">
-              <div style="width:50px; height:50px; border-radius:50%; background:rgba(0,245,255,0.1); border:1px solid rgba(0,245,255,0.3); display:flex; align-items:center; justify-content:center; margin-bottom:8px;">
-                <i class="fa-solid fa-plus text-cyan-400" style="font-size:1.3rem;"></i>
-              </div>
-              <div style="font-weight:800; font-size:0.95rem; color:#fff;">Slot ${slotNumber} Available</div>
-              <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:6px;">Tap to pair a new camera</div>
-              <button class="btn-act cyan" style="font-size:0.75rem; padding:4px 14px; border-radius:20px;"><i class="fa-solid fa-link"></i> Connect Camera</button>
-            </div>
-          </div>
-        `;
+          `;
+        }
       }
 
       grid.innerHTML = tilesHtml;
@@ -4606,11 +4763,13 @@
     }
 
     // CAMERA-WISE INDEPENDENT RECORDING ENGINE
-    const channelRecorders = {}; // { [channelId]: { recorder, blobs, startTime } }
+    const channelRecorders = {}; // { [channelId]: { recorder, blobs, startTime, timerInterval } }
 
     function toggleChannelRecording(channelId) {
       const vid = document.getElementById(`tileVideo_${channelId}`) || document.getElementById('officeFeedVideo');
       const btn = document.getElementById(`tileRecBtn_${channelId}`);
+      const badge = document.getElementById(`tileRecBadge_${channelId}`);
+      const label = document.getElementById(`tileRecLabel_${channelId}`);
       const ch = nvrChannels.find(c => c.id === channelId) || { name: 'CAM', id: channelId };
 
       if (!vid || !vid.srcObject) {
@@ -4619,6 +4778,7 @@
 
       const existing = channelRecorders[channelId];
       if (existing && existing.recorder && existing.recorder.state === 'recording') {
+        if (existing.timerInterval) clearInterval(existing.timerInterval);
         try { existing.recorder.stop(); } catch (e) { }
         return;
       }
@@ -4639,27 +4799,38 @@
         btn.classList.add('rec-active');
         btn.title = `Stop Recording ${ch.name}`;
       }
+      if (badge) badge.classList.remove('hidden');
+      if (label) label.textContent = "REC 00:00";
+
+      const timerInterval = setInterval(() => {
+        const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+        if (label) label.textContent = `REC ${formatSeconds(elapsedSec)}`;
+      }, 1000);
+
       showToast(`🔴 Recording started on ${ch.name}`, "info", 1800);
 
       rec.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) recordedBlobs.push(e.data);
       };
       rec.onstop = async () => {
+        clearInterval(timerInterval);
         const durationSec = Math.max(1, Math.round((Date.now() - startTime) / 1000));
         if (recordedBlobs.length > 0) {
           const blob = new Blob(recordedBlobs, { type: rec.mimeType || 'video/mp4' });
-          await saveRecordingToVault(blob, durationSec, officeRequestedQuality, ch.name || 'CAM');
+          await saveRecordingToVault(blob, durationSec, officeRequestedQuality, ch.name || 'CAM', ch.id, ch.name);
           showToast(`📼 Saved clip for ${ch.name} (${formatSeconds(durationSec)}) to NVR Vault!`, "success", 3000);
+          updateAllCounters();
         }
         if (btn) {
           btn.innerHTML = '<i class="fa-solid fa-circle-dot text-red-500"></i>';
           btn.classList.remove('rec-active');
           btn.title = `Record ${ch.name} Feed`;
         }
+        if (badge) badge.classList.add('hidden');
         delete channelRecorders[channelId];
       };
 
-      channelRecorders[channelId] = { recorder: rec, blobs: recordedBlobs, startTime };
+      channelRecorders[channelId] = { recorder: rec, blobs: recordedBlobs, startTime, timerInterval };
       rec.start(1000);
     }
 
@@ -4934,8 +5105,11 @@
     }
 
     function showPhoneMode() {
+      document.body.classList.add('phone-mode-active');
       document.getElementById('phoneAppSection').classList.remove('hidden');
       document.getElementById('officeConsoleSection').classList.add('hidden');
+      const bNav = document.getElementById('mobileAppBottomNav');
+      if (bNav) bNav.style.display = 'none';
       const mobCam = document.getElementById('mobileNavCamerasBtn');
       const mobVault = document.getElementById('mobileNavVaultBtn');
       const mobBroad = document.getElementById('mobileNavBroadcastBtn');
@@ -4945,8 +5119,11 @@
     }
 
     function showViewerMode() {
+      document.body.classList.remove('phone-mode-active');
       document.getElementById('phoneAppSection').classList.add('hidden');
       document.getElementById('officeConsoleSection').classList.remove('hidden');
+      const bNav = document.getElementById('mobileAppBottomNav');
+      if (bNav && window.innerWidth <= 768) bNav.style.display = 'flex';
       const mobCam = document.getElementById('mobileNavCamerasBtn');
       const mobVault = document.getElementById('mobileNavVaultBtn');
       const mobBroad = document.getElementById('mobileNavBroadcastBtn');
@@ -4983,6 +5160,7 @@
 
     // VIEWER TAB SWITCHER (LIVE vs PLAYBACK)
     function switchViewerTab(tab) {
+      viewerActiveTab = tab;
       const liveBtn = document.getElementById('tabLiveBtn');
       const playbackBtn = document.getElementById('tabPlaybackBtn');
       const liveStage = document.getElementById('stageViewport');
@@ -5489,18 +5667,25 @@
             const incCont = document.getElementById('phoneIncomingIntercomContainer');
             const speaker = document.getElementById('phoneSpeaker');
 
-            if (incVid) {
+            const hasVideo = operatorStream.getVideoTracks().length > 0;
+            if (hasVideo && incVid && incCont) {
               incVid.srcObject = operatorStream;
-              incVid.muted = true; // prevent phone feedback
+              incVid.muted = true; // prevent acoustic feedback
               incVid.play().catch(() => {});
+              incCont.classList.remove('hidden');
+              showToast("📹 Operator Video Call Live!", "info", 3000);
+            } else {
+              if (incCont) incCont.classList.add('hidden');
             }
+
             if (speaker) {
               speaker.srcObject = operatorStream;
               speaker.muted = isPhoneIntercomAudioMuted;
               speaker.play().catch(() => {});
             }
-            if (incCont) incCont.classList.remove('hidden');
-            showToast("📹 Operator Video Intercom Live!", "info", 3000);
+            if (!hasVideo) {
+              showToast("🎙️ Operator Voice Speaking...", "info", 2500);
+            }
           });
 
           incCall.on('close', () => {
@@ -5508,6 +5693,8 @@
             if (incCont) incCont.classList.add('hidden');
             const incVid = document.getElementById('phoneIncomingIntercomVideo');
             if (incVid) incVid.srcObject = null;
+            const speaker = document.getElementById('phoneSpeaker');
+            if (speaker) speaker.srcObject = null;
           });
         });
 
@@ -6398,39 +6585,24 @@
     }
 
     function handleRemotePhoneTelemetry(msg) {
-      const topBadge = document.getElementById('topRecBadge');
-      const topLabel = document.getElementById('topRecLabel');
+      const targetId = activeChannelId || (nvrChannels[0] && nvrChannels[0].id);
+      if (!targetId) return;
 
-      if (msg.isRecording && !isManualRecording) {
-        if (topBadge) topBadge.classList.remove('hidden');
-        if (topLabel) topLabel.textContent = `REC [PHONE] ${msg.timeStr}`;
-      } else if (!msg.isRecording && !isManualRecording && !isViewerAutoLoop) {
-        if (topBadge) topBadge.classList.add('hidden');
+      const tileBadge = document.getElementById(`tileRecBadge_${targetId}`);
+      const tileLabel = document.getElementById(`tileRecLabel_${targetId}`);
+
+      if (msg.isRecording && tileBadge && tileLabel) {
+        tileBadge.classList.remove('hidden');
+        tileLabel.textContent = `REC ${msg.timeStr || '00:00'}`;
+      } else if (!msg.isRecording && tileBadge) {
+        tileBadge.classList.add('hidden');
       }
 
-      // Battery Telemetry from Phone (Centralized in Top Bar)
-      if (msg.battery) {
-        const batEl = document.getElementById('officeBatVal');
-        const batChip = document.getElementById('officePhoneBatChip');
-        if (batChip) batChip.classList.remove('hidden');
-
-        const icon = msg.battery.charging ? '⚡' : '🔋';
-        const color = msg.battery.level <= 20 ? 'var(--danger)' : (msg.battery.level <= 40 ? 'var(--amber)' : 'var(--emerald)');
-        const text = `${icon} ${msg.battery.level}%${msg.battery.charging ? ' [Chg]' : ''}`;
-
-        if (batEl) batEl.innerHTML = `<span style="color:${color}; font-weight:800;">${text}</span>`;
-      }
-
-      // Network Telemetry from Phone (Centralized in Top Bar)
-      if (msg.network) {
-        const netEl = document.getElementById('officeNetVal');
-        const netChip = document.getElementById('officePhoneNetChip');
-        if (netChip) netChip.classList.remove('hidden');
-
-        const qColor = msg.network.quality === 'Poor' ? 'var(--danger)' : (msg.network.quality === 'Fair' ? 'var(--amber)' : 'var(--cyan)');
-        const netText = `📶 ${msg.network.type}${msg.network.speed ? ' ' + msg.network.speed : ''}`;
-
-        if (netEl) netEl.innerHTML = `<span style="color:${qColor}; font-weight:800;">${netText}</span>`;
+      const tileTelem = document.getElementById(`tileTelem_${targetId}`);
+      if (tileTelem && msg.battery && msg.network) {
+        const batIcon = msg.battery.charging ? 'fa-bolt text-amber-400' : 'fa-battery-three-quarters text-emerald-400';
+        tileTelem.innerHTML = `<i class="fa-solid ${batIcon}"></i> ${msg.battery.level}% &bull; <i class="fa-solid fa-wifi text-cyan-400"></i> ${msg.network.type || 'NET'}`;
+        tileTelem.classList.remove('hidden');
       }
     }
 
@@ -6546,11 +6718,181 @@
       showToast(`📸 Snapshot saved for ${ch.name}!`, "success", 2000);
     }
 
-    function toggleChannelIntercom(channelId) {
+    // State for separate channel voice talk and video intercom
+    let activeVoiceTalkChannelId = null;
+    let activeVoiceTalkStream = null;
+    let activeVoiceTalkCall = null;
+
+    let activeVideoIntercomChannelId = null;
+    let activeVideoIntercomStream = null;
+    let activeVideoIntercomCall = null;
+
+    // AUDIO TALK (PUSH-TO-TALK / VOICE ONLY - NO WEBCAM VIDEO)
+    async function toggleChannelAudioTalk(channelId) {
       focusCameraTile(channelId, false);
-      const ch = nvrChannels.find(c => c.id === channelId);
-      showToast(`🎙️ Intercom connected to ${ch ? ch.name : channelId}`, "info", 1800);
-      toggleVideoIntercom();
+      const ch = nvrChannels.find(c => c.id === channelId) || { name: channelId, id: channelId };
+      const micBtn = document.getElementById(`tileMicBtn_${channelId}`);
+
+      if (activeVoiceTalkChannelId === channelId) {
+        stopChannelAudioTalk();
+        return;
+      }
+
+      if (activeVoiceTalkChannelId) {
+        stopChannelAudioTalk();
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        activeVoiceTalkStream = stream;
+        activeVoiceTalkChannelId = channelId;
+
+        const callerPeer = (multiGridPeers[channelId] && multiGridPeers[channelId].peer) || peer;
+        if (callerPeer) {
+          activeVoiceTalkCall = callerPeer.call(channelId, stream);
+          activeVoiceTalkCall.on('close', () => {
+            stopChannelAudioTalk();
+          });
+        }
+
+        const activeConn = (multiGridPeers[channelId] && multiGridPeers[channelId].conn) || dataChannel;
+        if (activeConn && activeConn.open) {
+          activeConn.send({ type: 'laptop_mic_state', active: true });
+          activeConn.send({ type: 'intercom_state', active: true, hasVideo: false });
+        }
+
+        if (micBtn) {
+          micBtn.classList.add('cyan', 'animate-pulse');
+          micBtn.title = "Speaking to " + ch.name + " (Tap to Stop)";
+        }
+        showToast(`🎙️ Speaking to ${ch.name}...`, "info", 2000);
+      } catch (err) {
+        console.error("Audio talk error:", err);
+        showToast("Microphone access error: " + (err.message || "Unavailable"), "error", 4000);
+      }
+    }
+
+    function stopChannelAudioTalk() {
+      if (activeVoiceTalkStream) {
+        activeVoiceTalkStream.getTracks().forEach(t => t.stop());
+        activeVoiceTalkStream = null;
+      }
+      if (activeVoiceTalkCall) {
+        try { activeVoiceTalkCall.close(); } catch (e) { }
+        activeVoiceTalkCall = null;
+      }
+
+      if (activeVoiceTalkChannelId) {
+        const chId = activeVoiceTalkChannelId;
+        const activeConn = (multiGridPeers[chId] && multiGridPeers[chId].conn) || dataChannel;
+        if (activeConn && activeConn.open) {
+          activeConn.send({ type: 'laptop_mic_state', active: false });
+          activeConn.send({ type: 'intercom_state', active: false, hasVideo: false });
+        }
+        const micBtn = document.getElementById(`tileMicBtn_${chId}`);
+        if (micBtn) {
+          micBtn.classList.remove('cyan', 'animate-pulse');
+          micBtn.title = "Voice Speak / Mic Talk";
+        }
+        activeVoiceTalkChannelId = null;
+        showToast("🎙️ Voice talk ended.", "info", 1500);
+      }
+    }
+
+    // TWO-WAY VIDEO CALL (WITH OPERATOR PiP & WEBCAM STREAM)
+    async function toggleChannelVideoCall(channelId) {
+      focusCameraTile(channelId, false);
+      const ch = nvrChannels.find(c => c.id === channelId) || { name: channelId, id: channelId };
+      const callBtn = document.getElementById(`tileVideoCallBtn_${channelId}`);
+      const viewerPiP = document.getElementById('viewerIntercomPiP');
+      const viewerPreview = document.getElementById('viewerIntercomPreview');
+
+      if (activeVideoIntercomChannelId === channelId) {
+        stopChannelVideoCall();
+        return;
+      }
+
+      if (activeVideoIntercomChannelId) {
+        stopChannelVideoCall();
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: true
+        });
+        activeVideoIntercomStream = stream;
+        activeVideoIntercomChannelId = channelId;
+
+        if (viewerPreview) {
+          viewerPreview.srcObject = stream;
+          viewerPreview.play().catch(() => {});
+        }
+        if (viewerPiP) {
+          viewerPiP.classList.remove('hidden');
+          const titleSpan = viewerPiP.querySelector('span');
+          if (titleSpan) titleSpan.innerHTML = `📹 Operator Call ➔ ${escapeHTML(ch.name)}`;
+        }
+
+        const callerPeer = (multiGridPeers[channelId] && multiGridPeers[channelId].peer) || peer;
+        if (callerPeer) {
+          activeVideoIntercomCall = callerPeer.call(channelId, stream);
+          activeVideoIntercomCall.on('close', () => {
+            stopChannelVideoCall();
+          });
+        }
+
+        const activeConn = (multiGridPeers[channelId] && multiGridPeers[channelId].conn) || dataChannel;
+        if (activeConn && activeConn.open) {
+          activeConn.send({ type: 'intercom_state', active: true, hasVideo: true });
+          activeConn.send({ type: 'laptop_mic_state', active: true });
+        }
+
+        if (callBtn) {
+          callBtn.classList.add('emerald', 'animate-pulse');
+          callBtn.title = "Video Call with " + ch.name + " (Tap to End)";
+        }
+        showToast(`📹 Video Call connected with ${ch.name}`, "success", 2500);
+      } catch (err) {
+        console.error("Video intercom error:", err);
+        showToast("Camera/Microphone error: " + (err.message || "Hardware unavailable"), "error", 4000);
+      }
+    }
+
+    function stopChannelVideoCall() {
+      if (activeVideoIntercomStream) {
+        activeVideoIntercomStream.getTracks().forEach(t => t.stop());
+        activeVideoIntercomStream = null;
+      }
+      if (activeVideoIntercomCall) {
+        try { activeVideoIntercomCall.close(); } catch (e) { }
+        activeVideoIntercomCall = null;
+      }
+
+      const viewerPiP = document.getElementById('viewerIntercomPiP');
+      const viewerPreview = document.getElementById('viewerIntercomPreview');
+      if (viewerPreview) viewerPreview.srcObject = null;
+      if (viewerPiP) viewerPiP.classList.add('hidden');
+
+      if (activeVideoIntercomChannelId) {
+        const chId = activeVideoIntercomChannelId;
+        const activeConn = (multiGridPeers[chId] && multiGridPeers[chId].conn) || dataChannel;
+        if (activeConn && activeConn.open) {
+          activeConn.send({ type: 'intercom_state', active: false, hasVideo: false });
+          activeConn.send({ type: 'laptop_mic_state', active: false });
+        }
+        const callBtn = document.getElementById(`tileVideoCallBtn_${chId}`);
+        if (callBtn) {
+          callBtn.classList.remove('emerald', 'animate-pulse');
+          callBtn.title = "Two-Way Video Call";
+        }
+        activeVideoIntercomChannelId = null;
+        showToast("📹 Video call ended.", "info", 1500);
+      }
+    }
+
+    function toggleChannelIntercom(channelId) {
+      toggleChannelAudioTalk(channelId);
     }
 
     function remoteFlipCamera() {
