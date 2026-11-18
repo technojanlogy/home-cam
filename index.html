@@ -1888,27 +1888,275 @@
       color: var(--cyan);
     }
 
+    /* ========================================================
+       DRIBBBLE-INSPIRED MOBILE APP GRID & BOTTOM NAVIGATION
+       ======================================================== */
+    .cam-tile-dock-pill {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(11, 17, 32, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 9999px;
+      padding: 5px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      max-width: 94%;
+      box-sizing: border-box;
+      pointer-events: auto;
+    }
+
+    .tile-dock-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      padding: 0;
+    }
+
+    .tile-dock-btn:hover {
+      background: rgba(0, 245, 255, 0.25);
+      border-color: var(--cyan);
+      transform: scale(1.1);
+      color: var(--cyan);
+    }
+
+    .tile-dock-btn:active {
+      transform: scale(0.92);
+    }
+
+    .tile-dock-btn.cyan {
+      background: rgba(0, 245, 255, 0.25);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .tile-dock-btn.danger {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .tile-dock-btn.rec-active {
+      background: rgba(239, 68, 68, 0.4);
+      border-color: #ef4444;
+      animation: shutterPulse 1.8s infinite;
+    }
+
+    .mobile-bottom-nav {
+      display: none;
+    }
+
     @media (max-width: 768px) {
-      .cctv-multi-grid {
-        overflow-y: auto !important;
-        max-height: none !important;
+      /* Mobile App Container padding so content never gets covered by bottom nav */
+      .laptop-console,
+      .phone-app-container {
+        padding-bottom: 84px !important;
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
       }
-      .cctv-multi-grid.grid-layout-1 {
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto !important;
-      }
+
+      /* 1 GRID IN ONE ROW, THEN NEXT (DRIBBBLE SMART HOME LAYOUT) */
+      .cctv-multi-grid,
+      .cctv-multi-grid.grid-layout-1,
       .cctv-multi-grid.grid-layout-2,
       .cctv-multi-grid.grid-layout-4,
       .cctv-multi-grid.grid-layout-6,
       .cctv-multi-grid.grid-layout-8,
       .cctv-multi-grid.grid-layout-9,
       .cctv-multi-grid.grid-layout-16 {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
         grid-template-rows: auto !important;
-        gap: 6px !important;
+        gap: 16px !important;
+        overflow-y: auto !important;
+        max-height: none !important;
+        height: auto !important;
+        padding: 4px 0 16px 0 !important;
       }
+
       .cam-grid-tile {
-        min-height: 140px !important;
+        width: 100% !important;
+        aspect-ratio: 16 / 10 !important;
+        min-height: 220px !important;
+        border-radius: 26px !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+        overflow: hidden !important;
+        position: relative !important;
+        margin-bottom: 2px !important;
+        background: #080d1a !important;
+      }
+
+      .cam-tile-osd-top {
+        padding: 12px 16px !important;
+        height: auto !important;
+      }
+
+      .osd-title {
+        font-size: 1.12rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+        max-width: 200px !important;
+      }
+
+      .chip-status {
+        font-size: 0.72rem !important;
+        padding: 4px 10px !important;
+        border-radius: 9999px !important;
+      }
+
+      /* Desktop only top actions hidden on mobile cards */
+      .desktop-only-actions {
+        display: none !important;
+      }
+
+      /* Camera Deck responsiveness on small screens so buttons never overflow */
+      .camera-app-deck {
+        padding: 8px 12px !important;
+        gap: 6px !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        justify-content: space-around !important;
+      }
+
+      .cam-deck-btn {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1rem !important;
+      }
+
+      .cam-shutter-btn {
+        width: 58px !important;
+        height: 58px !important;
+      }
+
+      .cam-shutter-btn.recording .shutter-inner {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.95rem !important;
+      }
+
+      /* Hide bloated desktop toolbars on mobile (handled by bottom nav & cards!) */
+      .nvr-layout-selector,
+      #gridFitCoverToggleBtn,
+      #gridFullscreenAllBtn,
+      #officeDockControls {
+        display: none !important;
+      }
+
+      .top-bar .mode-switch,
+      .phone-header .mode-switch,
+      .top-bar .tabs-bar {
+        display: none !important;
+      }
+
+      /* FIXED MOBILE BOTTOM NAVIGATION BAR */
+      .mobile-bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 66px;
+        background: rgba(11, 17, 32, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        z-index: 99999;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 8px;
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .mobile-nav-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-dim);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 6px 8px;
+        position: relative;
+        transition: all 0.2s ease;
+        flex: 1;
+        outline: none;
+      }
+
+      .mobile-nav-btn i {
+        font-size: 1.25rem;
+        transition: transform 0.2s ease, color 0.2s ease;
+      }
+
+      .mobile-nav-btn.active {
+        color: var(--cyan);
+      }
+
+      .mobile-nav-btn.active i {
+        transform: translateY(-2px);
+        color: var(--cyan);
+      }
+
+      .mobile-nav-btn.shutter-nav-btn {
+        position: relative;
+        top: -12px;
+      }
+
+      .mobile-nav-shutter-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00f5ff 0%, #0077ff 100%);
+        box-shadow: 0 6px 18px rgba(0, 245, 255, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #070a10;
+        font-size: 1.3rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .mobile-nav-btn.shutter-nav-btn.active .mobile-nav-shutter-circle {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+      }
+
+      .mobile-nav-badge {
+        position: absolute;
+        top: 4px;
+        right: calc(50% - 16px);
+        background: var(--danger);
+        color: #fff;
+        font-size: 0.58rem;
+        font-weight: 800;
+        padding: 1px 5px;
+        border-radius: 10px;
+        min-width: 14px;
+        text-align: center;
       }
     }
 
@@ -3975,8 +4223,8 @@
 
       const btn = document.getElementById(`tileConnBtn_${id}`);
       if (btn) {
-        btn.className = "btn-micro-chip cyan";
-        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Connect';
+        btn.className = "tile-dock-btn cyan";
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i>';
         btn.title = "Connect Feed";
       }
 
@@ -4122,12 +4370,8 @@
                 <span class="chip-status ${isLive ? 'live' : 'offline'}" id="tileStatus_${escapeHTML(ch.id)}">${isLive ? '● LIVE' : '● OFF'}</span>
                 <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.6rem; padding:1px 5px;"></span>
               </div>
-              <div class="osd-actions" onclick="event.stopPropagation();">
-                <button class="btn-osd" onclick="remoteFlipChannel('${escapeHTML(ch.id)}')" title="Flip Camera Lens (Front/Back) - ${escapeHTML(ch.name)}"><i class="fa-solid fa-camera-rotate"></i></button>
-                <button class="btn-osd" onclick="toggleChannelIntercom('${escapeHTML(ch.id)}')" title="Two-Way Talk / Intercom - ${escapeHTML(ch.name)}"><i class="fa-solid fa-microphone"></i></button>
-                <button class="btn-osd ${ch.isMuted === false ? 'cyan' : ''}" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')" title="${ch.isMuted === false ? 'Listening (Click to Mute)' : 'Listen / Audio'}"><i class="fa-solid ${ch.isMuted === false ? 'fa-volume-high' : 'fa-volume-xmark'}"></i></button>
-                <button class="btn-osd" onclick="captureChannelSnapshot('${escapeHTML(ch.id)}')" title="Snapshot Frame - ${escapeHTML(ch.name)}"><i class="fa-solid fa-camera"></i></button>
-                <button class="btn-osd ${isRecordingThis ? 'rec-active' : ''}" id="tileRecBtn_${escapeHTML(ch.id)}" onclick="toggleChannelRecording('${escapeHTML(ch.id)}')" title="${isRecordingThis ? 'Stop Recording' : 'Record Feed'}"><i class="fa-solid ${isRecordingThis ? 'fa-stop text-red-500' : 'fa-circle-dot text-red-500'}"></i></button>
+              <div class="osd-actions desktop-only-actions" onclick="event.stopPropagation();">
+                <button class="btn-osd" onclick="remoteFlipChannel('${escapeHTML(ch.id)}')" title="Flip Camera Lens - ${escapeHTML(ch.name)}"><i class="fa-solid fa-camera-rotate"></i></button>
                 <button class="btn-osd" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen Camera - ${escapeHTML(ch.name)}"><i class="fa-solid fa-expand"></i></button>
                 <button class="btn-osd danger" onclick="removeCameraChannel('${escapeHTML(ch.id)}')" title="Remove Camera"><i class="fa-solid fa-xmark"></i></button>
               </div>
@@ -4139,16 +4383,15 @@
             <!-- CAMERA VIDEO STREAM -->
             <video class="cam-tile-video" id="tileVideo_${escapeHTML(ch.id)}" style="transform:scale(${effScale}) translate(${px}px, ${py}px) rotate(${rot}deg); object-fit:${videoFitMode};" autoplay playsinline muted></video>
 
-            <!-- CCTV OSD BOTTOM OVERLAY -->
-            <div class="cam-tile-osd-bottom" onclick="event.stopPropagation();">
-              <div style="display:flex; align-items:center; gap:4px;">
-                <button class="btn-micro-chip cyan" onclick="focusCameraTile('${escapeHTML(ch.id)}', true)" title="1x1 Stage View"><i class="fa-solid fa-magnifying-glass"></i> Focus</button>
-                <button class="btn-micro-chip ${isLive ? 'danger' : 'cyan'}" id="tileConnBtn_${escapeHTML(ch.id)}" onclick="toggleTileConnection('${escapeHTML(ch.id)}')" title="${isLive ? 'Disconnect Feed' : 'Connect Feed'}"><i class="fa-solid ${isLive ? 'fa-power-off' : 'fa-bolt'}"></i> ${isLive ? 'Disconnect' : 'Connect'}</button>
-              </div>
-              <div style="display:flex; align-items:center; gap:4px;">
-                <button class="btn-micro-chip" onclick="rotateTile('${escapeHTML(ch.id)}')" title="Rotate 90°"><i class="fa-solid fa-rotate-right"></i> 90°</button>
-                <button class="btn-micro-chip" onclick="openEditCameraModal('${escapeHTML(ch.id)}')" title="Edit Camera Name / PIN"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-              </div>
+            <!-- FLOATING FROSTED GLASS DOCK (DRIBBBLE SMART HOME PILL) -->
+            <div class="cam-tile-dock-pill" onclick="event.stopPropagation();">
+              <button class="tile-dock-btn" onclick="toggleChannelIntercom('${escapeHTML(ch.id)}')" title="Two-Way Talk / Speak"><i class="fa-solid fa-microphone"></i></button>
+              <button class="tile-dock-btn ${ch.isMuted === false ? 'cyan' : ''}" id="tileAudioBtn_${escapeHTML(ch.id)}" onclick="toggleTileAudio('${escapeHTML(ch.id)}')" title="${ch.isMuted === false ? 'Listening (Click to Mute)' : 'Listen / Audio'}"><i class="fa-solid ${ch.isMuted === false ? 'fa-volume-high' : 'fa-volume-xmark'}"></i></button>
+              <button class="tile-dock-btn" onclick="captureChannelSnapshot('${escapeHTML(ch.id)}')" title="Snapshot Frame"><i class="fa-solid fa-camera"></i></button>
+              <button class="tile-dock-btn ${isRecordingThis ? 'rec-active' : ''}" id="tileRecBtn_${escapeHTML(ch.id)}" onclick="toggleChannelRecording('${escapeHTML(ch.id)}')" title="${isRecordingThis ? 'Stop Recording' : 'Record Feed'}"><i class="fa-solid ${isRecordingThis ? 'fa-stop text-red-500' : 'fa-circle-dot text-red-500'}"></i></button>
+              <button class="tile-dock-btn" onclick="fullscreenTile('${escapeHTML(ch.id)}')" title="Fullscreen / Expand"><i class="fa-solid fa-expand"></i></button>
+              <button class="tile-dock-btn ${isLive ? 'danger' : 'cyan'}" id="tileConnBtn_${escapeHTML(ch.id)}" onclick="toggleTileConnection('${escapeHTML(ch.id)}')" title="${isLive ? 'Disconnect Feed' : 'Connect Feed'}"><i class="fa-solid ${isLive ? 'fa-power-off' : 'fa-bolt'}"></i></button>
+              <button class="tile-dock-btn" onclick="openEditCameraModal('${escapeHTML(ch.id)}')" title="Camera Settings / Edit"><i class="fa-solid fa-sliders"></i></button>
             </div>
           </div>
         `;
@@ -4170,10 +4413,12 @@
               </div>
             </div>
             <div class="standby-tile-body">
-              <i class="fa-solid fa-video text-gray-500" style="font-size:1.8rem; margin-bottom:4px; opacity:0.4;"></i>
-              <div style="font-weight:800; font-size:0.75rem; color:var(--text-dim);">Slot ${slotNumber} (Empty)</div>
-              <div style="font-size:0.6rem; color:rgba(255,255,255,0.4);">Click to connect feed</div>
-              <button class="btn-act cyan" style="font-size:0.65rem; padding:3px 10px; margin-top:4px;"><i class="fa-solid fa-plus"></i> Add CAM ${slotNumber}</button>
+              <div style="width:50px; height:50px; border-radius:50%; background:rgba(0,245,255,0.1); border:1px solid rgba(0,245,255,0.3); display:flex; align-items:center; justify-content:center; margin-bottom:8px;">
+                <i class="fa-solid fa-plus text-cyan-400" style="font-size:1.3rem;"></i>
+              </div>
+              <div style="font-weight:800; font-size:0.95rem; color:#fff;">Slot ${slotNumber} Available</div>
+              <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:6px;">Tap to pair a new camera</div>
+              <button class="btn-act cyan" style="font-size:0.75rem; padding:4px 14px; border-radius:20px;"><i class="fa-solid fa-link"></i> Connect Camera</button>
             </div>
           </div>
         `;
@@ -4201,8 +4446,8 @@
         ch.isLive = true;
         const btn = document.getElementById(`tileConnBtn_${ch.id}`);
         if (btn) {
-          btn.className = "btn-micro-chip danger";
-          btn.innerHTML = '<i class="fa-solid fa-power-off"></i> Disconnect';
+          btn.className = "tile-dock-btn danger";
+          btn.innerHTML = '<i class="fa-solid fa-power-off"></i>';
           btn.title = "Disconnect Feed";
         }
         renderNVRChannelChips();
@@ -4306,8 +4551,8 @@
               ch.isLive = true;
               const connBtn = document.getElementById(`tileConnBtn_${ch.id}`);
               if (connBtn) {
-                connBtn.className = "btn-micro-chip danger";
-                connBtn.innerHTML = '<i class="fa-solid fa-power-off"></i> Disconnect';
+                connBtn.className = "tile-dock-btn danger";
+                connBtn.innerHTML = '<i class="fa-solid fa-power-off"></i>';
                 connBtn.title = "Disconnect Feed";
               }
               renderNVRChannelChips();
@@ -4642,14 +4887,77 @@
       }
     });
 
+
+    // ==========================================
+    // MOBILE APP BOTTOM NAVIGATION CONTROLLER
+    // ==========================================
+    function mobileNavSwitch(tab) {
+      const items = document.querySelectorAll('.mobile-nav-btn');
+      items.forEach(el => el.classList.remove('active'));
+
+      if (tab === 'cameras') {
+        const btn = document.getElementById('mobileNavCamerasBtn');
+        if (btn) btn.classList.add('active');
+        showViewerMode();
+        switchViewerTab('live');
+      } else if (tab === 'vault') {
+        const btn = document.getElementById('mobileNavVaultBtn');
+        if (btn) btn.classList.add('active');
+        showViewerMode();
+        switchViewerTab('playback');
+      } else if (tab === 'broadcast') {
+        const btn = document.getElementById('mobileNavBroadcastBtn');
+        if (btn) btn.classList.add('active');
+        showPhoneMode();
+        switchPhoneTab('camera');
+      } else if (tab === 'settings') {
+        const btn = document.getElementById('mobileNavSettingsBtn');
+        if (btn) btn.classList.add('active');
+        openMobileProfileMenu();
+      }
+    }
+
+    function openMobileProfileMenu() {
+      const m = document.getElementById('mobileProfileMenuModal');
+      if (m) m.classList.remove('hidden');
+      const uName = document.getElementById('mobProfileUserName');
+      const uRole = document.getElementById('mobProfileUserRole');
+      if (uName && currentUserSession) uName.textContent = currentUserSession.username || 'admin';
+      if (uRole && currentUserSession) uRole.textContent = currentUserSession.role || 'Security Administrator';
+    }
+
+    function closeMobileProfileMenu() {
+      const m = document.getElementById('mobileProfileMenuModal');
+      if (m) m.classList.add('hidden');
+      const btn = document.getElementById('mobileNavSettingsBtn');
+      if (btn) btn.classList.remove('active');
+    }
+
     function showPhoneMode() {
       document.getElementById('phoneAppSection').classList.remove('hidden');
       document.getElementById('officeConsoleSection').classList.add('hidden');
+      const mobCam = document.getElementById('mobileNavCamerasBtn');
+      const mobVault = document.getElementById('mobileNavVaultBtn');
+      const mobBroad = document.getElementById('mobileNavBroadcastBtn');
+      if (mobCam) mobCam.classList.remove('active');
+      if (mobVault) mobVault.classList.remove('active');
+      if (mobBroad) mobBroad.classList.add('active');
     }
 
     function showViewerMode() {
       document.getElementById('phoneAppSection').classList.add('hidden');
       document.getElementById('officeConsoleSection').classList.remove('hidden');
+      const mobCam = document.getElementById('mobileNavCamerasBtn');
+      const mobVault = document.getElementById('mobileNavVaultBtn');
+      const mobBroad = document.getElementById('mobileNavBroadcastBtn');
+      if (mobBroad) mobBroad.classList.remove('active');
+      if (viewerActiveTab === 'playback') {
+        if (mobVault) mobVault.classList.add('active');
+        if (mobCam) mobCam.classList.remove('active');
+      } else {
+        if (mobCam) mobCam.classList.add('active');
+        if (mobVault) mobVault.classList.remove('active');
+      }
     }
 
     // PHONE SUB-TAB SWITCHER (CAMERA vs PLAYBACK)
@@ -4683,9 +4991,14 @@
       const playbackConsole = document.getElementById('nvrPlaybackConsole');
       const dock = document.getElementById('officeDockControls');
 
+      const mobCam = document.getElementById('mobileNavCamerasBtn');
+      const mobVault = document.getElementById('mobileNavVaultBtn');
+
       if (tab === 'live') {
         liveBtn.classList.add('active');
         playbackBtn.classList.remove('active');
+        if (mobCam) mobCam.classList.add('active');
+        if (mobVault) mobVault.classList.remove('active');
         if (channelsBar) channelsBar.classList.remove('hidden');
         if (nvrViewMode === 'grid') {
           if (multiGrid) multiGrid.classList.remove('hidden');
@@ -4700,6 +5013,8 @@
         // PLAYBACK MODE: HIDE ALL LIVE CAMERA SCREENS & CONTROLS!
         playbackBtn.classList.add('active');
         liveBtn.classList.remove('active');
+        if (mobVault) mobVault.classList.add('active');
+        if (mobCam) mobCam.classList.remove('active');
         if (liveStage) liveStage.classList.add('hidden');
         if (multiGrid) multiGrid.classList.add('hidden');
         if (channelsBar) channelsBar.classList.add('hidden');
@@ -6758,6 +7073,13 @@
       if (dockCount) dockCount.textContent = (remotePhoneClips.length || localClips.length);
       if (sourcePhoneCount) sourcePhoneCount.textContent = remotePhoneClips.length;
       if (sourceLocalCount) sourceLocalCount.textContent = localClips.length;
+
+      const mobVaultBadge = document.getElementById('mobileNavVaultBadge');
+      const totalClips = (remotePhoneClips.length || localClips.length);
+      if (mobVaultBadge) {
+        mobVaultBadge.textContent = String(totalClips);
+        mobVaultBadge.classList.toggle('hidden', totalClips === 0);
+      }
     }
 
     function onRetentionChange(val) {
@@ -7552,6 +7874,67 @@
       }
     });
   </script>
+  <!-- ========================================================
+       MOBILE APP BOTTOM NAVIGATION BAR (DRIBBBLE STYLE)
+       ======================================================== -->
+  <nav class="mobile-bottom-nav" id="mobileAppBottomNav">
+    <button class="mobile-nav-btn active" id="mobileNavCamerasBtn" onclick="mobileNavSwitch('cameras')" title="Live Cameras">
+      <i class="fa-solid fa-video"></i>
+      <span>Cameras</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobileNavVaultBtn" onclick="mobileNavSwitch('vault')" title="Playback Vault">
+      <i class="fa-solid fa-film"></i>
+      <span>Vault</span>
+      <span class="mobile-nav-badge hidden" id="mobileNavVaultBadge">0</span>
+    </button>
+    <button class="mobile-nav-btn shutter-nav-btn" id="mobileNavBroadcastBtn" onclick="mobileNavSwitch('broadcast')" title="Mobile Broadcaster">
+      <div class="mobile-nav-shutter-circle">
+        <i class="fa-solid fa-camera"></i>
+      </div>
+      <span>Broadcast</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobileNavAddBtn" onclick="openAddCameraModal()" title="Add Camera">
+      <i class="fa-solid fa-circle-plus"></i>
+      <span>Add Cam</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobileNavSettingsBtn" onclick="mobileNavSwitch('settings')" title="Console Settings">
+      <i class="fa-solid fa-gear"></i>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- MOBILE APP SETTINGS & PROFILE BOTTOM SHEET -->
+  <div id="mobileProfileMenuModal" class="custom-modal-backdrop hidden" onclick="if(event.target===this) closeMobileProfileMenu()">
+    <div class="custom-modal-card" style="border-radius:24px 24px 0 0; max-height:80vh; overflow-y:auto;">
+      <div class="custom-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-user-shield text-cyan-400" style="font-size:1.2rem;"></i>
+          <div class="custom-modal-title">PRScam Mobile Console</div>
+        </div>
+        <button class="btn-act" style="border-radius:50%; width:30px; height:30px; padding:0; display:flex; align-items:center; justify-content:center;" onclick="closeMobileProfileMenu()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="custom-modal-body" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="padding:10px 14px; background:rgba(0,245,255,0.08); border:1px solid rgba(0,245,255,0.2); border-radius:14px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:800; font-size:0.95rem; color:#fff;" id="mobProfileUserName">admin</div>
+            <div style="font-size:0.75rem; color:var(--text-dim);" id="mobProfileUserRole">Security Administrator</div>
+          </div>
+          <button class="btn-act danger" style="padding:6px 12px; font-size:0.75rem;" onclick="handleAuthLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label class="auth-label"><i class="fa-solid fa-expand text-cyan-400"></i> Video Fit Mode</label>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-act flex-1" onclick="toggleVideoFit(); closeMobileProfileMenu();">Toggle Fit / Cover</button>
+            <button class="btn-act cyan flex-1" onclick="rotateAllGridTiles(); closeMobileProfileMenu();">Rotate Feeds 90°</button>
+          </div>
+        </div>
+
+        <button class="btn-large cyan" style="margin-top:6px; border-radius:12px;" onclick="closeMobileProfileMenu()"><i class="fa-solid fa-check"></i> Done</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>
