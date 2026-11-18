@@ -1822,61 +1822,79 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 26px;
-      padding: 2px 5px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 65%, transparent 100%);
+      height: auto;
+      min-height: 52px;
+      padding: 10px 14px;
+      background: linear-gradient(180deg, rgba(5, 9, 20, 0.94) 0%, rgba(5, 9, 20, 0.6) 70%, transparent 100%);
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: nowrap !important;
-      overflow: hidden !important;
+      align-items: flex-start;
       z-index: 10;
       pointer-events: none;
-      gap: 3px;
-      min-width: 0;
       box-sizing: border-box;
+      gap: 8px;
     }
     .cam-tile-osd-top .osd-left {
       display: flex;
-      align-items: center;
-      gap: 3px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
       pointer-events: auto;
       min-width: 0;
-      flex: 0 1 auto;
-      overflow: hidden;
-      white-space: nowrap;
+      flex: 1 1 auto;
+    }
+    .osd-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .osd-title {
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+      max-width: 240px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 72px;
-      flex-shrink: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .osd-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
     .chip-status {
-      font-size: 0.56rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
       font-weight: 800;
-      padding: 1px 4px;
-      border-radius: 3px;
+      padding: 3px 8px;
+      border-radius: 20px;
       white-space: nowrap;
-      flex-shrink: 0;
       line-height: 1.2;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .chip-status.live {
       background: rgba(16, 185, 129, 0.25);
-      color: var(--emerald);
+      color: #10b981;
       border: 1px solid rgba(16, 185, 129, 0.5);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
     }
     .chip-status.offline {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--danger);
+      background: rgba(239, 68, 68, 0.22);
+      color: #ef4444;
       border: 1px solid rgba(239, 68, 68, 0.4);
     }
     .chip-status.connecting {
-      background: rgba(0, 245, 255, 0.2);
+      background: rgba(0, 245, 255, 0.22);
       color: var(--cyan);
       border: 1px solid rgba(0, 245, 255, 0.4);
     }
@@ -1884,44 +1902,124 @@
     .cam-tile-osd-top .osd-actions {
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 6px;
       pointer-events: auto;
       flex-shrink: 0;
-      flex-wrap: nowrap !important;
-      overflow: hidden !important;
     }
     .btn-osd {
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #fff;
-      border-radius: 3px;
-      width: 18px;
-      height: 18px;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
       padding: 0;
-      font-size: 0.58rem;
-      cursor: pointer;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s ease;
-      line-height: 1;
-      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.82rem;
     }
     .btn-osd:hover {
-      background: var(--cyan);
-      color: #000;
+      background: rgba(0, 245, 255, 0.25);
       border-color: var(--cyan);
-      transform: scale(1.1);
-    }
-    .btn-osd.cyan {
-      background: rgba(0, 245, 255, 0.35);
-      border-color: var(--cyan);
-      color: var(--cyan);
+      transform: scale(1.08);
     }
     .btn-osd.danger:hover {
-      background: #ef4444;
+      background: rgba(239, 68, 68, 0.35);
+      border-color: var(--danger);
+      transform: scale(1.08);
+    }
+
+    /* NVR CONSOLE SYSTEM FOOTER */
+    .nvr-console-footer {
+      margin-top: auto;
+      width: 100%;
+      background: rgba(11, 17, 32, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--card-border);
+      padding: 10px 18px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+
+    .footer-left,
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       color: #fff;
-      border-color: #ef4444;
+      font-weight: 700;
+    }
+
+    .footer-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulseDot 2s infinite;
+    }
+
+    .footer-sep {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .footer-chip {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--emerald);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .nvr-console-footer {
+        padding: 12px 14px 84px 14px;
+        text-align: center;
+      }
+      .footer-inner {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cam-tile-dock-pill {
+        padding: 4px 8px !important;
+        gap: 5px !important;
+      }
+      .tile-dock-btn {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.85rem !important;
+      }
+    }
     }
     .btn-osd.rec-active {
       background: #ef4444 !important;
@@ -2574,14 +2672,9 @@
     </div>
 
     <!-- SUB-VIEW 1A: PHONE CAMERA VIEW -->
-    <div id="phoneCameraSubView" style="display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative;">
+    <div id="phoneCameraSubView" style="display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; width: 100%; height: 100%;">
       <!-- Phone Viewfinder (HARD MUTED) -->
       <div class="phone-viewfinder" onclick="handleViewfinderTap(event)">
-        <!-- RETURN TO CAMERAS BUTTON -->
-        <button onclick="event.stopPropagation(); showViewerMode()" class="btn-act cyan" style="position:absolute; top:12px; left:12px; z-index:90; border-radius:20px; font-size:0.75rem; padding:5px 14px; backdrop-filter:blur(12px); background:rgba(0,245,255,0.18); border:1px solid rgba(0,245,255,0.4);" title="Return to Cameras">
-          <i class="fa-solid fa-arrow-left"></i> Cameras
-        </button>
-
         <video class="phone-preview-video" id="phonePreviewVideo" autoplay muted playsinline></video>
 
         <!-- INCOMING OPERATOR VIDEO INTERCOM PiP -->
@@ -2596,15 +2689,23 @@
 
         <!-- CAMERA OSD OVERLAY (HUD) -->
         <div class="phone-osd-overlay" id="phoneOSDOverlay">
-          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-left:85px;">
-            <div class="chip" style="font-size:0.72rem; padding:4px 8px;">
-              <i class="fa-solid fa-circle text-emerald-400 animate-pulse"></i> <b id="phoneStatusBadge">STANDBY</b>
+          <!-- TOP ROW: Return Button + Status Badge on Left, Battery & Network on Right (100% inside screen!) -->
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; box-sizing:border-box; gap:6px;">
+            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+              <button onclick="event.stopPropagation(); showViewerMode()" class="btn-act cyan" style="border-radius:20px; font-size:0.75rem; padding:4px 12px; backdrop-filter:blur(10px); background:rgba(0,245,255,0.2); border:1px solid rgba(0,245,255,0.4);" title="Return to Cameras">
+                <i class="fa-solid fa-arrow-left"></i> Cameras
+              </button>
+              <div class="chip" style="font-size:0.72rem; padding:4px 8px;">
+                <i class="fa-solid fa-circle text-emerald-400 animate-pulse"></i> <b id="phoneStatusBadge">STANDBY</b>
+              </div>
             </div>
-            <div class="chip" id="phoneTelemetryChip" style="font-size:0.72rem; padding:4px 8px;">
+            <div class="chip" id="phoneTelemetryChip" style="font-size:0.72rem; padding:4px 8px; flex-shrink:0; margin-left:auto;">
               <span id="phoneBatText"><i class="fa-solid fa-battery-three-quarters text-emerald-400"></i> 100%</span> &bull; <span id="phoneNetText"><i class="fa-solid fa-wifi text-cyan-400"></i> 4G</span>
             </div>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+
+          <!-- BOTTOM ROW: REC Badge on Left, Active Res on Right (Padded above fixed shutter deck) -->
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; box-sizing:border-box; margin-top:auto; padding-bottom:76px;">
             <div class="chip hidden rec-flag" id="phoneRecBadge" style="font-size:0.72rem; padding:4px 8px;">
               <span class="rec-dot"></span> <span id="phoneRecText">REC [AUTO] 00:00</span>
             </div>
@@ -2649,6 +2750,9 @@
           <i class="fa-solid fa-gear"></i>
         </button>
       </div>
+
+      <!-- HIDDEN MESSAGE CONTAINER SO DOM LOOKUPS NEVER FAIL -->
+      <div id="phoneMsg" class="hidden"></div>
     </div>
 
     <!-- SLIDE-UP PHONE SETTINGS MODAL -->
@@ -3071,6 +3175,28 @@
 
       </div>
     </div>
+
+    <!-- NVR CONSOLE SYSTEM FOOTER -->
+    <footer class="nvr-console-footer" id="nvrSystemFooter">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <div class="footer-brand">
+            <span class="footer-pulse"></span>
+            <b>PRScam CCTV Network</b>
+          </div>
+          <span class="footer-sep">•</span>
+          <span class="footer-stat" id="footerActiveCamsCount"><i class="fa-solid fa-video text-cyan-400"></i> <span id="footerCamCountVal">0</span> Cameras Online</span>
+          <span class="footer-sep hide-on-mobile">•</span>
+          <span class="footer-stat hide-on-mobile" id="footerVaultCount"><i class="fa-solid fa-film text-purple-400"></i> <span id="footerClipsCountVal">0</span> Clips in Vault</span>
+        </div>
+
+        <div class="footer-right">
+          <span class="footer-chip"><i class="fa-solid fa-shield-halved text-emerald-400"></i> P2P WebRTC Direct</span>
+          <span class="footer-sep hide-on-mobile">•</span>
+          <span class="footer-stat hide-on-mobile"><i class="fa-solid fa-lock text-cyan-400"></i> End-to-End Encrypted</span>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <!-- PHONE SPEAKER (RECEIVES LAPTOP TALK AUDIO) -->
@@ -4516,13 +4642,17 @@
             <!-- CCTV OSD TOP OVERLAY -->
             <div class="cam-tile-osd-top">
               <div class="osd-left">
-                <span class="osd-title" title="${escapeHTML(ch.name)}"><i class="fa-solid fa-video text-cyan-400"></i> ${escapeHTML(ch.name)}</span>
-                <span class="chip-status ${isLive ? 'live' : 'offline'}" id="tileStatus_${escapeHTML(ch.id)}">${isLive ? '● LIVE' : '● OFF'}</span>
-                <!-- Independent Per-Camera Recording Badge -->
-                <span class="chip rec-flag ${isRecordingThis ? '' : 'hidden'}" id="tileRecBadge_${escapeHTML(ch.id)}" style="font-size:0.64rem; padding:2px 7px;">
-                  <span class="rec-dot"></span> <span id="tileRecLabel_${escapeHTML(ch.id)}">REC 00:00</span>
-                </span>
-                <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.6rem; padding:1px 5px;"></span>
+                <div class="osd-title-row">
+                  <span class="osd-title" title="${escapeHTML(ch.name)}"><i class="fa-solid fa-video text-cyan-400"></i> ${escapeHTML(ch.name)}</span>
+                </div>
+                <div class="osd-meta-row">
+                  <span class="chip-status ${isLive ? 'live' : 'offline'}" id="tileStatus_${escapeHTML(ch.id)}">${isLive ? '● LIVE' : '● OFF'}</span>
+                  <!-- Independent Per-Camera Recording Badge -->
+                  <span class="chip rec-flag ${isRecordingThis ? '' : 'hidden'}" id="tileRecBadge_${escapeHTML(ch.id)}" style="font-size:0.65rem; padding:2px 7px;">
+                    <span class="rec-dot"></span> <span id="tileRecLabel_${escapeHTML(ch.id)}">REC 00:00</span>
+                  </span>
+                  <span class="chip hidden" id="tileTelem_${escapeHTML(ch.id)}" style="font-size:0.65rem; padding:2px 6px;"></span>
+                </div>
               </div>
               <div class="osd-actions" onclick="event.stopPropagation();">
                 <button class="btn-osd" onclick="remoteFlipChannel('${escapeHTML(ch.id)}')" title="Flip Camera Lens - ${escapeHTML(ch.name)}"><i class="fa-solid fa-camera-rotate"></i></button>
@@ -5588,7 +5718,8 @@
     }
 
     async function startPhoneCamera() {
-      const key = document.getElementById('phoneSecretKey').value.trim();
+      const keyInput = document.getElementById('phoneSecretKey');
+      const key = (keyInput ? keyInput.value : 'prs-secure-cam-782').trim() || 'prs-secure-cam-782';
       const msg = document.getElementById('phoneMsg');
       const badge = document.getElementById('phoneStatusBadge');
       const startBtn = document.getElementById('phoneStartBtn');
@@ -5596,9 +5727,12 @@
       if (!key) return showToast("Please enter a Secret Camera Key!", "warning");
 
       localStorage.setItem('prscam_phone_secret_key', key);
-      startBtn.disabled = true;
-      startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
-      msg.textContent = "Opening camera sensor and microphone...";
+      if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+      }
+      if (msg) msg.textContent = "Opening camera sensor and microphone...";
+      showToast("📷 Starting camera & microphone...", "info", 2000);
 
       try {
         currentQuality = document.getElementById('phoneResSelect').value || '1080';
@@ -5637,9 +5771,12 @@
           startBtn.className = "cam-shutter-btn recording";
           startBtn.title = "Stop Camera";
           startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-stop"></i></div>';
-          badge.textContent = "LIVE";
-          badge.style.color = "var(--emerald)";
-          msg.textContent = `🟢 ${camName} Live (${actW}x${actH})! Streaming & recording active.`;
+          if (badge) {
+            badge.textContent = "LIVE";
+            badge.style.color = "var(--emerald)";
+          }
+          if (msg) msg.textContent = `🟢 ${camName} Live (${actW}x${actH})! Streaming & recording active.`;
+          showToast(`🟢 ${camName} is now LIVE! Streaming active.`, "success", 2500);
 
           const vf = document.querySelector('.phone-viewfinder');
           if (vf) {
@@ -5753,7 +5890,7 @@
 
         peer.on('connection', (conn) => {
           dataChannel = conn;
-          msg.textContent = requiresPin ? "🔒 Viewer Connected (Waiting for PIN authorization)..." : "🔵 Viewer Connected! Streaming live...";
+          if (msg) msg.textContent = requiresPin ? "🔒 Viewer Connected (Waiting for PIN authorization)..." : "🔵 Viewer Connected! Streaming live...";
 
           let authTimeout = null;
           if (requiresPin) {
@@ -5790,7 +5927,7 @@
               }
             });
             setTimeout(() => applySenderParameters(), 500);
-            msg.textContent = "🟢 Viewer Authenticated & Streaming live!";
+            if (msg) msg.textContent = "🟢 Viewer Authenticated & Streaming live!";
           };
 
           conn.on('open', () => {
@@ -5879,11 +6016,13 @@
         });
 
       } catch (err) {
-        msg.textContent = `Camera Error: ${err.message}`;
-        startBtn.disabled = false;
-        startBtn.className = "cam-shutter-btn";
-        startBtn.title = "Start Camera";
-        startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-play"></i></div>';
+        if (msg) msg.textContent = `Camera Error: ${err.message}`;
+        if (startBtn) {
+          startBtn.disabled = false;
+          startBtn.className = "cam-shutter-btn";
+          startBtn.title = "Start Camera";
+          startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-play"></i></div>';
+        }
         showToast("Camera start failed: " + err.message, "error", 5000);
       }
     }
@@ -5904,9 +6043,11 @@
         vf.classList.remove('cam-active', 'cam-portrait', 'cam-landscape');
       }
 
-      startBtn.disabled = true;
-      startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
-      msg.textContent = "Finalizing active recording clip...";
+      if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+      }
+      if (msg) msg.textContent = "Finalizing active recording clip...";
 
       // 1. Await saving active clip to IndexedDB
       await stopPhoneRollingSegmentAsync();
@@ -5942,13 +6083,18 @@
 
       exitStealth();
 
-      badge.textContent = "STANDBY";
-      badge.style.color = "var(--text-dim)";
-      startBtn.disabled = false;
-      startBtn.className = "cam-shutter-btn";
-      startBtn.title = "Start Camera";
-      startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-play"></i></div>';
-      msg.textContent = "Camera stopped. Recordings saved in Playback.";
+      if (badge) {
+        badge.textContent = "STANDBY";
+        badge.style.color = "var(--text-dim)";
+      }
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.className = "cam-shutter-btn";
+        startBtn.title = "Start Camera";
+        startBtn.innerHTML = '<div class="shutter-inner"><i class="fa-solid fa-play"></i></div>';
+      }
+      if (msg) msg.textContent = "Camera stopped. Recordings saved in Playback.";
+      showToast("Camera stopped.", "info", 1800);
     }
 
     function togglePhoneMic() {
@@ -7421,6 +7567,16 @@
       if (mobVaultBadge) {
         mobVaultBadge.textContent = String(totalClips);
         mobVaultBadge.classList.toggle('hidden', totalClips === 0);
+      }
+
+      const footerCams = document.getElementById('footerCamCountVal');
+      if (footerCams) {
+        const liveCount = nvrChannels.filter(c => c.isLive).length;
+        footerCams.textContent = `${liveCount} / ${nvrChannels.length}`;
+      }
+      const footerClips = document.getElementById('footerClipsCountVal');
+      if (footerClips) {
+        footerClips.textContent = String(totalClips);
       }
     }
 
